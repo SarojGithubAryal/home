@@ -1,0 +1,138 @@
+.home-page {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: var(--color-warm-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.home-main {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* Header floats on top of the hero background */
+.app-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(0.4rem, 2vmin, 1rem) clamp(1rem, 5vw, 2rem);
+}
+
+.header-icon-button {
+  width: clamp(1.75rem, 5vmin, 2.25rem);
+  height: clamp(1.75rem, 5vmin, 2.25rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-soft);
+}
+
+.header-icon-button:hover {
+  background-color: rgba(74, 59, 46, 0.06);
+}
+
+.header-icon-button--round {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.header-menu-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: clamp(1rem, 2.8vmin, 1.15rem);
+}
+
+.header-menu-icon span {
+  display: block;
+  height: 0.125rem;
+  width: 100%;
+  background-color: var(--color-text-primary);
+  border-radius: var(--radius-full);
+}
+
+.header-note-icon {
+  font-size: clamp(0.85rem, 2.4vmin, 1rem);
+}
+
+/* Mood section wrapper: sits directly below hero, slight overlap hides the seam */
+.mood-section {
+  flex: 0 0 auto;
+  width: 100%;
+  background-color: var(--color-cream-50);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  margin-top: clamp(-1.5rem, -4vmin, -0.9rem);
+  padding: clamp(0.75rem, 3vmin, 1.5rem) clamp(1.25rem, 6vw, 2.5rem) clamp(0.4rem, 1.5vmin, 0.75rem);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 -0.5rem 1.5rem rgba(74, 59, 46, 0.06);
+}
+
+/* Footer */
+.footer-comfort {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.3rem, 1.2vmin, 0.6rem);
+  padding: clamp(0.35rem, 1.5vmin, 0.75rem) clamp(1.25rem, 5vw, 2rem) clamp(0.5rem, 2vmin, 1.1rem);
+  text-align: center;
+}
+
+.footer-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 16rem;
+}
+
+.footer-divider-line {
+  flex: 1;
+  height: 0.0625rem;
+  background-color: rgba(74, 59, 46, 0.2);
+}
+
+.footer-divider-leaf {
+  font-size: clamp(0.7rem, 1.8vmin, 0.8rem);
+  color: rgba(74, 59, 46, 0.35);
+}
+
+.footer-comfort-text {
+  font-size: clamp(0.78rem, 2.2vmin, 0.98rem);
+  color: var(--color-text-secondary);
+}
+
+/* Mood page header variant */
+.app-header--mood {
+  position: relative;
+  z-index: 2;
+  padding: clamp(1rem, 4vmin, 1.75rem) clamp(1.25rem, 6vw, 2.5rem);
+}
+
+.header-back-button {
+  background-color: rgba(255, 251, 245, 0.85);
+  box-shadow: var(--shadow-card);
+}
+
+.header-back-icon {
+  font-size: clamp(1rem, 2.6vmin, 1.2rem);
+}

@@ -1,0 +1,42 @@
+@keyframes soft-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-section,
+.mood-section,
+.footer-comfort {
+  animation: soft-fade-in 0.6s ease both;
+}
+
+.mood-tile {
+  animation: soft-fade-in 0.5s ease both;
+}
+
+.mood-tile:nth-child(1) { animation-delay: 0.05s; }
+.mood-tile:nth-child(2) { animation-delay: 0.1s; }
+.mood-tile:nth-child(3) { animation-delay: 0.15s; }
+.mood-tile:nth-child(4) { animation-delay: 0.2s; }
+.mood-tile:nth-child(5) { animation-delay: 0.25s; }
+.mood-tile:nth-child(6) { animation-delay: 0.3s; }
+
+.unknown-mood-tile {
+  animation: soft-fade-in 0.5s ease both;
+  animation-delay: 0.35s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-section,
+  .mood-section,
+  .footer-comfort,
+  .mood-tile,
+  .unknown-mood-tile {
+    animation: none;
+  }
+}

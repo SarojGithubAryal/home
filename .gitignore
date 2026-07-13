@@ -1,0 +1,25 @@
+﻿# Dependencies
+node_modules/
+
+# Environment files (keep examples)
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+.gradle/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Misc
+*.pem

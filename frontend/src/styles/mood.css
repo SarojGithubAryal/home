@@ -1,0 +1,155 @@
+.mood-title {
+  flex: 0 0 auto;
+  font-size: clamp(0.95rem, 2.4vh, 1.5rem);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.mood-subtitle {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+  font-size: clamp(0.7rem, 1.6vh, 0.9rem);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.mood-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: clamp(0.4rem, 1.5vh, 1rem);
+  width: 100%;
+  max-width: 34rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.4rem, 1.2vh, 0.85rem);
+}
+
+.mood-tile {
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.15rem, 0.6vh, 0.4rem);
+  padding: clamp(0.25rem, 1vh, 0.75rem) var(--space-sm);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-card-bg);
+  border: 0.0625rem solid rgba(74, 59, 46, 0.07);
+  box-shadow: 0 0.25rem 1rem rgba(74, 59, 46, 0.1);
+  transition: transform var(--transition-soft), box-shadow var(--transition-soft);
+  overflow: hidden;
+}
+
+.mood-tile:hover {
+  box-shadow: 0 0.4rem 1.25rem rgba(74, 59, 46, 0.14);
+}
+
+.mood-tile-icon {
+  width: clamp(1.5rem, 4.5vh, 2.5rem);
+  height: clamp(1.5rem, 4.5vh, 2.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  font-size: clamp(0.8rem, 2.2vh, 1.25rem);
+  flex-shrink: 0;
+}
+
+.mood-tile-label {
+  font-size: clamp(0.65rem, 1.5vh, 0.9rem);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.mood-tile--happy .mood-tile-icon { background-color: var(--mood-happy-bg); }
+.mood-tile--happy .mood-tile-label { color: var(--mood-happy-color); }
+
+.mood-tile--sad .mood-tile-icon { background-color: var(--mood-sad-bg); }
+.mood-tile--sad .mood-tile-label { color: var(--mood-sad-color); }
+
+.mood-tile--tired .mood-tile-icon { background-color: var(--mood-tired-bg); }
+.mood-tile--tired .mood-tile-label { color: var(--mood-tired-color); }
+
+.mood-tile--stressed .mood-tile-icon { background-color: var(--mood-stressed-bg); }
+.mood-tile--stressed .mood-tile-label { color: var(--mood-stressed-color); }
+
+.mood-tile--lonely .mood-tile-icon { background-color: var(--mood-lonely-bg); }
+.mood-tile--lonely .mood-tile-label { color: var(--mood-lonely-color); }
+
+.mood-tile--calm .mood-tile-icon { background-color: var(--mood-calm-bg); }
+.mood-tile--calm .mood-tile-label { color: var(--mood-calm-color); }
+
+/* Unknown mood tile */
+.unknown-mood-tile {
+  flex: 0 0 auto;
+  margin-top: clamp(0.35rem, 1.2vh, 1rem);
+  width: 100%;
+  max-width: 34rem;
+  background-color: var(--color-card-bg);
+  border: 0.0625rem solid rgba(74, 59, 46, 0.07);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0.25rem 1rem rgba(74, 59, 46, 0.1);
+  padding: clamp(0.4rem, 1.4vh, 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.unknown-mood-button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  text-align: left;
+  min-width: 0;
+}
+
+.unknown-mood-icon {
+  width: clamp(1.5rem, 4.2vh, 2.5rem);
+  height: clamp(1.5rem, 4.2vh, 2.5rem);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: #FBE3E1;
+  font-size: 0.9rem;
+}
+
+.unknown-mood-label {
+  font-size: clamp(0.75rem, 1.9vh, 1.05rem);
+  font-weight: 600;
+  color: var(--color-heart);
+}
+
+.unknown-mood-subtext {
+  margin-left: calc(clamp(1.5rem, 4.2vh, 2.5rem) + var(--space-md));
+  font-size: clamp(0.68rem, 1.6vh, 0.85rem);
+  color: var(--color-text-muted);
+}
+
+/* Mood badge (used in mood page header) */
+.mood-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: clamp(0.4rem, 1.6vmin, 0.6rem) clamp(0.9rem, 3vmin, 1.25rem);
+  border-radius: var(--radius-full);
+  font-size: clamp(0.85rem, 2.2vmin, 1.05rem);
+  font-weight: 600;
+}
+
+.mood-badge-icon {
+  font-size: 1em;
+}
+
+.mood-badge--happy { background-color: var(--mood-happy-bg); color: var(--mood-happy-color); }
+.mood-badge--sad { background-color: var(--mood-sad-bg); color: var(--mood-sad-color); }
+.mood-badge--tired { background-color: var(--mood-tired-bg); color: var(--mood-tired-color); }
+.mood-badge--stressed { background-color: var(--mood-stressed-bg); color: var(--mood-stressed-color); }
+.mood-badge--lonely { background-color: var(--mood-lonely-bg); color: var(--mood-lonely-color); }
+.mood-badge--calm { background-color: var(--mood-calm-bg); color: var(--mood-calm-color); }
+.mood-badge--unknown { background-color: #F3E7E1; color: var(--color-heart); }
