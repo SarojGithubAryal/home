@@ -1,0 +1,320 @@
+/**
+ * tokens.css
+ *
+ * The single source of truth for every shared design token in the
+ * application, per 13_DESIGN_SYSTEM.md.
+ *
+ * This file defines STRUCTURE, not artistic appearance:
+ *   - Spacing scale
+ *   - Typography scale
+ *   - Border radius scale
+ *   - Shadow elevation scale
+ *   - Transition durations / easing
+ *   - Opacity scale
+ *   - Z-index layers
+ *   - Container widths
+ *   - Responsive breakpoints (as reference values for use in media queries)
+ *   - Color system (primitive palette + semantic tokens)
+ *
+ * IMPORTANT — Color is split into two layers. See Section 10 below and
+ * FRONTEND_DESIGN_SYSTEM.md for the full rationale. In short: components
+ * consume ONLY semantic --color-* tokens, never --palette-* primitives
+ * directly. Per 13_DESIGN_SYSTEM.md Section 19 ("Future Themes") and
+ * 08_ASSET_ARCHITECTURE.md, the backend owns semantic theme selection. A
+ * future Theme System will re-point semantic tokens to different
+ * primitives WITHOUT requiring any component to change.
+ *
+ * No component should define local spacing, radius, shadow, typography,
+ * opacity, or color values. Every component CSS file consumes these
+ * tokens.
+ */
+
+:root {
+  /* =========================================================
+     1. SPACING SCALE
+     A single consistent scale used for all padding, margin, and
+     gap values throughout the application. Components must not
+     invent arbitrary spacing values outside this scale.
+     ========================================================= */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+
+  /* =========================================================
+     2. TYPOGRAPHY SCALE
+     Fluid, clamp()-based type scale so text resizes naturally
+     across breakpoints without separate per-breakpoint rules.
+     Font FAMILIES are intentionally left as generic system-safe
+     fallbacks here; a future Theme System may override the
+     --font-* family variables without touching this structure.
+     ========================================================= */
+
+  /* Font families (structural slots; theme may override values) */
+  --font-family-primary: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-family-secondary: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-family-accent: 'Segoe Script', 'Brush Script MT', cursive;
+
+  /* Font sizes — fluid scale */
+  --font-size-caption: clamp(0.75rem, 0.7rem + 0.2vw, 0.85rem);
+  --font-size-body-sm: clamp(0.85rem, 0.8rem + 0.25vw, 0.95rem);
+  --font-size-body: clamp(0.95rem, 0.9rem + 0.3vw, 1.05rem);
+  --font-size-body-lg: clamp(1.05rem, 1rem + 0.35vw, 1.2rem);
+  --font-size-subheading: clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
+  --font-size-heading: clamp(1.4rem, 1.2rem + 1vw, 1.9rem);
+  --font-size-display: clamp(1.8rem, 1.4rem + 2vw, 2.75rem);
+  --font-size-button: clamp(0.85rem, 0.8rem + 0.2vw, 0.95rem);
+
+  /* Font weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.7;
+
+  /* Letter spacing */
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.04em;
+
+  /* =========================================================
+     3. BORDER RADIUS SCALE
+     A small, consistent set of rounding values. Components must
+     not invent arbitrary corner radii.
+     ========================================================= */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 2rem;
+  --radius-full: 999px;
+
+  /* =========================================================
+     4. SHADOW ELEVATION SCALE
+     Elevation levels rather than arbitrary shadows, per
+     13_DESIGN_SYSTEM.md Section 7. Values stay subtle by design;
+     opacity is intentionally low and neutral (not theme-colored)
+     so a future Theme System can tint shadows independently if
+     needed without redefining this scale's structure.
+     ========================================================= */
+  --shadow-color: 0deg 0% 0%;
+
+  --shadow-low: 0 0.0625rem 0.25rem hsl(var(--shadow-color) / 0.06);
+  --shadow-medium: 0 0.25rem 0.75rem hsl(var(--shadow-color) / 0.08);
+  --shadow-high: 0 0.5rem 1.5rem hsl(var(--shadow-color) / 0.12);
+  --shadow-hero: 0 1rem 2.5rem hsl(var(--shadow-color) / 0.16);
+
+  /* =========================================================
+     5. TRANSITIONS
+     Consistent durations and easing so all motion in the
+     application feels calm and intentional, per
+     12_FRONTEND_UI_GUIDELINES.md Section 11.
+     ========================================================= */
+  --transition-duration-fast: 150ms;
+  --transition-duration-base: 250ms;
+  --transition-duration-slow: 400ms;
+
+  --transition-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-easing-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --transition-base: var(--transition-duration-base) var(--transition-easing-standard);
+  --transition-fast: var(--transition-duration-fast) var(--transition-easing-standard);
+  --transition-slow: var(--transition-duration-slow) var(--transition-easing-emphasized);
+
+  /* =========================================================
+     6. OPACITY SCALE
+     A small, consistent set of opacity values for disabled,
+     muted, hover, and overlay-adjacent states. Components must
+     not invent arbitrary opacity values outside this scale.
+     ========================================================= */
+  --opacity-disabled: 0.5;
+  --opacity-muted: 0.7;
+  --opacity-subtle: 0.85;
+  --opacity-full: 1;
+
+  /* =========================================================
+     7. Z-INDEX LAYERS
+     A shared, centrally defined stacking order per
+     13_DESIGN_SYSTEM.md Section 15. Components must reference
+     these layers rather than inventing arbitrary z-index values.
+     ========================================================= */
+  --z-index-base: 0;
+  --z-index-content: 1;
+  --z-index-overlay: 10;
+  --z-index-sticky: 20;
+  --z-index-header: 30;
+  --z-index-modal: 40;
+  --z-index-toast: 50;
+
+  /* =========================================================
+     8. CONTAINER WIDTHS
+     Shared max-widths for page/content containers, keeping
+     layouts consistent across pages without each page inventing
+     its own width constraints. Consumed directly here and also
+     by the .container utility classes in layout.css.
+     ========================================================= */
+  --container-width-sm: 30rem;
+  --container-width-md: 48rem;
+  --container-width-lg: 64rem;
+  --container-width-xl: 80rem;
+
+  /* =========================================================
+     9. RESPONSIVE BREAKPOINTS (reference values)
+     CSS custom properties cannot be used inside @media query
+     conditions directly, so these are documented here as the
+     canonical reference values. Any @media rule in the
+     application must use these exact pixel values so breakpoints
+     stay consistent, per 13_DESIGN_SYSTEM.md Section 14.
+     ---------------------------------------------------------
+     --breakpoint-mobile:  0px      (base, mobile-first default)
+     --breakpoint-tablet:  48rem    (768px)
+     --breakpoint-desktop: 64rem    (1024px)
+     --breakpoint-large:   80rem    (1280px)
+     ========================================================= */
+
+  /* =========================================================
+     10. COLOR SYSTEM — TWO-LAYER TOKEN ARCHITECTURE
+     Per FRONTEND_DESIGN_SYSTEM.md, color is split into:
+
+       Layer A — PRIMITIVE PALETTE (raw values, no meaning)
+       Layer B — SEMANTIC TOKENS (role-based, meaning-bearing)
+
+     Components consume ONLY semantic tokens (Layer B), never
+     primitives (Layer A) directly. This split exists specifically
+     for color because color is the value most likely to change
+     under a future backend-driven Theme System
+     (13_DESIGN_SYSTEM.md Section 19) — swapping which primitives
+     the semantic layer points to should never require touching
+     a single component file.
+     ========================================================= */
+
+  /* --- Layer A: Primitive palette ---------------------------
+     Raw values only. No semantic meaning. Never referenced
+     directly by any component — only by the semantic layer
+     immediately below. */
+
+  --palette-neutral-0: #ffffff;
+  --palette-neutral-100: #f5f5f5;
+  --palette-neutral-200: #e0e0e0;
+  --palette-neutral-300: #cccccc;
+  --palette-neutral-500: #888888;
+  --palette-neutral-600: #666666;
+  --palette-neutral-700: #555555;
+  --palette-neutral-800: #333333;
+  --palette-neutral-900: #1a1a1a;
+
+  --palette-brand-500: #999999;
+
+  --palette-green-700: #2e7d32;
+  --palette-orange-700: #ed6c02;
+  --palette-red-700: #c62828;
+
+  --palette-overlay-warm-30: rgb(255 250 240 / 0.35);
+
+  /* --- Layer B: Semantic tokens ------------------------------
+     Role-based names. This is the ONLY layer components should
+     ever consume. Each value below is a reference into Layer A —
+     never a raw value — so re-pointing a role to a different
+     primitive (e.g. for a future theme) never requires editing
+     any component CSS file. */
+
+  /* Backgrounds & surfaces */
+  --color-background: var(--palette-neutral-0);
+  --color-surface: var(--palette-neutral-100);
+  --color-surface-raised: var(--palette-neutral-0);
+
+  /* Brand / interactive */
+  --color-primary: var(--palette-neutral-800);
+  --color-primary-contrast: var(--palette-neutral-0);
+  --color-secondary: var(--palette-neutral-600);
+  --color-secondary-contrast: var(--palette-neutral-0);
+  --color-accent: var(--palette-brand-500);
+
+  /* Text */
+  --color-text-primary: var(--palette-neutral-900);
+  --color-text-secondary: var(--palette-neutral-700);
+  --color-text-muted: var(--palette-neutral-500);
+  --color-text-inverse: var(--palette-neutral-0);
+
+  /* Borders & dividers */
+  --color-border: var(--palette-neutral-200);
+  --color-border-strong: var(--palette-neutral-300);
+
+  /* Feedback states */
+  --color-success: var(--palette-green-700);
+  --color-warning: var(--palette-orange-700);
+  --color-error: var(--palette-red-700);
+
+  /* Overlay (used for hero content scrims, modal backdrops, etc.) */
+  --color-overlay: var(--palette-overlay-warm-30);
+
+  /* Focus ring (accessibility — must remain visible against
+     --color-background at all times, per
+     12_FRONTEND_UI_GUIDELINES.md Section 12) */
+  --color-focus-ring: var(--palette-neutral-900);
+  /* =========================================================
+     11. ROSE ACCENT (decorative hearts)
+     A dedicated soft accent used for decorative heart glyphs
+     throughout the app (hero divider, welcome mark, daily
+     message accent, "I don't know" tile). Deliberately separate
+     from --color-error, which is reserved for actual error
+     states — reusing it for decoration would be a semantic
+     mismatch.
+     ========================================================= */
+  --palette-rose-100: #fbe4e1;
+  --palette-rose-500: #e0897d;
+
+  --color-surface-rose: var(--palette-rose-100);
+  --color-text-rose: var(--palette-rose-500);
+
+  /* =========================================================
+     12. MOOD ACCENT COLORS
+     Per-mood pastel icon-background + label-color pairs, keyed
+     by mood id. Presentational accents only — mood content
+     (icon glyph, label text) still comes entirely from the
+     backend; these tokens only control decorative color and are
+     applied via a data-mood attribute with a graceful neutral
+     fallback for any mood id not listed here.
+     ========================================================= */
+  --palette-amber-100: #fdecc8;
+  --palette-amber-700: #a8730f;
+
+  --palette-blue-100: #dbe6f7;
+  --palette-blue-700: #3a5f8f;
+
+  --palette-purple-100: #e6def5;
+  --palette-purple-700: #6b4f96;
+
+  --palette-orange-100: #fbe2cf;
+
+  --palette-slate-100: #dde3e8;
+  --palette-slate-700: #47586b;
+
+  --palette-green-100: #dfead6;
+
+  --color-mood-happy-bg: var(--palette-amber-100);
+  --color-mood-happy-text: var(--palette-amber-700);
+
+  --color-mood-sad-bg: var(--palette-blue-100);
+  --color-mood-sad-text: var(--palette-blue-700);
+
+  --color-mood-tired-bg: var(--palette-purple-100);
+  --color-mood-tired-text: var(--palette-purple-700);
+
+  --color-mood-stressed-bg: var(--palette-orange-100);
+  --color-mood-stressed-text: var(--color-warning);
+
+  --color-mood-lonely-bg: var(--palette-slate-100);
+  --color-mood-lonely-text: var(--palette-slate-700);
+
+  --color-mood-calm-bg: var(--palette-green-100);
+  --color-mood-calm-text: var(--color-success);
+}

@@ -10,9 +10,9 @@ const MoodPage = ({ mood, onBack, onSelectRoom, onSelectSomethingElse }) => {
   const message = useMemo(() => getMoodMessage(mood?.id), [mood]);
   const rooms = useMemo(() => getRooms(), []);
 
-const handleRoomSelect = (room) => {
-  if (onSelectRoom) onSelectRoom(room);
-};
+  const handleRoomSelect = (room) => {
+    if (onSelectRoom) onSelectRoom(room);
+  };
 
   const handleSomethingElse = () => {
     if (onSelectSomethingElse) onSelectSomethingElse();

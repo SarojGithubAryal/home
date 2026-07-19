@@ -1,42 +1,102 @@
-@keyframes soft-fade-in {
+/**
+ * animations.css
+ *
+ * Shared keyframes and animation-trigger utility classes.
+ *
+ * tokens.css defines motion VALUES (durations, easing curves).
+ * This file turns those values into actual reusable, applyable
+ * animations — kept separate so raw motion tokens and concrete
+ * animation effects don't live in the same file, per the same
+ * separation principle used between tokens.css (values) and
+ * global.css/layout.css (usage).
+ *
+ * Per 12_FRONTEND_UI_GUIDELINES.md Section 11: animations should feel
+ * calm, prefer CSS transitions/simple fades, and never be excessive.
+ * Every animation here is intentionally minimal — fades and gentle
+ * vertical motion only. Reduced-motion handling is already applied
+ * globally in global.css and automatically disables everything here for
+ * users who request it.
+ */
+
+/* =========================================================
+   1. KEYFRAMES
+   ========================================================= */
+
+@keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(0.5rem);
   }
   to {
-    opacity: 1;
+    opacity: var(--opacity-full);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-sm));
+  }
+  to {
+    opacity: var(--opacity-full);
     transform: translateY(0);
   }
 }
 
-.hero-section,
-.mood-section,
-.footer-comfort {
-  animation: soft-fade-in 0.6s ease both;
-}
-
-.mood-tile {
-  animation: soft-fade-in 0.5s ease both;
-}
-
-.mood-tile:nth-child(1) { animation-delay: 0.05s; }
-.mood-tile:nth-child(2) { animation-delay: 0.1s; }
-.mood-tile:nth-child(3) { animation-delay: 0.15s; }
-.mood-tile:nth-child(4) { animation-delay: 0.2s; }
-.mood-tile:nth-child(5) { animation-delay: 0.25s; }
-.mood-tile:nth-child(6) { animation-delay: 0.3s; }
-
-.unknown-mood-tile {
-  animation: soft-fade-in 0.5s ease both;
-  animation-delay: 0.35s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-section,
-  .mood-section,
-  .footer-comfort,
-  .mood-tile,
-  .unknown-mood-tile {
-    animation: none;
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-sm) * -1));
+  }
+  to {
+    opacity: var(--opacity-full);
+    transform: translateY(0);
   }
 }
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: var(--opacity-full);
+    transform: scale(1);
+  }
+}
+
+/* =========================================================
+   2. UTILITY CLASSES
+   Applyable directly on any element, e.g. <Section
+   className="fade-in-up">. Duration/easing consumed from
+   tokens.css so all motion across the app stays consistent.
+   ========================================================= */
+
+.fade-in {
+  animation: fade-in var(--transition-duration-slow) var(--transition-easing-standard) both;
+}
+
+.fade-in-up {
+  animation: fade-in-up var(--transition-duration-slow) var(--transition-easing-emphasized) both;
+}
+
+.fade-in-down {
+  animation: fade-in-down var(--transition-duration-slow) var(--transition-easing-emphasized) both;
+}
+
+.scale-in {
+  animation: scale-in var(--transition-duration-base) var(--transition-easing-emphasized) both;
+}
+
+/* =========================================================
+   3. STAGGERED ENTRANCE HELPERS
+   Small, fixed set of delay steps for sequentially animating a
+   short list of sibling elements (e.g. a handful of cards
+   entering in sequence). Intentionally capped at a small number
+   of steps — this is a subtle entrance aid, not a general-
+   purpose delay utility system.
+   ========================================================= */
+
+.fade-in-up[data-delay='1'] { animation-delay: 60ms; }
+.fade-in-up[data-delay='2'] { animation-delay: 120ms; }
+.fade-in-up[data-delay='3'] { animation-delay: 180ms; }
+.fade-in-up[data-delay='4'] { animation-delay: 240ms; }

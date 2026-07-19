@@ -1,0 +1,50 @@
+/**
+ * UnknownMoodTile.css
+ * Every value below consumes a token from tokens.css.
+ */
+
+.unknown-mood-tile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  padding: var(--space-md);
+  background-color: var(--color-surface-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-low);
+  text-align: left;
+  transition: box-shadow var(--transition-base);
+}
+
+.unknown-mood-tile:hover {
+  box-shadow: var(--shadow-medium);
+}
+
+.unknown-mood-icon {
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-rose);
+  font-size: var(--font-size-subheading);
+}
+
+.unknown-mood-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.unknown-mood-title {
+  font-size: var(--font-size-body-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-rose);
+}
+
+.unknown-mood-subtitle {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}

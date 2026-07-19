@@ -1,0 +1,291 @@
+/**
+ * global.css
+ *
+ * Application-wide resets and base styles. Imported once at the root
+ * (main.jsx), after tokens.css.
+ *
+ * This file:
+ *   - Establishes a consistent box model and base typography
+ *   - Applies semantic color/spacing tokens to the document root
+ *   - Styles browser-level chrome (selection highlight, scrollbars)
+ *     using semantic tokens instead of browser defaults
+ *   - Defines small structural utility classes shared across many
+ *     components (e.g. .visually-hidden, used by Loading.jsx)
+ *
+ * This file does NOT define component-specific styles. Component
+ * appearance belongs in that component's own CSS file
+ * (12_FRONTEND_UI_GUIDELINES.md Section 5). Everything here is either a
+ * reset, a base element style, browser-chrome styling, or a small
+ * cross-cutting utility with no single obvious component owner.
+ *
+ * Every value below consumes a token from tokens.css. No raw colors,
+ * spacing, or typography values are introduced in this file.
+ */
+
+/* =========================================================
+   1. BOX MODEL RESET
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================================================
+   2. ROOT ELEMENT SETUP
+   ========================================================= */
+
+html {
+  /* Prevents iOS text auto-inflation from breaking the fluid
+     typography scale defined in tokens.css. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================================================
+   3. BASE ELEMENT TYPOGRAPHY
+   Establishes the type hierarchy referenced in
+   13_DESIGN_SYSTEM.md Section 5. Individual components may
+   still apply their own font-size token where a heading needs
+   a specific scale step, but base tag styling stays consistent
+   by default.
+   ========================================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-secondary);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+}
+
+p {
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+}
+
+small {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+}
+
+/* =========================================================
+   4. LINK DEFAULTS
+   Links inherit color by default (no jarring browser blue) and
+   reveal an underline only on hover/focus, keeping the calm,
+   minimal tone required by 12_FRONTEND_UI_GUIDELINES.md Section 1
+   while still giving a clear interactive affordance.
+   ========================================================= */
+
+a {
+  color: inherit;
+  text-decoration: none;
+  text-underline-offset: 0.15em;
+  transition: color var(--transition-base);
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration: underline;
+}
+
+/* =========================================================
+   5. FORM ELEMENT RESET
+   Buttons, inputs, and other form controls inherit typography
+   instead of using browser defaults, so component CSS files
+   (e.g. Button.css) fully control their own appearance without
+   fighting user-agent styles.
+   ========================================================= */
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   6. MEDIA DEFAULTS
+   Per 12_FRONTEND_UI_GUIDELINES.md Section 10: images must
+   maintain aspect ratio, never stretch, never distort.
+   ========================================================= */
+
+img,
+picture,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* =========================================================
+   7. LIST RESET
+   ========================================================= */
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* =========================================================
+   8. FOCUS VISIBILITY
+   Per 12_FRONTEND_UI_GUIDELINES.md Section 12: every
+   interactive element must have a visible focus state. This
+   baseline applies globally; individual components may refine
+   it further in their own CSS.
+   ========================================================= */
+
+:focus-visible {
+  outline: 0.125rem solid var(--color-focus-ring);
+  outline-offset: 0.125rem;
+  border-radius: var(--radius-sm);
+}
+
+/* =========================================================
+   9. SELECTION STYLING
+   Text selection highlight uses semantic tokens rather than the
+   browser's default selection color, keeping even incidental
+   interactions (e.g. selecting a quote to copy) visually
+   consistent with the rest of the application.
+   ========================================================= */
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+
+/* =========================================================
+   10. SCROLLBAR STYLING
+   A calm, minimal scrollbar treatment using semantic tokens.
+   Firefox uses the standard scrollbar-color/width properties;
+   WebKit-based browsers use the ::-webkit-scrollbar family.
+   Kept subtle and thin, consistent with
+   12_FRONTEND_UI_GUIDELINES.md Section 1's "never mechanical"
+   principle — this should recede, not draw attention.
+   ========================================================= */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-strong);
+  border-radius: var(--radius-full);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-text-muted);
+}
+
+/* =========================================================
+   11. REDUCED MOTION
+   Per 12_FRONTEND_UI_GUIDELINES.md Section 11: animations
+   should never be forced on users who have requested reduced
+   motion at the OS level. This also governs the animation
+   utility classes defined in animations.css.
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================
+   12. SHARED UTILITY CLASSES
+   Small, cross-cutting utilities with no single component
+   owner. Kept intentionally minimal — component-specific
+   utilities belong in that component's own CSS file instead.
+   Additional generic (non-layout, non-animation) utilities live
+   in utilities.css; layout-composition utilities live in
+   layout.css. This class stays here because it is an
+   accessibility primitive, not a layout or content utility.
+   ========================================================= */
+
+/**
+ * Visually hides content while keeping it available to screen
+ * readers. Used by Loading.jsx and any component needing
+ * accessible-but-not-visible text.
+ */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =========================================================
+   13. BASE PAGE CONTAINER STRUCTURE
+   PageContainer.jsx renders a `.page-container` element as the
+   outermost wrapper for every page's content. The structural
+   (layout-level) rules live here since PageContainer is a
+   layout, not a standalone reusable component in the same sense
+   as Button/Section/Hero — its own PageContainer.css extends
+   this with loading/error/empty state arrangement specifics.
+   ========================================================= */
+
+.page-container {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,23 @@
+/**
+ * HeroDivider.css
+ * Every value below consumes a token from tokens.css.
+ */
+
+.hero-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  max-width: 16rem;
+}
+
+.hero-divider-line {
+  flex: 1;
+  height: 0.0625rem;
+  background-color: currentColor;
+  opacity: var(--opacity-muted);
+}
+
+.hero-divider-mark {
+  font-size: var(--font-size-caption);
+  opacity: var(--opacity-muted);
+}

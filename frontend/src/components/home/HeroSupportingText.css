@@ -1,0 +1,11 @@
+/**
+ * HeroSupportingText.css
+ * Every value below consumes a token from tokens.css.
+ */
+
+.hero-supporting-text {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-normal);
+  color: inherit;
+  opacity: var(--opacity-muted);
+}

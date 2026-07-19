@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import MoodBadge from '../mood/MoodBadge';
 
-const Header = ({ variant = 'home', onBack, mood }) => {
+const Header = ({ variant = 'home', onBack, mood, roomIcon }) => {
   if (variant === 'mood') {
     return (
       <header className="app-header app-header--mood">
@@ -15,6 +15,25 @@ const Header = ({ variant = 'home', onBack, mood }) => {
         </button>
 
         <MoodBadge mood={mood} />
+      </header>
+    );
+  }
+
+  if (variant === 'room') {
+    return (
+      <header className="app-header app-header--room">
+        <button
+          className="header-icon-button header-icon-button--round"
+          type="button"
+          onClick={onBack}
+          aria-label="Go back"
+        >
+          <span aria-hidden="true">←</span>
+        </button>
+
+        <span className="header-icon-button header-icon-button--round" aria-hidden="true">
+          {roomIcon}
+        </span>
       </header>
     );
   }

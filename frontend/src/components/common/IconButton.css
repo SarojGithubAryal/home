@@ -1,0 +1,26 @@
+/**
+ * IconButton.css
+ * Every value below consumes a token from tokens.css.
+ */
+
+.icon-button {
+  width: clamp(2.25rem, 6vmin, 2.75rem);
+  height: clamp(2.25rem, 6vmin, 2.75rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-low);
+  font-size: var(--font-size-subheading);
+  color: var(--color-text-primary);
+  transition: box-shadow var(--transition-base), transform var(--transition-fast);
+}
+
+.icon-button:hover {
+  box-shadow: var(--shadow-medium);
+}
+
+.icon-button:active {
+  transform: scale(0.96);
+}

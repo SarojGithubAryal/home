@@ -1,0 +1,43 @@
+/**
+ * DailyMessage.css
+ * Every value below consumes a token from tokens.css.
+ */
+
+.daily-message {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background-color: var(--color-surface-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
+}
+
+.daily-message-icon {
+  flex-shrink: 0;
+  font-size: var(--font-size-heading);
+}
+
+.daily-message-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  min-width: 0;
+  flex: 1;
+}
+
+.daily-message-text {
+  font-size: var(--font-size-body);
+  color: var(--color-text-primary);
+}
+
+.daily-message-subtext {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.daily-message-accent {
+  flex-shrink: 0;
+  font-size: var(--font-size-subheading);
+  color: var(--color-text-rose);
+}

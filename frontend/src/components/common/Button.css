@@ -1,0 +1,127 @@
+/**
+ * Button.css
+ *
+ * Styles for components/common/Button.jsx.
+ *
+ * Per 13_DESIGN_SYSTEM.md Section 9, every button in the application
+ * shares the same shape, spacing, typography, and interaction behavior
+ * (hover, focus, active, disabled, loading). Only the visual variant
+ * (primary / secondary / ghost) differs between buttons.
+ *
+ * Every value below consumes a token from tokens.css. No raw colors,
+ * spacing, or typography values are introduced in this file.
+ */
+
+/* =========================================================
+   1. BASE BUTTON
+   Shared shape, spacing, and typography for every variant.
+   ========================================================= */
+
+.app-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xs);
+
+  padding-block: var(--space-2xs);
+  padding-inline: var(--space-md);
+
+  min-height: 2.75rem;
+
+  border-radius: var(--radius-full);
+  border: 0.0625rem solid transparent;
+
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-button);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-normal);
+  white-space: nowrap;
+
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-fast);
+}
+
+.app-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* =========================================================
+   2. VARIANT: PRIMARY
+   The dominant call-to-action style.
+   ========================================================= */
+
+.app-button--primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-low);
+}
+
+.app-button--primary:hover:not(:disabled) {
+  box-shadow: var(--shadow-medium);
+}
+
+/* =========================================================
+   3. VARIANT: SECONDARY
+   A lower-emphasis but still bordered/filled alternative.
+   ========================================================= */
+
+.app-button--secondary {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.app-button--secondary:hover:not(:disabled) {
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-border-strong);
+}
+
+/* =========================================================
+   4. VARIANT: GHOST
+   Minimal, text-forward style for tertiary actions.
+   ========================================================= */
+
+.app-button--ghost {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border-color: transparent;
+}
+
+.app-button--ghost:hover:not(:disabled) {
+  background-color: var(--color-surface);
+}
+
+/* =========================================================
+   5. SHARED STATE: FOCUS
+   Global :focus-visible in global.css already applies an
+   outline; this reinforces offset/radius specifically for the
+   pill shape used here, since --radius-full differs from the
+   global default of --radius-sm.
+   ========================================================= */
+
+.app-button:focus-visible {
+  outline: 0.125rem solid var(--color-focus-ring);
+  outline-offset: 0.1875rem;
+  border-radius: var(--radius-full);
+}
+
+/* =========================================================
+   6. SHARED STATE: DISABLED
+   ========================================================= */
+
+.app-button:disabled {
+  opacity: 0.5;
+  box-shadow: none;
+  transform: none;
+}
+
+/* =========================================================
+   7. SHARED STATE: LOADING
+   Applied alongside aria-busy in Button.jsx. Dims content
+   slightly and swaps the cursor without

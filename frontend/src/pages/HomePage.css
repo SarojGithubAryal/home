@@ -1,0 +1,80 @@
+/**
+ * HomePage.css
+ *
+ * Page-specific composition matching the approved reference image.
+ * All spacing below uses fluid clamp() ranges built from tokens.css —
+ * tighter on short/narrow viewports, comfortable on tall/wide ones —
+ * so Home's content has the best practical chance of fitting a typical
+ * viewport without requiring scroll, WITHOUT disabling scroll as an
+ * escape hatch. No overflow/scroll rule is set anywhere in this file
+ * or added globally; this compaction is intentionally scoped to Home
+ * only so other, content-heavier pages are unaffected.
+ */
+
+/* =========================================================
+   0. APPLICATION CANVAS
+   The Home page owns a centered, fluid canvas so it behaves like
+   the first screen of a mobile application rather than a website
+   stretching across the browser. Full width on narrow viewports,
+   capped at a comfortable maximum on desktop, single rule for
+   every viewport size — no separate desktop/mobile layouts.
+   ========================================================= */
+
+.home-canvas {
+  width: clamp(0rem, 100%, var(--container-width-sm));
+  margin-inline: auto;
+}
+
+/* =========================================================
+   1. HERO
+   Hero itself no longer assumes any content alignment (see
+   Hero.css) — this page-specific corner treatment is the only
+   Home-owned visual decision layered on top of the reusable
+   Hero container.
+   ========================================================= */
+
+.home-hero {
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}
+
+.home-hero .app-hero-overlay {
+  padding-top: clamp(var(--space-lg), 6vmin, var(--space-2xl));
+}
+
+.home-hero .app-hero-content {
+  color: var(--color-text-primary);
+}
+
+.home-daily-message-slot {
+  margin-top: var(--space-sm);
+}
+
+/* =========================================================
+   2. MOOD PANEL
+   ========================================================= */
+
+.home-mood-panel {
+  position: relative;
+  z-index: var(--z-index-content);
+  margin-top: clamp(-3.5rem, -9vh, -1.5rem);
+  padding-top: var(--space-md);
+  padding-inline: clamp(var(--space-md), 5vw, var(--space-xl));
+  padding-bottom: var(--space-sm);
+  background-color: var(--color-background);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: var(--shadow-high);
+}
+
+/* =========================================================
+   3. CONTENT STACK
+   A Home-specific vertical rhythm, tighter than the generic
+   .stack--loose utility (kept as-is in layout.css for other
+   pages) so the gap between MoodSelector / RecommendedRoom /
+   HomeFooter compacts fluidly on shorter viewports.
+   ========================================================= */
+
+.home-content-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-sm), 3vmin, var(--space-lg));
+}

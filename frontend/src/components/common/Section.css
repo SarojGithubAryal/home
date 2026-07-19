@@ -1,0 +1,67 @@
+/**
+ * Section.css
+ *
+ * Styles for components/common/Section.jsx.
+ *
+ * Per 13_DESIGN_SYSTEM.md Section 11, sections define the vertical
+ * rhythm of every page. This file establishes consistent internal
+ * spacing and typographic hierarchy (title/subtitle/content) so every
+ * section in the application — regardless of what page uses it —
+ * aligns the same way with surrounding content.
+ *
+ * Every value below consumes a token from tokens.css. No raw colors,
+ * spacing, or typography values are introduced in this file.
+ */
+
+/* =========================================================
+   1. BASE SECTION
+   Sections stack their internal parts (title, subtitle,
+   content) with consistent vertical spacing.
+   ========================================================= */
+
+.app-section {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-xs), 2vmin, var(--space-sm));
+  width: 100%;
+}
+
+/* =========================================================
+   2. TITLE
+   ========================================================= */
+
+.app-section-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+}
+
+/* =========================================================
+   3. SUBTITLE
+   Sits directly beneath the title with a tighter gap than the
+   space between the title block and the section's content,
+   reinforcing that subtitle belongs visually to the heading.
+   ========================================================= */
+
+.app-section-subtitle {
+  margin-top: calc(var(--space-3xs) * -1);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+}
+
+/* =========================================================
+   4. CONTENT
+   Wraps whatever children the section renders (cards, grids,
+   etc.). No layout assumptions are made here about what the
+   content actually is — that belongs to whichever component
+   the page places inside the section.
+   ========================================================= */
+
+.app-section-content {
+  width: 100%;
+}
+

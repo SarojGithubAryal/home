@@ -1,0 +1,94 @@
+/**
+ * ErrorState.css
+ *
+ * Styles for components/common/ErrorState.jsx.
+ *
+ * Per 12_FRONTEND_UI_GUIDELINES.md Section 1, even error states must
+ * feel calm and elegant rather than jarring — this file uses restrained
+ * color (a small accent touch via --color-error, not a dominant red
+ * background) and generous whitespace rather than an alarming visual
+ * treatment.
+ *
+ * Every value below consumes a token from tokens.css. No raw colors,
+ * spacing, or typography values are introduced in this file.
+ */
+
+/* =========================================================
+   1. BASE ERROR STATE
+   Centered column layout, matching the centered arrangement
+   PageContainer.css already applies to its wrapping element.
+   ========================================================= */
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  text-align: center;
+  max-width: var(--container-width-sm);
+  margin-inline: auto;
+  padding-block: var(--space-2xl);
+}
+
+/* =========================================================
+   2. DECORATIVE ASSET
+   Constrained sizing regardless of the resolved asset's native
+   dimensions, per 12_FRONTEND_UI_GUIDELINES.md Section 10.
+   ========================================================= */
+
+.error-state-asset {
+  width: clamp(4rem, 15vw, 6rem);
+  height: auto;
+  object-fit: contain;
+}
+
+/* =========================================================
+   3. MESSAGE
+   Uses --color-text-secondary rather than --color-error for the
+   main message text — the error accent is reserved for the
+   asset/icon area and retry button, keeping body text calm and
+   readable rather than alarming.
+   ========================================================= */
+
+.error-state-message {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+}
+
+/* =========================================================
+   4. RETRY ACTION
+   A restrained, bordered button rather than a solid alarming
+   fill — retrying should feel like a gentle invitation, not an
+   urgent demand.
+   ========================================================= */
+
+.error-state-retry {
+  margin-top: var(--space-2xs);
+  padding-block: var(--space-2xs);
+  padding-inline: var(--space-md);
+
+  border-radius: var(--radius-full);
+  border: 0.0625rem solid var(--color-error);
+
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-button);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-error);
+  background-color: transparent;
+
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+.error-state-retry:hover {
+  background-color: var(--color-error);
+  color: var(--color-text-inverse);
+}
+
+.error-state-retry:focus-visible {
+  outline: 0.125rem solid var(--color-error);
+  outline-offset: 0.1875rem;
+}

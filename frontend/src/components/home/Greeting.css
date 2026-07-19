@@ -1,0 +1,12 @@
+/**
+ * Greeting.css
+ * Every value below consumes a token from tokens.css.
+ */
+
+.greeting {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: inherit;
+}

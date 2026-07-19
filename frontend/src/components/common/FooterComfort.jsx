@@ -1,6 +1,8 @@
 ﻿import React from 'react';
 
-const FooterComfort = () => {
+const FooterComfort = ({ icon = '❤', lines }) => {
+  const content = lines && lines.length > 0 ? lines : ["Take your time. I'm here."];
+
   return (
     <footer className="footer-comfort">
       <div className="footer-divider" aria-hidden="true">
@@ -9,7 +11,14 @@ const FooterComfort = () => {
         <span className="footer-divider-line"></span>
       </div>
       <p className="footer-comfort-text">
-        Take your time. I'm here. <span aria-hidden="true">❤</span>
+        {content.map((line, index) => (
+          <span key={index} className="footer-comfort-line">
+            {line}
+            {index === content.length - 1 && (
+              <span aria-hidden="true"> {icon}</span>
+            )}
+          </span>
+        ))}
       </p>
     </footer>
   );

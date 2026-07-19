@@ -1,0 +1,66 @@
+/**
+ * EmptyState.css
+ *
+ * Styles for components/common/EmptyState.jsx.
+ *
+ * An empty state is not an error — it communicates "nothing here yet"
+ * rather than "something went wrong." Per 12_FRONTEND_UI_GUIDELINES.md
+ * Section 1, this should read as calm and gentle, using only neutral
+ * text tokens (no --color-error, no --color-warning) and soft spacing.
+ *
+ * Every value below consumes a token from tokens.css. No raw colors,
+ * spacing, or typography values are introduced in this file.
+ */
+
+/* =========================================================
+   1. BASE EMPTY STATE
+   Centered column layout, matching the centered arrangement
+   PageContainer.css already applies to its wrapping element.
+   ========================================================= */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xs);
+  text-align: center;
+  max-width: var(--container-width-sm);
+  margin-inline: auto;
+  padding-block: var(--space-2xl);
+}
+
+/* =========================================================
+   2. DECORATIVE ASSET
+   Constrained sizing regardless of the resolved asset's native
+   dimensions, per 12_FRONTEND_UI_GUIDELINES.md Section 10.
+   ========================================================= */
+
+.empty-state-asset {
+  width: clamp(4rem, 15vw, 6rem);
+  height: auto;
+  object-fit: contain;
+  margin-bottom: var(--space-2xs);
+}
+
+/* =========================================================
+   3. TITLE
+   ========================================================= */
+
+.empty-state-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-subheading);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+}
+
+/* =========================================================
+   4. MESSAGE
+   ========================================================= */
+
+.empty-state-message {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+}

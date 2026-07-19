@@ -1,47 +1,26 @@
-﻿import React, { useState } from 'react';
+﻿/**
+ * App.jsx
+ *
+ * Root application component.
+ *
+ * TEMPORARY: currently renders HomePage directly (a static placeholder,
+ * not the real backend-driven Home page) to verify React, routing
+ * wiring, layout, and the styling foundation render correctly end-to-
+ * end. No routing logic has been added here — router/index.js's route
+ * table is unchanged, and this file makes no API calls itself.
+ *
+ * When real page implementation begins, this file's responsibility will
+ * become routing composition only (rendering whichever page matches the
+ * current route) — it will not gain data-fetching or business logic of
+ * its own, consistent with the Pages -> Hooks -> Services -> apiClient
+ * layering rule.
+ */
+
+import React from 'react';
 import HomePage from './pages/HomePage';
-import MoodPage from './pages/MoodPage';
-import './styles/globals.css';
-import './styles/variables.css';
-import './styles/typography.css';
-import './styles/layout.css';
-import './styles/hero.css';
-import './styles/mood.css';
-import './styles/room.css';
-import './styles/animations.css';
 
 function App() {
-  const [selectedMood, setSelectedMood] = useState(null);
-
-  const handleMoodSelect = (mood) => {
-    setSelectedMood(mood);
-  };
-
-  const handleBack = () => {
-    setSelectedMood(null);
-  };
-
-  const handleRoomSelect = (destination) => {
-    // Backend will later decide what happens here
-    console.log('Destination selected:', destination.id);
-  };
-
-  const handleSomethingElse = () => {
-    console.log('Something else selected');
-  };
-
-  if (selectedMood) {
-    return (
-      <MoodPage
-        mood={selectedMood}
-        onBack={handleBack}
-        onSelectRoom={handleRoomSelect}
-        onSelectSomethingElse={handleSomethingElse}
-      />
-    );
-  }
-
-  return <HomePage onMoodSelect={handleMoodSelect} />;
+  return <HomePage />;
 }
 
 export default App;

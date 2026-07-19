@@ -1,0 +1,118 @@
+/**
+ * Hero.css
+ *
+ * Styles for components/common/Hero.jsx.
+ *
+ * Per 13_DESIGN_SYSTEM.md Section 12, Hero must remain structurally
+ * consistent across every semantic theme it might later receive (Home
+ * hero, Room hero, future hero variants) — only the resolved background
+ * image and content change; the layout shape does not.
+ *
+ * Hero is a neutral, reusable background container only. It owns:
+ *   - background image
+ *   - overlay scrim
+ *   - clipping (border-radius/overflow)
+ *   - positioning context
+ *
+ * Hero does NOT decide where its children are placed, how wide they
+ * are, or what color they render in — those are placement/content
+ * decisions owned by whichever page composes Hero (e.g. HomePage.css
+ * applies its own corner treatment on top of this reusable shape).
+ * This keeps Hero reusable across Home, Room, and any future page
+ * without needing per-page modification.
+ *
+ * Every value below consumes a token from tokens.css. No raw colors,
+ * spacing, or typography values are introduced in this file.
+ */
+
+/* =========================================================
+   1. BASE HERO
+   Fluid height using clamp() rather than a fixed pixel value,
+   per 12_FRONTEND_UI_GUIDELINES.md Section 7. Background image
+   is applied via inline style in Hero.jsx (a resolved asset
+   path, already produced by AssetRegistry upstream) — this file
+   only controls how that image is displayed, never its source.
+   No justify-content/alignment is set here — Hero does not
+   assume where its content should sit; the composing page
+   controls that via its own children/layout.
+   ========================================================= */
+
+.app-hero {
+  position: relative;
+  width: 100%;
+  min-height: clamp(16rem, 38vh, 30rem);
+
+  display: flex;
+  flex-direction: column;
+
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+
+  background-color: var(--color-surface);
+  background-size: cover;
+  background-position: center;
+
+  box-shadow: var(--shadow-hero);
+}
+
+/* =========================================================
+   2. OVERLAY SCRIM
+   A neutral overlay ensures overlaid text/content remains
+   readable regardless of the resolved background image's
+   brightness. Uses the semantic --color-overlay token rather
+   than a hardcoded rgba value, so a future Theme System can
+   adjust scrim intensity per theme without touching this file.
+   ========================================================= */
+
+.app-hero-overlay {
+  position: relative;
+  z-index: var(--z-index-content);
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: clamp(var(--space-md), 5vw, var(--space-xl));
+
+  background: linear-gradient(
+    to top,
+    var(--color-overlay) 0%,
+    transparent 60%
+  );
+}
+
+/* =========================================================
+   3. TOP CONTENT
+   Optional overlay content anchored to the top of the hero
+   (e.g. a back button or badge), positioned independently from
+   the main content block.
+   ========================================================= */
+
+.app-hero-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-index-overlay);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: clamp(var(--space-sm), 4vw, var(--space-lg));
+}
+
+/* =========================================================
+   4. MAIN CONTENT
+   Houses the hero's primary content (title, quote, etc.). No
+   max-width or text color is set here — width is owned by the
+   composing page's own layout, and text color depends entirely
+   on the resolved background image's brightness, which varies
+   per page/theme.
+   ========================================================= */
+
+.app-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}

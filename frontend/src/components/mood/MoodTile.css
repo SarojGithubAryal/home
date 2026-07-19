@@ -1,0 +1,64 @@
+/**
+ * MoodTile.css
+ * Every value below consumes a token from tokens.css.
+ */
+
+.mood-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding-block: clamp(var(--space-sm), 3vmin, var(--space-md));
+  padding-inline: var(--space-sm);
+  background-color: var(--color-surface-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-low);
+  transition: box-shadow var(--transition-base), transform var(--transition-fast);
+}
+
+.mood-tile:hover {
+  box-shadow: var(--shadow-medium);
+}
+
+.mood-tile:active {
+  transform: scale(0.98);
+}
+
+.mood-tile-icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  font-size: var(--font-size-heading);
+}
+
+.mood-tile-label {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+/* Per-mood accent colors. Falls back to the neutral defaults above for
+   any mood id not listed here — no crash, no unstyled state. */
+
+.mood-tile[data-mood='happy'] .mood-tile-icon { background-color: var(--color-mood-happy-bg); }
+.mood-tile[data-mood='happy'] .mood-tile-label { color: var(--color-mood-happy-text); }
+
+.mood-tile[data-mood='sad'] .mood-tile-icon { background-color: var(--color-mood-sad-bg); }
+.mood-tile[data-mood='sad'] .mood-tile-label { color: var(--color-mood-sad-text); }
+
+.mood-tile[data-mood='tired'] .mood-tile-icon { background-color: var(--color-mood-tired-bg); }
+.mood-tile[data-mood='tired'] .mood-tile-label { color: var(--color-mood-tired-text); }
+
+.mood-tile[data-mood='stressed'] .mood-tile-icon { background-color: var(--color-mood-stressed-bg); }
+.mood-tile[data-mood='stressed'] .mood-tile-label { color: var(--color-mood-stressed-text); }
+
+.mood-tile[data-mood='lonely'] .mood-tile-icon { background-color: var(--color-mood-lonely-bg); }
+.mood-tile[data-mood='lonely'] .mood-tile-label { color: var(--color-mood-lonely-text); }
+
+.mood-tile[data-mood='calm'] .mood-tile-icon { background-color: var(--color-mood-calm-bg); }
+.mood-tile[data-mood='calm'] .mood-tile-label { color: var(--color-mood-calm-text); }

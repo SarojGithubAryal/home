@@ -1,0 +1,117 @@
+/**
+ * Loading.css
+ *
+ * Styles for components/common/Loading.jsx.
+ *
+ * Supports two variants:
+ *   - .loading--page   : full presence, used when PageContainer renders
+ *                        Loading as the entire visible content of a page
+ *   - .loading--inline : compact, embeddable indicator for use inside
+ *                        existing content (e.g. a button-adjacent
+ *                        loading state during a mutation)
+ *
+ * Per 12_FRONTEND_UI_GUIDELINES.md Section 11, motion here is minimal
+ * and calm — a single subtle rotation, never anything more elaborate.
+ * The global prefers-reduced-motion rule in global.css already disables
+ * this animation for users who have requested reduced motion.
+ *
+ * Every value below consumes a token from tokens.css. No raw colors,
+ * spacing, or typography values are introduced in this file.
+ */
+
+/* =========================================================
+   1. BASE LOADING
+   Shared structure for both variants: centered spinner with
+   optional message beneath it.
+   ========================================================= */
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  text-align: center;
+}
+
+/* =========================================================
+   2. VARIANT: PAGE
+   Takes up generous vertical space, matching the centered
+   state PageContainer.css already arranges it within.
+   ========================================================= */
+
+.loading--page {
+  width: 100%;
+  padding-block: var(--space-2xl);
+}
+
+.loading--page .loading-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-width: 0.2rem;
+}
+
+/* =========================================================
+   3. VARIANT: INLINE
+   Compact footprint, suitable for embedding next to or inside
+   other content without disrupting surrounding layout.
+   ========================================================= */
+
+.loading--inline {
+  flex-direction: row;
+  gap: var(--space-2xs);
+  padding: 0;
+}
+
+.loading--inline .loading-spinner {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-width: 0.125rem;
+}
+
+.loading--inline .loading-message {
+  font-size: var(--font-size-body-sm);
+}
+
+/* =========================================================
+   4. DECORATIVE ASSET
+   The optional illustrative asset resolved via AssetRegistry.
+   Constrained so it can never disrupt layout regardless of the
+   asset's native dimensions, per
+   12_FRONTEND_UI_GUIDELINES.md Section 10.
+   ========================================================= */
+
+.loading-asset {
+  width: clamp(3rem, 10vw, 5rem);
+  height: auto;
+  object-fit: contain;
+}
+
+/* =========================================================
+   5. SPINNER
+   A single calm rotation. Border-based spinner avoids requiring
+   an additional asset/icon dependency for this base state.
+   ========================================================= */
+
+.loading-spinner {
+  border-radius: var(--radius-full);
+  border-style: solid;
+  border-color: var(--color-border);
+  border-top-color: var(--color-primary);
+  animation: loading-spin var(--transition-duration-slow) linear infinite;
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   6. MESSAGE
+   ========================================================= */
+
+.loading-message {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}

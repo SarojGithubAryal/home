@@ -1,0 +1,17 @@
+/**
+ * MoodGrid.css
+ * Every value below consumes a token from tokens.css.
+ */
+
+.mood-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+@media (max-width: 30rem) {
+  .mood-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

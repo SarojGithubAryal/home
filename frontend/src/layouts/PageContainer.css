@@ -1,0 +1,62 @@
+/**
+ * PageContainer.css
+ *
+ * Styles for layouts/PageContainer.jsx.
+ *
+ * REVISED: the base .page-container no longer forces horizontal padding
+ * or a max-width on its content. The first real page (Home) requires an
+ * edge-to-edge hero, which a universal padding/max-width on every page
+ * would permanently prevent — not just for Home, but for any future
+ * page needing full-bleed content. Padding/width constraints now belong
+ * to whichever content actually needs them (e.g. HomePage.css's
+ * .home-mood-panel, or the shared .container utility in layout.css for
+ * pages that want it) rather than being forced globally.
+ *
+ * The loading/error/empty states below DO get their own centered
+ * padding/max-width, since those states are always comfortable
+ * centered text regardless of what a given page's content layout needs.
+ *
+ * Every value below consumes a token from tokens.css.
+ */
+
+/* =========================================================
+   1. BASE CONTAINER
+   No padding or max-width here by design — see comment above.
+   ========================================================= */
+
+.page-container {
+  width: 100%;
+}
+
+/* =========================================================
+   2. STATE: LOADING / ERROR / EMPTY
+   These states always get centered, comfortably-padded
+   presentation regardless of what the page's real content
+   layout looks like.
+   ========================================================= */
+
+.page-container[data-state='loading'],
+.page-container[data-state='error'],
+.page-container[data-state='empty'] {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  max-width: var(--container-width-lg);
+  margin-inline: auto;
+  padding-inline: clamp(var(--space-sm), 4vw, var(--space-xl));
+}
+
+/* =========================================================
+   3. STATE: CONTENT
+   Natural top-to-bottom flow. No side padding/max-width forced
+   here — individual sections within the page's content control
+   their own width constraints as needed.
+   ========================================================= */
+
+.page-container[data-state='content'] {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
