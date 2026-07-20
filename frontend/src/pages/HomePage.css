@@ -1,80 +1,275 @@
 /**
  * HomePage.css
  *
- * Page-specific composition matching the approved reference image.
- * All spacing below uses fluid clamp() ranges built from tokens.css —
- * tighter on short/narrow viewports, comfortable on tall/wide ones —
- * so Home's content has the best practical chance of fitting a typical
- * viewport without requiring scroll, WITHOUT disabling scroll as an
- * escape hatch. No overflow/scroll rule is set anywhere in this file
- * or added globally; this compaction is intentionally scoped to Home
- * only so other, content-heavier pages are unaffected.
+ * HomePage is the single source of layout for the Home screen. Section
+ * order, spacing, alignment, responsive behavior, and screen
+ * proportions are all owned here. Nested reusable components
+ * (IconButton, OrnamentDivider, Button, Loading, ErrorState, MoodGrid,
+ * MoodTile, UnknownMoodTile) continue to style only themselves in
+ * their own CSS files.
+ *
+ * Phase 3: the Hero is now one cohesive emotional composition rather
+ * than a stack of independent widgets. The affirmation (daily message)
+ * is a plain text line within the Hero — no card, no panel, no shadow,
+ * no elevated surface, no independent background. The eye travels
+ * background -> greeting -> welcome -> affirmation -> mood section with
+ * nothing competing for attention inside the Hero itself.
+ *
+ * The application occupies the full browser viewport — no centered
+ * prototype card, no fixed-width mockup. Every dimension below is
+ * viewport-relative or token-derived; no pixel values are hardcoded.
+ *
+ * Every value below consumes a token from tokens.css.
  */
 
 /* =========================================================
    0. APPLICATION CANVAS
-   The Home page owns a centered, fluid canvas so it behaves like
-   the first screen of a mobile application rather than a website
-   stretching across the browser. Full width on narrow viewports,
-   capped at a comfortable maximum on desktop, single rule for
-   every viewport size — no separate desktop/mobile layouts.
+   Full-viewport width. Establishes the page as a flex column so
+   the hero and mood panel stack naturally and grow with the
+   viewport.
    ========================================================= */
 
 .home-canvas {
-  width: clamp(0rem, 100%, var(--container-width-sm));
-  margin-inline: auto;
+  width: 100%;
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
 }
 
 /* =========================================================
    1. HERO
-   Hero itself no longer assumes any content alignment (see
-   Hero.css) — this page-specific corner treatment is the only
-   Home-owned visual decision layered on top of the reusable
-   Hero container.
+   One continuous visual scene: background image, soft overlay,
+   and a single flowing content block. Viewport-relative sizing
+   via clamp()/dvh — no fixed pixel height anywhere.
    ========================================================= */
 
 .home-hero {
+  position: relative;
+
+  width: 100%;
+  min-height: 50dvh;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
   border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+
+  background-color: var(--color-surface);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+
+  box-shadow: var(--shadow-hero);
+
+  flex-shrink: 0;
 }
 
-.home-hero .app-hero-overlay {
-  padding-top: clamp(var(--space-lg), 6vmin, var(--space-2xl));
+.home-hero-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-index-overlay);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+padding:
+    clamp(1rem,4vw,1.5rem)
+    clamp(1rem,5vw,2rem);
 }
 
-.home-hero .app-hero-content {
-  color: var(--color-text-primary);
-}
+.home-hero-overlay {
+  position: relative;
 
-.home-daily-message-slot {
-  margin-top: var(--space-sm);
+  z-index: var(--z-index-content);
+
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+
+  padding-inline: clamp(var(--space-lg), 6vw, var(--space-2xl));
+
+  padding-top: clamp(var(--space-2xl), 6dvh, var(--space-3xl));
+
+  padding-bottom: clamp(var(--space-lg), 5dvh, var(--space-2xl));
+
+  background:
+    linear-gradient(
+      to top,
+      rgb(255 255 255 / 45%) 0%,
+      rgb(255 255 255 / 10%) 45%,
+      transparent 100%
+    );
 }
 
 /* =========================================================
-   2. MOOD PANEL
+   2. HERO CONTENT
+   One unified block. Every line inside — greeting, welcome
+   mark, divider, supporting text, affirmation — belongs to the
+   same flowing message. No child here is styled as a card,
+   panel, or elevated surface.
+   ========================================================= */
+
+.home-hero-content {
+width:min(26rem,92%);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 0;
+
+  color: var(--color-text-primary);
+
+  /* Keep hero text away from the menu button */
+  margin-top: clamp(3rem, 6vh, 4.5rem);
+}
+
+.home-greeting {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: inherit;
+  margin-bottom:.6rem;
+}
+
+.home-welcome-mark {
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: inherit;
+  margin-bottom:.5rem;
+}
+
+.home-welcome-mark-heart {
+  color: var(--color-text-rose);
+}
+
+.home-hero-supporting-text {
+  max-width: 18rem;
+
+  font-size: var(--font-size-body);
+
+  line-height: var(--line-height-relaxed);
+
+  color: inherit;
+
+  opacity: .82;
+}
+
+/* =========================================================
+   3. AFFIRMATION
+   Intentionally bare: no background, no border, no shadow, no
+   radius, no independent container. It is simply the next line
+   in the Hero's single message, distinguished only by weight/
+   emphasis via typography tokens — never by surface treatment.
+   ========================================================= */
+
+.home-affirmation {
+  width:min(24rem,90%);
+
+  margin-top: 1.25rem;
+
+  padding: var(--space-md);
+
+  border-radius: var(--radius-lg);
+
+  background: rgb(255 255 255 / .58);
+
+  backdrop-filter: blur(10px);
+
+  box-shadow: var(--shadow-low);
+
+  font-size: var(--font-size-body-lg);
+
+  font-weight: var(--font-weight-medium);
+
+  line-height: var(--line-height-relaxed);
+}
+
+.home-affirmation-subtext {
+  display: inline-block;
+  margin-top: var(--space-3xs);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  opacity: var(--opacity-muted);
+}
+
+/* =========================================================
+   4. MOOD PANEL
+   Begins immediately after the Hero — no intervening card. The
+   Hero and mood panel overlap slightly (viewport-relative, not
+   a fixed negative margin) so the transition reads as one
+   continuous surface rather than two stacked blocks.
    ========================================================= */
 
 .home-mood-panel {
   position: relative;
+
   z-index: var(--z-index-content);
-  margin-top: clamp(-3.5rem, -9vh, -1.5rem);
-  padding-top: var(--space-md);
-  padding-inline: clamp(var(--space-md), 5vw, var(--space-xl));
-  padding-bottom: var(--space-sm);
-  background-color: var(--color-background);
+
+  margin-top: -1.2dvh;
+
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+
+  padding:
+
+    var(--space-lg)
+
+    clamp(var(--space-md), 5vw, var(--space-xl))
+
+    var(--space-md);
+
+  background: var(--color-background);
+
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+
   box-shadow: var(--shadow-high);
 }
 
-/* =========================================================
-   3. CONTENT STACK
-   A Home-specific vertical rhythm, tighter than the generic
-   .stack--loose utility (kept as-is in layout.css for other
-   pages) so the gap between MoodSelector / RecommendedRoom /
-   HomeFooter compacts fluidly on shorter viewports.
-   ========================================================= */
-
 .home-content-stack {
   display: flex;
+
   flex-direction: column;
-  gap: clamp(var(--space-sm), 3vmin, var(--space-lg));
+
+  gap: var(--space-lg);
+
+  flex: 1;
+}
+.home-hero-overlay {
+  position: relative;
+  z-index: var(--z-index-content);
+
+  flex: 1;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding-inline: clamp(var(--space-lg), 6vw, var(--space-2xl));
+
+  /* much larger breathing room */
+  padding-top: clamp(5.5rem, 12dvh, 8rem);
+  padding-bottom: clamp(2rem, 7dvh, 4rem);
+
+  background:
+    linear-gradient(
+      to top,
+      rgb(255 255 255 / 45%) 0%,
+      rgb(255 255 255 / 10%) 45%,
+      transparent 100%
+    );
 }

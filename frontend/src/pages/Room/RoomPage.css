@@ -1,0 +1,424 @@
+/**
+ * RoomPage.css
+ *
+ * RoomPage is the single source of layout for the Room screen, matching
+ * the exact philosophy established for HomePage.css and
+ * MoodLandingPage.css: this page owns spacing, section order,
+ * alignment, responsive behavior, and screen proportions. Nested
+ * reusable components (IconButton, Button) continue to style only
+ * themselves in their own CSS files.
+ *
+ * The page must feel like one continuous premium experience, not
+ * several separate cards — sections flow with consistent rhythm rather
+ * than each imposing unrelated spacing.
+ *
+ * Every value below consumes a token from tokens.css. No pixel values
+ * are hardcoded except unavoidable hairline borders.
+ */
+
+/* =========================================================
+   0. APPLICATION CANVAS
+   ========================================================= */
+
+.room-canvas {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================
+   1. HERO
+   ========================================================= */
+
+.room-hero {
+  position: relative;
+  width: 100%;
+  min-height: clamp(18rem, 46dvh, 32rem);
+
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  overflow: hidden;
+
+  background-color: var(--color-surface);
+  background-size: cover;
+  background-position: center;
+
+  box-shadow: var(--shadow-hero);
+}
+
+.room-hero-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-index-overlay);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: clamp(var(--space-sm), 4vw, var(--space-lg));
+}
+
+.room-hero-icon-badge {
+  width: clamp(2.25rem, 6vmin, 2.75rem);
+  height: clamp(2.25rem, 6vmin, 2.75rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-low);
+  overflow: hidden;
+}
+
+.room-hero-icon-image {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+}
+
+.room-hero-overlay {
+  position: relative;
+  z-index: var(--z-index-content);
+  width: 100%;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  padding: clamp(var(--space-md), 5vw, var(--space-xl));
+  padding-top: clamp(var(--space-2xl), 10dvh, var(--space-3xl));
+
+  background: linear-gradient(
+    to top,
+    var(--color-overlay) 0%,
+    transparent 60%
+  );
+}
+
+.room-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  color: var(--color-text-primary);
+}
+
+.room-hero-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: inherit;
+}
+
+.room-hero-subtitle {
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-heading);
+  line-height: var(--line-height-normal);
+  color: inherit;
+  opacity: var(--opacity-muted);
+}
+
+.room-hero-updated-label {
+  align-self: flex-start;
+  margin-top: var(--space-2xs);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  padding-block: var(--space-2xs);
+  padding-inline: var(--space-sm);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-raised);
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.room-hero-updated-icon {
+  font-size: 0.9em;
+}
+
+/* =========================================================
+   2. PANEL
+   ========================================================= */
+
+.room-panel {
+  position: relative;
+  z-index: var(--z-index-content);
+  flex: 1;
+  margin-top: clamp(-3.5rem, -9dvh, -1.5rem);
+  padding-top: var(--space-md);
+  padding-inline: clamp(var(--space-md), 5vw, var(--space-xl));
+  padding-bottom: var(--space-sm);
+  background-color: var(--color-background);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: var(--shadow-high);
+}
+
+.room-content-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-lg), 4vmin, var(--space-xl));
+}
+
+/* =========================================================
+   3. FEATURED
+   ========================================================= */
+
+.room-featured {
+  position: relative;
+  display: grid;
+  grid-template-columns: clamp(6rem, 22vmin, 9rem) 1fr auto;
+  align-items: center;
+  gap: clamp(var(--space-sm), 3vmin, var(--space-md));
+
+  padding: clamp(var(--space-sm), 2.5vmin, var(--space-md));
+  background-color: var(--color-surface-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
+}
+
+.room-featured-image {
+  align-self: stretch;
+  min-height: clamp(5.5rem, 16vmin, 7.5rem);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  background-size: cover;
+  background-position: center;
+}
+
+.room-featured-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.room-featured-badge {
+  align-self: flex-start;
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-text-rose);
+}
+
+.room-featured-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-subheading);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.room-featured-subtitle {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.room-featured-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.room-featured-primary {
+  background-color: var(--color-surface-rose);
+  color: var(--color-text-rose);
+}
+
+/* =========================================================
+   4. ACTIONS
+   ========================================================= */
+
+.room-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+@media (max-width: 30rem) {
+  .room-actions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.room-action-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: clamp(var(--space-sm), 2.5vmin, var(--space-md));
+  background-color: var(--color-surface-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-low);
+  text-align: left;
+  transition: box-shadow var(--transition-base);
+}
+
+.room-action-card:hover {
+  box-shadow: var(--shadow-medium);
+}
+
+.room-action-icon {
+  flex-shrink: 0;
+  width: clamp(2.5rem, 6.5vmin, 3rem);
+  height: clamp(2.5rem, 6.5vmin, 3rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  font-size: var(--font-size-subheading);
+}
+
+.room-action-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.room-action-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-body-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.room-action-subtitle {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.room-action-chevron {
+  flex-shrink: 0;
+  align-self: flex-end;
+  font-size: var(--font-size-body-lg);
+  color: var(--color-text-muted);
+}
+
+/* Presentational-only accent rotation, decoupled from backend
+   semantics — cycles through the existing mood accent palette so any
+   number of action cards receives visual variety without assuming a
+   fixed set of known action types. */
+.room-action-card[data-index='0'] .room-action-icon { background-color: var(--color-mood-sad-bg); }
+.room-action-card[data-index='1'] .room-action-icon { background-color: var(--color-mood-tired-bg); }
+.room-action-card[data-index='2'] .room-action-icon { background-color: var(--color-mood-calm-bg); }
+.room-action-card[data-index='3'] .room-action-icon { background-color: var(--color-mood-stressed-bg); }
+
+/* =========================================================
+   5. HIGHLIGHTS
+   ========================================================= */
+
+.room-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-xs), 2vmin, var(--space-sm));
+}
+
+.room-highlights-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.room-highlights-subtitle {
+  margin-top: calc(var(--space-3xs) * -1);
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
+}
+
+.room-highlights-scroll {
+  margin-top: var(--space-2xs);
+  display: flex;
+  gap: var(--space-sm);
+  overflow-x: auto;
+  padding-bottom: var(--space-2xs);
+  scroll-snap-type: x proximity;
+}
+
+.room-highlight-card {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  width: clamp(6.5rem, 20vmin, 8.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  text-align: left;
+}
+
+.room-highlight-thumbnail {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.room-highlight-play-icon {
+  width: clamp(1.5rem, 4.5vmin, 1.9rem);
+  height: clamp(1.5rem, 4.5vmin, 1.9rem);
+  border-radius: var(--radius-full);
+  background-color: rgba(255, 255, 255, 0.85);
+  color: var(--color-text-rose);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-caption);
+}
+
+.room-highlight-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.room-highlight-item-title {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.room-highlight-meta {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+/* =========================================================
+   6. FOOTER
+   ========================================================= */
+
+.room-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-block: var(--space-sm) clamp(var(--space-md), 4vmin, var(--space-lg));
+  text-align: center;
+}
+
+.room-footer .divider {
+  max-width: var(--container-width-sm);
+}
+
+.room-footer-text {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.room-footer-decoration {
+  width: clamp(1.5rem, 5vmin, 2rem);
+  height: auto;
+  opacity: var(--opacity-muted);
+}

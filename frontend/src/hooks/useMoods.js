@@ -33,7 +33,12 @@ import moodService from '../services/moodService';
  *   selectedResult: object|null,
  *   selecting: boolean,
  *   selectError: {code: string, message: string}|null,
- *   selectMood: (moodSelection: object) => Promise<boolean>
+ *   selectMood: (moodSelection: object) => Promise<{
+  success: boolean,
+  data: object|null,
+  navigation: object|null,
+  error: object|null
+}|null>
  * }}
  */
 export function useMoods() {
@@ -93,35 +98,46 @@ export function useMoods() {
    * proceed with navigation without re-inspecting hook state directly.
    *
    * @param {object} moodSelection - payload shaped as the backend expects
-   * @returns {Promise<boolean>}
+   * @returns {Promise<{
+  success:boolean,
+  data:object|null,
+  navigation?:object|null,
+  error?:object|null
+}>}
    */
-  const selectMood = useCallback(async (moodSelection) => {
-    if (selectAbortRef.current) {
-      selectAbortRef.current.abort();
-    }
+const selectMood = useCallback(async (moodSelection) => {
+  if (selectAbortRef.current) {
+    selectAbortRef.current.abort();
+  }
 
-    const controller = new AbortController();
-    selectAbortRef.current = controller;
+  const controller = new AbortController();
+  selectAbortRef.current = controller;
 
-    setSelecting(true);
+  setSelecting(true);
+  setSelectError(null);
+
+  const result = await moodService.selectMood(moodSelection, {
+    signal: controller.signal,
+  });
+
+  if (selectAbortRef.current !== controller) {
+    return null;
+  }
+
+  setSelecting(false);
+
+  if (result.success) {
+    setSelectedResult(result.data);
     setSelectError(null);
 
-    const result = await moodService.selectMood(moodSelection, { signal: controller.signal });
+    return result;
+  }
 
-    if (selectAbortRef.current !== controller) return false;
+  setSelectedResult(null);
+  setSelectError(result.error);
 
-    if (result.success) {
-      setSelectedResult(result.data);
-      setSelectError(null);
-      setSelecting(false);
-      return true;
-    }
-
-    setSelectedResult(null);
-    setSelectError(result.error);
-    setSelecting(false);
-    return false;
-  }, []);
+  return result;
+}, []);
 
   useEffect(() => {
     return () => {

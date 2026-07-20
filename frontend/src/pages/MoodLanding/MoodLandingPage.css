@@ -1,0 +1,309 @@
+/**
+ * MoodLandingPage.css
+ *
+ * MoodLandingPage is the single source of layout for the Mood Landing
+ * screen, following the exact philosophy established for HomePage.css:
+ * this page owns spacing, section order, alignment, responsive
+ * behavior, and screen proportions. Nested reusable components
+ * (IconButton, OrnamentDivider, Loading, ErrorState) continue to style
+ * only themselves in their own CSS files.
+ *
+ * The application occupies the full browser viewport — no centered
+ * prototype card, no fixed-width mockup. Every dimension below is
+ * viewport-relative or token-derived; no pixel values are hardcoded
+ * except where a hairline border is unavoidable.
+ *
+ * Every value below consumes a token from tokens.css. No new tokens
+ * are introduced here — this file only reuses what already exists.
+ */
+
+/* =========================================================
+   0. APPLICATION CANVAS
+   ========================================================= */
+
+.mood-landing-canvas {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================
+   1. HERO
+   Shorter than Home's hero (no mood grid needs to fit beneath
+   it on this screen), but built with the same
+   viewport-relative sizing approach — clamp()/dvh, no fixed
+   pixel heights.
+   ========================================================= */
+
+.mood-landing-hero {
+  position: relative;
+  width: 100%;
+  min-height: clamp(16rem, 40dvh, 28rem);
+
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  overflow: hidden;
+
+  background-color: var(--color-surface);
+  background-size: cover;
+  background-position: center;
+
+  box-shadow: var(--shadow-hero);
+}
+
+.mood-landing-hero-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-index-overlay);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: clamp(var(--space-sm), 4vw, var(--space-lg));
+}
+
+.mood-landing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding-block: var(--space-2xs);
+  padding-inline: var(--space-md);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-low);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.mood-landing-badge-emoji {
+  font-size: var(--font-size-body-lg);
+}
+
+.mood-landing-hero-overlay {
+  position: relative;
+  z-index: var(--z-index-content);
+  width: 100%;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  padding: clamp(var(--space-md), 5vw, var(--space-xl));
+  padding-top: clamp(var(--space-2xl), 10dvh, var(--space-3xl));
+
+  background: linear-gradient(
+    to top,
+    var(--color-overlay) 0%,
+    transparent 60%
+  );
+}
+
+/* =========================================================
+   2. HERO CONTENT
+   One unified block, matching the "no independent widgets"
+   philosophy carried over from Home's hero refinement.
+   ========================================================= */
+
+.mood-landing-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  color: var(--color-text-primary);
+}
+
+.mood-landing-headline {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: inherit;
+}
+
+.mood-landing-headline-decoration {
+  font-size: 0.85em;
+}
+
+.mood-landing-paragraph {
+  font-size: var(--font-size-body-lg);
+  line-height: var(--line-height-relaxed);
+  color: inherit;
+  opacity: var(--opacity-muted);
+}
+
+/* =========================================================
+   3. PANEL
+   Overlaps the hero from below, identical mechanism to
+   HomePage's .home-mood-panel.
+   ========================================================= */
+
+.mood-landing-panel {
+  position: relative;
+  z-index: var(--z-index-content);
+  flex: 1;
+  margin-top: clamp(-3.5rem, -9dvh, -1.5rem);
+  padding-top: var(--space-md);
+  padding-inline: clamp(var(--space-md), 5vw, var(--space-xl));
+  padding-bottom: var(--space-sm);
+  background-color: var(--color-background);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: var(--shadow-high);
+}
+
+.mood-landing-content-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-sm), 3vmin, var(--space-lg));
+}
+
+/* =========================================================
+   4. SECTION TITLE
+   ========================================================= */
+
+.mood-landing-section {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-xs), 2vmin, var(--space-sm));
+}
+
+.mood-landing-section-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+}
+
+.mood-landing-section-subtitle {
+  margin-top: calc(var(--space-3xs) * -1);
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
+}
+
+/* =========================================================
+   5. DESTINATION LIST / CARDS
+   Rounded, soft shadow, image left, text center, arrow right,
+   large touch target, natural spacing — matching the reference.
+   Image area is a reserved placeholder block only; no image
+   loading is implemented yet, per instructions.
+   ========================================================= */
+
+.mood-landing-destination-list {
+  margin-top: clamp(var(--space-xs), 2vmin, var(--space-sm));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.mood-landing-destination-card {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-md);
+  width: 100%;
+  min-height: clamp(5.5rem, 14vmin, 7rem);
+  padding: var(--space-sm);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-medium);
+  text-align: left;
+  transition: box-shadow var(--transition-base), transform var(--transition-fast);
+}
+
+.mood-landing-destination-card:hover {
+  box-shadow: var(--shadow-high);
+}
+
+.mood-landing-destination-card:active {
+  transform: scale(0.99);
+}
+
+.mood-landing-destination-image {
+  flex-shrink: 0;
+  width: clamp(4.5rem, 12vmin, 5.5rem);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+}
+
+.mood-landing-destination-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3xs);
+}
+
+.mood-landing-destination-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-subheading);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.mood-landing-destination-emoji {
+  font-size: 0.85em;
+}
+
+.mood-landing-destination-subtitle {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.mood-landing-destination-arrow {
+  flex-shrink: 0;
+  align-self: center;
+  width: clamp(2.25rem, 6vmin, 2.75rem);
+  height: clamp(2.25rem, 6vmin, 2.75rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body-lg);
+}
+
+/* =========================================================
+   6. ALTERNATIVE OPTION
+   Rendered as its own large rounded button, matching the
+   reference's "I'm looking for something else" row.
+   ========================================================= */
+
+.mood-landing-alternative {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-low);
+  transition: box-shadow var(--transition-base);
+}
+
+.mood-landing-alternative:hover {
+  box-shadow: var(--shadow-medium);
+}
+
+.mood-landing-alternative-icon {
+  flex-shrink: 0;
+  font-size: var(--font-size-subheading);
+}
+
+.mood-landing-alternative-text {
+  flex: 1;
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
+}
+
+.mood-landing-alternative-chevron {
+  flex-shrink: 0;
+  font-size: var(--font-size-heading);
+  color: var(--color-text-muted);
+}

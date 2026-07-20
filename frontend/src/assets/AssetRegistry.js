@@ -33,7 +33,19 @@
  */
 
 import { getPath } from '../utils/helpers';
+
+/**
+ * Real, statically-imported per-room assets. Mom is currently the only
+ * room with actual asset files in the project — this is a content-
+ * availability fact, not a frontend assumption about which room matters.
+ * Every other room (Dad, Me, Grandfather, Friend, Pet, future rooms)
+ * automatically renders correctly the moment its own assets are added
+ * here; until then, resolveRoomHero()/resolveRoomRecommendationArtwork()
+ * fall through cleanly to GLOBAL_FALLBACKS.hero for any unregistered
+ * room slug — never a broken/missing image, never a crash.
+ */
 import momHeroRoomAsset from './rooms/mom/hero/hero-room.webp';
+import momRecommendationEnvelopeAsset from './rooms/mom/recommendation/recommendation-envelope.webp';
 
 // ---------------------------------------------------------------------------
 // Root asset path
@@ -76,10 +88,16 @@ const GLOBAL_FALLBACKS = {
   // added. Update this back to a real shared default path once one
   // exists — no calling code needs to change when that happens.
   hero: momHeroRoomAsset,
+  // TEMPORARY: theme/overlay imagery doesn't matter for now, so this
+  // reuses the same real, statically-imported Mom hero asset rather
+  // than a constructed-but-unverified path — guaranteed to render
+  // instead of silently breaking. Replace with a dedicated theme/
+  // overlay default asset once one exists; no calling code changes
+  // when that happens.
+  overlay: momHeroRoomAsset,
   paper: `${ASSET_ROOT}/shared/paper-default`,
   decoration: `${ASSET_ROOT}/shared/decoration-default`,
   icon: `${ASSET_ROOT}/shared/icon-default`,
-  overlay: `${ASSET_ROOT}/shared/overlay-default`,
   audio: `${ASSET_ROOT}/shared/audio-default`,
   loading: `${ASSET_ROOT}/shared/loading-default`,
   empty: `${ASSET_ROOT}/shared/empty-default`,
@@ -115,7 +133,37 @@ function firstResolvable(candidates) {
 // ---------------------------------------------------------------------------
 
 /**
- * Resolves a room's hero background asset.
+ * Manifest of real, statically-imported room assets, keyed by roomSlug.
+ * Only rooms with actual bundled asset files belong here — currently
+ * only "mom". Adding a new room's real assets later is purely additive:
+ * import the file(s) above, add one new key below, and
+ * resolveRoomHero()/resolveRoomRecommendationArtwork() pick it up
+ * automatically with no other code changes.
+ *
+ * This guard exists to prevent a class of bug where a
+ * constructed-but-nonexistent path (e.g. built from a backend-sent
+ * roomSlug/variant string) gets treated as "resolvable" simply because
+ * it's a non-empty string — firstResolvable() cannot verify a path
+ * actually points to a real bundled file. Only a genuine ES import,
+ * guaranteed to exist at build time, may be registered here.
+ */
+const ROOM_ASSETS = {
+  mom: {
+    hero: {
+      default: momHeroRoomAsset,
+    },
+    recommendation: {
+      default: momRecommendationEnvelopeAsset,
+    },
+  },
+};
+
+/**
+ * Resolves a room's hero background asset. Any roomSlug not present in
+ * ROOM_ASSETS (e.g. "dad", "grandfather" before their assets exist)
+ * falls through cleanly to the global default — every room renders
+ * something correct today, and automatically renders its own content
+ * the moment it's registered above.
  *
  * @param {string} roomSlug - e.g. "mom", "dad"
  * @param {string} [heroVariant] - semantic identifier from backend, e.g. "rain"
@@ -123,12 +171,13 @@ function firstResolvable(candidates) {
  */
 export function resolveRoomHero(roomSlug, heroVariant) {
   const candidates = [];
+  const roomManifest = roomSlug ? ROOM_ASSETS[roomSlug]?.hero : null;
 
-  if (roomSlug && heroVariant) {
-    candidates.push(CATEGORY_PATHS.room(roomSlug, `hero-${heroVariant}`));
+  if (roomManifest && heroVariant && roomManifest[heroVariant]) {
+    candidates.push(roomManifest[heroVariant]);
   }
-  if (roomSlug) {
-    candidates.push(CATEGORY_PATHS.roomDefault(roomSlug, 'hero'));
+  if (roomManifest?.default) {
+    candidates.push(roomManifest.default);
   }
   candidates.push(GLOBAL_FALLBACKS.hero);
 
@@ -136,7 +185,8 @@ export function resolveRoomHero(roomSlug, heroVariant) {
 }
 
 /**
- * Resolves a room's recommendation artwork asset.
+ * Resolves a room's recommendation/featured artwork asset. Same
+ * per-room fallback behavior as resolveRoomHero() above.
  *
  * @param {string} roomSlug
  * @param {string} [artworkVariant] - semantic identifier from backend
@@ -144,12 +194,13 @@ export function resolveRoomHero(roomSlug, heroVariant) {
  */
 export function resolveRoomRecommendationArtwork(roomSlug, artworkVariant) {
   const candidates = [];
+  const roomManifest = roomSlug ? ROOM_ASSETS[roomSlug]?.recommendation : null;
 
-  if (roomSlug && artworkVariant) {
-    candidates.push(CATEGORY_PATHS.room(roomSlug, `recommendation-${artworkVariant}`));
+  if (roomManifest && artworkVariant && roomManifest[artworkVariant]) {
+    candidates.push(roomManifest[artworkVariant]);
   }
-  if (roomSlug) {
-    candidates.push(CATEGORY_PATHS.roomDefault(roomSlug, 'recommendation'));
+  if (roomManifest?.default) {
+    candidates.push(roomManifest.default);
   }
   candidates.push(GLOBAL_FALLBACKS.hero);
 

@@ -1,20 +1,46 @@
-const moodModel = require('../models/moodModel');
+const moodRepository = require('../repositories/MoodRepository');
 
-const fetchAllMoods = async () => {
-    const moods = await moodModel.getAllMoods();
+class MoodService {
+  /**
+   * Get all active moods, enriched with title/label/subtitle.
+   */
+  async getAllMoods() {
+    const moods = await moodRepository.findAllActive();
+    return moods.map(mood => ({
+      ...mood,
+      title: mood.name,
+      label: mood.name,
+      subtitle: mood.subtitle || null,
+    }));
+  }
+
+  /**
+   * Get a single mood by its slug.
+   */
+  async getMoodBySlug(slug) {
+    const mood = await moodRepository.findBySlug(slug);
+    if (!mood) return null;
     return {
-        success: true,
-        data: moods,
-        message: moods.length === 0 ? 'No moods available yet' : undefined,
+      ...mood,
+      title: mood.name,
+      label: mood.name,
+      subtitle: mood.subtitle || null,
     };
-};
+  }
 
-const fetchMoodById = async (id) => {
-    const mood = await moodModel.getMoodById(id);
-    if (!mood) {
-        return { success: false, message: 'Mood not found' };
-    }
-    return { success: true, data: mood };
-};
+  /**
+   * Get a single mood by its UUID, enriched same way.
+   */
+  async getMoodById(id) {
+    const mood = await moodRepository.findById(id);
+    if (!mood) return null;
+    return {
+      ...mood,
+      title: mood.name,
+      label: mood.name,
+      subtitle: mood.subtitle || null,
+    };
+  }
+}
 
-module.exports = { fetchAllMoods, fetchMoodById };
+module.exports = new MoodService();

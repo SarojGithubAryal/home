@@ -1,8 +1,15 @@
 const express = require('express');
-const router = express.Router();
-const moodController = require('../controllers/moodController');
+const moodController = require('../controllers/MoodController');
 
-router.get('/', moodController.getAllMoods);
-router.get('/:id', moodController.getMoodById);
+const router = express.Router();
+
+// GET /api/moods
+router.get('/', moodController.getMoods);
+
+// POST /api/moods/select (action that returns navigation)
+router.post('/select', moodController.selectMood);
+
+// GET /api/moods/:moodSlug/landing
+router.get('/:moodSlug/landing', moodController.getMoodLanding);
 
 module.exports = router;

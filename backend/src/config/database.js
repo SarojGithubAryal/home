@@ -1,15 +1,20 @@
 const { Pool } = require('pg');
+const env = require('./env');
+const logger = require('./logger');
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false, // required for Neon
-    },
+  connectionString: env.databaseUrl,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000
+});
+
+pool.on('connect', () => {
+  logger.info('New database connection established');
 });
 
 pool.on('error', (err) => {
-    console.error('Unexpected error on idle client', err);
-    process.exit(-1);
+  logger.error('Unexpected pool error:', err);
 });
 
 module.exports = pool;

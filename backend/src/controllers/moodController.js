@@ -1,28 +1,72 @@
-const moodService = require('../services/moodService');
+const moodService = require('../services/MoodService');
+const experienceNavigationService = require('../services/ExperienceNavigationService');
+const { sendSuccess, sendError } = require('../middleware/responseHelper');
+const moodExperienceService = require('../services/MoodExperienceService');
 
-const getAllMoods = async (req, res) => {
+class MoodController {
+  /**
+   * GET /api/moods
+   */
+  async getMoods(req, res, next) {
     try {
-        const result = await moodService.fetchAllMoods();
-        res.status(200).json(result);
-    } catch (error) {
-        console.error('Error fetching moods:', error.message);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+      const moods = await moodService.getAllMoods();
+      sendSuccess(res, moods, null);
+    } catch (err) {
+      next(err);
     }
-};
+  }
 
-const getMoodById = async (req, res) => {
+  /**
+   * POST /api/moods/select
+   * Frontend sends { moodId } — backend resolves slug internally.
+   */
+  async selectMood(req, res, next) {
     try {
-        const { id } = req.params;
-        const result = await moodService.fetchMoodById(id);
-        if (result.success) {
-            return res.status(200).json(result);
-        } else {
-            return res.status(404).json(result);
-        }
-    } catch (error) {
-        console.error('Error fetching mood:', error.message);
-        res.status(500).json({ success: false, message: 'Internal server error' });
-    }
-};
+      const { moodId } = req.body;
 
-module.exports = { getAllMoods, getMoodById };
+      if (!moodId) {
+        return sendError(res, 400, 'INVALID_REQUEST', 'moodId is required.');
+      }
+
+      const mood = await moodService.getMoodById(moodId);
+      if (!mood) {
+        return sendError(res, 404, 'NOT_FOUND', 'Mood not found.');
+      }
+
+      const destination = experienceNavigationService.selectMood(mood.slug);
+
+      sendSuccess(
+        res,
+        { selectedMood: mood.slug },
+        destination
+      );
+    } catch (err) {
+      next(err);
+    }
+  }
+  
+    /**
+   * GET /api/moods/:moodSlug/landing
+   */
+  async getMoodLanding(req, res, next) {
+    try {
+      const { moodSlug } = req.params;
+      const context = {
+        timeOfDay: req.query.timeOfDay || null,
+        weatherCondition: req.query.weatherCondition || null,
+        season: req.query.season || null,
+      };
+
+      const experience = await moodExperienceService.buildLanding(moodSlug, context);
+      if (!experience) {
+        return sendError(res, 404, 'NOT_FOUND', `Mood '${moodSlug}' not found.`);
+      }
+
+      sendSuccess(res, experience, null);
+    } catch (err) {
+      next(err);
+    }
+  }
+}
+
+module.exports = new MoodController();

@@ -73,12 +73,12 @@ export async function selectMood(moodSelection, options = {}) {
   });
 
   if (envelope.success) {
-    return {
-      success: true,
-      data: unwrap(envelope, null),
-      error: null,
-    };
-  }
+return {
+  success: true,
+  data: unwrap(envelope, null),
+  navigation: envelope.navigation ?? null,
+  error: null,
+};  }
 
   return {
     success: false,
