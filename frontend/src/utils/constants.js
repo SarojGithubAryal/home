@@ -23,7 +23,8 @@
 // API base
 // ---------------------------------------------------------------------------
 
-export const API_BASE_URL = '/api';
+// Use the VITE_API_URL env variable in production (Vercel), fallback to /api for local dev via Vite proxy
+export const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // ---------------------------------------------------------------------------
 // API endpoints
