@@ -200,12 +200,20 @@ class ExperienceEngine {
 
   /**
    * Assemble a room sub-experience (hear, read, see, memory).
+   * Determines the logical experience state so the frontend never
+   * inspects array lengths.
    */
   assembleRoomExperience({
     room, experienceType, config, tabs, featured, items,
-    theme, greeting, activeTabId, searchTerm, page, limit
+    theme, greeting, activeTabId, searchTerm, page, limit,
+    pagination
   }) {
+    const hasItems = Array.isArray(items) && items.length > 0;
+    const hasFeatured = Array.isArray(featured) && featured.length > 0;
+    const state = (hasItems || hasFeatured) ? 'POPULATED' : 'EMPTY';
+
     return {
+      state,
       type: experienceType,
       room: {
         id: room.id,
@@ -227,13 +235,13 @@ class ExperienceEngine {
         showRecent: config.show_recent,
         showTabs: config.show_tabs,
       },
-      tabs: tabs.map(tab => ({
+      tabs: (tabs || []).map(tab => ({
         id: tab.id,
         title: tab.title,
         contentTypeSlug: tab.content_type_slug,
       })),
-      activeTabId,
-      featured: featured.map(item => ({
+      activeTabId: activeTabId || null,
+      featured: (featured || []).map(item => ({
         id: item.id,
         title: item.title,
         subtitle: item.excerpt || item.subtitle || null,
@@ -244,7 +252,7 @@ class ExperienceEngine {
           params: { contentId: item.id },
         },
       })),
-      items: items.map(item => ({
+      items: (items || []).map(item => ({
         id: item.id,
         title: item.title,
         subtitle: item.excerpt || null,
@@ -255,7 +263,7 @@ class ExperienceEngine {
           experience: experienceType.toUpperCase(),
           params: { contentId: item.id },
         },
-      })),      
+      })),
       theme,
       greeting,
       metadata: {
@@ -272,7 +280,7 @@ class ExperienceEngine {
       },
     };
   }
-
+  
   /**
    * Assemble a complete Mood Landing experience.
    */
