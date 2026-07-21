@@ -12,7 +12,4 @@ router.post('/select', moodController.selectMood);
 // GET /api/moods/:moodSlug (Mood resource – returns the full Mood Landing experience)
 router.get('/:moodSlug', moodController.getMood);
 
-// GET /api/moods/:moodSlug/landing
-router.get('/:moodSlug/landing', moodController.getMoodLanding);
-
 module.exports = router;
