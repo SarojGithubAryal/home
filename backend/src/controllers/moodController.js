@@ -44,11 +44,12 @@ class MoodController {
       next(err);
     }
   }
-  
-    /**
-   * GET /api/moods/:moodSlug/landing
+
+  /**
+   * GET /api/moods/:moodSlug
+   * Official resource endpoint – returns the complete Mood Landing experience.
    */
-  async getMoodLanding(req, res, next) {
+  async getMood(req, res, next) {
     try {
       const { moodSlug } = req.params;
       const context = {

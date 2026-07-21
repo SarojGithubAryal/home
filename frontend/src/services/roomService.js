@@ -114,9 +114,10 @@ export async function getHearExperience(roomSlug, options = {}) {
 export async function getReadExperience(roomSlug, options = {}) {
   if (!roomSlug) return missingRoomSlugResult();
 
-  const envelope = await apiClient.get(API_ENDPOINTS.ROOM_READ(roomSlug), {
-    signal: options.signal,
-  });
+  const envelope = await apiClient.get(
+    `${API_ENDPOINTS.ROOM_READ(roomSlug)}${buildListQuery(options)}`,
+    { signal: options.signal }
+  );
 
   return toResult(envelope, 'Unable to load reading content for this room.');
 }
@@ -131,9 +132,10 @@ export async function getReadExperience(roomSlug, options = {}) {
 export async function getSeeExperience(roomSlug, options = {}) {
   if (!roomSlug) return missingRoomSlugResult();
 
-  const envelope = await apiClient.get(API_ENDPOINTS.ROOM_SEE(roomSlug), {
-    signal: options.signal,
-  });
+  const envelope = await apiClient.get(
+    `${API_ENDPOINTS.ROOM_SEE(roomSlug)}${buildListQuery(options)}`,
+    { signal: options.signal }
+  );
 
   return toResult(envelope, 'Unable to load the gallery for this room.');
 }
@@ -148,9 +150,10 @@ export async function getSeeExperience(roomSlug, options = {}) {
 export async function getMemoryExperience(roomSlug, options = {}) {
   if (!roomSlug) return missingRoomSlugResult();
 
-  const envelope = await apiClient.get(API_ENDPOINTS.ROOM_MEMORY(roomSlug), {
-    signal: options.signal,
-  });
+  const envelope = await apiClient.get(
+    `${API_ENDPOINTS.ROOM_MEMORY(roomSlug)}${buildListQuery(options)}`,
+    { signal: options.signal }
+  );
 
   return toResult(envelope, 'Unable to load memories for this room.');
 }

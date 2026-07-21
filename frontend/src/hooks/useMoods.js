@@ -105,40 +105,41 @@ export function useMoods() {
   error?:object|null
 }>}
    */
-const selectMood = useCallback(async (moodSelection) => {
-  if (selectAbortRef.current) {
-    selectAbortRef.current.abort();
-  }
+/**
+   * Submits a mood selection. Returns the backend's navigation object
+   * on success (per Backend API v1.0: POST /api/moods/select returns
+   * navigation to MOOD_LANDING), or null on failure. The caller
+   * forwards this navigation object to App.jsx's handleNavigation —
+   * this hook never decides where "success" leads.
+   */
+  const selectMood = useCallback(async (moodSelection) => {
+    if (selectAbortRef.current) {
+      selectAbortRef.current.abort();
+    }
 
-  const controller = new AbortController();
-  selectAbortRef.current = controller;
+    const controller = new AbortController();
+    selectAbortRef.current = controller;
 
-  setSelecting(true);
-  setSelectError(null);
-
-  const result = await moodService.selectMood(moodSelection, {
-    signal: controller.signal,
-  });
-
-  if (selectAbortRef.current !== controller) {
-    return null;
-  }
-
-  setSelecting(false);
-
-  if (result.success) {
-    setSelectedResult(result.data);
+    setSelecting(true);
     setSelectError(null);
 
-    return result;
-  }
+    const result = await moodService.selectMood(moodSelection, { signal: controller.signal });
 
-  setSelectedResult(null);
-  setSelectError(result.error);
+    if (selectAbortRef.current !== controller) return null;
 
-  return result;
-}, []);
+    if (result.success) {
+      setSelectedResult(result.data);
+      setSelectError(null);
+      setSelecting(false);
+      return result.navigation;
+    }
 
+    setSelectedResult(null);
+    setSelectError(result.error);
+    setSelecting(false);
+    return null;
+  }, []);
+  
   useEffect(() => {
     return () => {
       if (selectAbortRef.current) {

@@ -41,6 +41,8 @@ export const API_ENDPOINTS = {
 
   MOODS: `${API_BASE_URL}/moods`,
   MOODS_SELECT: `${API_BASE_URL}/moods/select`,
+  // Confirmed per Backend API v1.0 (final): returns the Mood Landing page.
+  MOOD_LANDING: (moodSlug) => `${API_BASE_URL}/moods/${moodSlug}`,
 
   ROOM: (roomSlug) => `${API_BASE_URL}/rooms/${roomSlug}`,
   ROOM_HEAR: (roomSlug) => `${API_BASE_URL}/rooms/${roomSlug}/hear`,
@@ -48,10 +50,14 @@ export const API_ENDPOINTS = {
   ROOM_SEE: (roomSlug) => `${API_BASE_URL}/rooms/${roomSlug}/see`,
   ROOM_MEMORY: (roomSlug) => `${API_BASE_URL}/rooms/${roomSlug}/memory`,
 
-  USER_ME: `${API_BASE_URL}/user/me`,
+  USER: `${API_BASE_URL}/user`,
   USER_SETTINGS: `${API_BASE_URL}/user/settings`,
   USER_FAVORITES: `${API_BASE_URL}/user/favorites`,
   USER_BOOKMARKS: `${API_BASE_URL}/user/bookmarks`,
+
+  // Universal content detail endpoint, per Backend API v1.0 (frozen).
+  // Replaces the previously-guessed per-room content endpoint.
+  CONTENT: (contentId) => `${API_BASE_URL}/contents/${contentId}`,
 };
 
 // ---------------------------------------------------------------------------

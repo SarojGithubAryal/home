@@ -1,0 +1,19 @@
+.see-canvas { display: flex; flex-direction: column; gap: clamp(var(--space-md), 3vmin, var(--space-lg)); }
+
+.see-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
+.see-header-title { display: flex; align-items: center; gap: var(--space-2xs); font-family: var(--font-family-secondary); font-size: var(--font-size-heading); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); flex: 1; }
+.see-header-icon { font-size: 0.85em; }
+.see-header-actions { display: flex; gap: var(--space-2xs); }
+
+.see-subtitle { font-size: var(--font-size-body); color: var(--color-text-secondary); }
+
+.see-tab-bar { display: flex; gap: var(--space-2xs); overflow-x: auto; padding-bottom: var(--space-3xs); }
+.see-tab { flex-shrink: 0; padding-block: var(--space-2xs); padding-inline: var(--space-md); border-radius: var(--radius-full); background-color: var(--color-surface); font-size: var(--font-size-body-sm); font-weight: var(--font-weight-medium); color: var(--color-text-secondary); transition: background-color var(--transition-base), color var(--transition-base); }
+.see-tab--active { background-color: var(--color-primary); color: var(--color-primary-contrast); }
+
+.see-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
+.see-grid-item { display: flex; flex-direction: column; gap: var(--space-2xs); text-align: left; }
+.see-grid-item-image { display: block; width: 100%; aspect-ratio: 1 / 1; border-radius: var(--radius-lg); background-color: var(--color-surface); background-size: cover; background-position: center; box-shadow: var(--shadow-low); }
+.see-grid-item-body { display: flex; flex-direction: column; gap: var(--space-3xs); padding-inline: var(--space-3xs); }
+.see-grid-item-title { font-family: var(--font-family-secondary); font-size: var(--font-size-body); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); }
+.see-grid-item-subtitle { font-size: var(--font-size-body-sm); color: var(--color-text-secondary); }

@@ -1,0 +1,25 @@
+.audio-player-canvas { position: relative; min-height: 100dvh; display: flex; flex-direction: column; background-color: var(--color-surface); background-size: cover; background-position: center; }
+
+.audio-player-top { position: absolute; top: 0; left: 0; right: 0; z-index: var(--z-index-overlay); display: flex; align-items: center; justify-content: space-between; padding: clamp(var(--space-sm), 4vw, var(--space-lg)); }
+.audio-player-top-actions { display: flex; gap: var(--space-2xs); }
+
+.audio-player-overlay { position: relative; z-index: var(--z-index-content); margin-top: auto; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2xs); padding: clamp(var(--space-lg), 6vw, var(--space-2xl)); padding-top: clamp(var(--space-3xl), 20dvh, 14rem); background: linear-gradient(to top, var(--color-overlay) 0%, transparent 70%); width: 100%; }
+
+.audio-player-badge { padding-block: var(--space-3xs); padding-inline: var(--space-sm); border-radius: var(--radius-full); background-color: var(--color-surface-raised); font-size: var(--font-size-body-sm); font-weight: var(--font-weight-semibold); color: var(--color-text-rose); }
+.audio-player-title { font-family: var(--font-family-secondary); font-size: var(--font-size-display); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); }
+.audio-player-divider { color: var(--color-text-rose); font-size: var(--font-size-body); }
+.audio-player-subtitle { font-size: var(--font-size-body); color: var(--color-text-secondary); }
+
+.audio-player-meta { display: flex; justify-content: space-between; width: 100%; font-size: var(--font-size-body-sm); color: var(--color-text-muted); margin-top: var(--space-sm); }
+.audio-player-progress { width: 100%; accent-color: var(--color-text-rose); }
+.audio-player-time-row { display: flex; justify-content: space-between; width: 100%; font-size: var(--font-size-caption); color: var(--color-text-muted); }
+
+.audio-player-transport { display: flex; align-items: center; justify-content: center; gap: var(--space-md); width: 100%; margin-top: var(--space-md); }
+.audio-player-transport-btn { width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-body); color: var(--color-text-primary); border-radius: var(--radius-full); }
+.audio-player-transport-btn--primary { width: 3.75rem; height: 3.75rem; background-color: var(--color-text-rose); color: var(--color-text-inverse); font-size: var(--font-size-heading); box-shadow: var(--shadow-medium); }
+
+.audio-player-comfort-btn { margin-top: var(--space-md); align-self: center; padding-block: var(--space-2xs); padding-inline: var(--space-lg); border-radius: var(--radius-full); background-color: var(--color-surface-rose); color: var(--color-text-rose); font-weight: var(--font-weight-semibold); }
+
+.audio-player-why-seeing { margin-top: var(--space-md); width: 100%; display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-md); border-radius: var(--radius-lg); background-color: var(--color-surface-raised); box-shadow: var(--shadow-low); }
+.audio-player-why-seeing-icon { font-size: var(--font-size-subheading); }
+.audio-player-why-seeing-text { flex: 1; font-size: var(--font-size-body-sm); color: var(--color-text-secondary); }

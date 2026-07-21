@@ -1,0 +1,36 @@
+.hear-canvas { display: flex; flex-direction: column; gap: clamp(var(--space-md), 3vmin, var(--space-lg)); padding-bottom: clamp(4.5rem, 12vmin, 5.5rem); }
+
+.hear-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
+.hear-header-title { display: flex; align-items: center; gap: var(--space-2xs); font-family: var(--font-family-secondary); font-size: var(--font-size-heading); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); flex: 1; }
+.hear-header-icon { font-size: 0.85em; }
+.hear-header-actions { display: flex; gap: var(--space-2xs); }
+
+.hear-subtitle { font-size: var(--font-size-body); color: var(--color-text-secondary); }
+
+.hear-tab-bar { display: flex; gap: var(--space-2xs); overflow-x: auto; padding-bottom: var(--space-3xs); }
+.hear-tab { flex-shrink: 0; padding-block: var(--space-2xs); padding-inline: var(--space-md); border-radius: var(--radius-full); background-color: var(--color-surface); font-size: var(--font-size-body-sm); font-weight: var(--font-weight-medium); color: var(--color-text-secondary); transition: background-color var(--transition-base), color var(--transition-base); }
+.hear-tab--active { background-color: var(--color-primary); color: var(--color-primary-contrast); }
+
+.hear-featured-row { display: flex; gap: var(--space-sm); overflow-x: auto; padding-bottom: var(--space-2xs); }
+.hear-featured-card { flex: 0 0 auto; width: clamp(13rem, 60vmin, 16rem); aspect-ratio: 16 / 10; border-radius: var(--radius-lg); background-color: var(--color-surface); background-size: cover; background-position: center; overflow: hidden; box-shadow: var(--shadow-medium); position: relative; text-align: left; }
+.hear-featured-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--space-3xs); padding: var(--space-md); background: linear-gradient(to top, var(--color-overlay) 0%, transparent 65%); color: var(--color-text-inverse); }
+.hear-featured-badge { align-self: flex-start; font-size: var(--font-size-caption); font-weight: var(--font-weight-semibold); padding-block: var(--space-3xs); padding-inline: var(--space-xs); border-radius: var(--radius-full); background-color: var(--color-surface-raised); color: var(--color-text-rose); }
+.hear-featured-title { font-family: var(--font-family-secondary); font-size: var(--font-size-subheading); font-weight: var(--font-weight-semibold); }
+.hear-featured-subtitle { font-size: var(--font-size-body-sm); opacity: var(--opacity-muted); }
+
+.hear-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+.hear-list-item { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm); background-color: var(--color-surface-raised); border-radius: var(--radius-lg); box-shadow: var(--shadow-low); text-align: left; transition: box-shadow var(--transition-base); }
+.hear-list-item:hover { box-shadow: var(--shadow-medium); }
+.hear-list-item--playing { box-shadow: var(--shadow-medium); background-color: var(--color-surface-rose); }
+.hear-list-item-thumbnail { position: relative; flex-shrink: 0; width: clamp(3.5rem, 10vmin, 4.5rem); aspect-ratio: 1 / 1; border-radius: var(--radius-md); background-color: var(--color-surface); background-size: cover; background-position: center; }
+.hear-list-item-badge { position: absolute; top: var(--space-3xs); left: var(--space-3xs); font-size: var(--font-size-caption); padding-inline: var(--space-2xs); border-radius: var(--radius-sm); background-color: var(--color-surface-rose); color: var(--color-text-rose); }
+.hear-list-item-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-3xs); }
+.hear-list-item-title { font-family: var(--font-family-secondary); font-size: var(--font-size-body-lg); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); }
+.hear-list-item-subtitle { font-size: var(--font-size-body-sm); color: var(--color-text-secondary); }
+.hear-list-item-meta { font-size: var(--font-size-caption); color: var(--color-text-muted); }
+.hear-list-item-play { flex-shrink: 0; width: clamp(2.25rem, 6vmin, 2.75rem); height: clamp(2.25rem, 6vmin, 2.75rem); border-radius: var(--radius-full); background-color: var(--color-surface-rose); color: var(--color-text-rose); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-body); cursor: pointer; }
+
+.hear-mini-player { position: fixed; left: clamp(var(--space-md), 5vw, var(--space-xl)); right: clamp(var(--space-md), 5vw, var(--space-xl)); bottom: var(--space-md); z-index: var(--z-index-sticky); display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-full); background-color: var(--color-primary); color: var(--color-primary-contrast); box-shadow: var(--shadow-high); cursor: pointer; max-width: var(--container-width-md); margin-inline: auto; }
+.hear-mini-player-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-size-body-sm); font-weight: var(--font-weight-medium); }
+.hear-mini-player-meta { font-size: var(--font-size-caption); opacity: var(--opacity-muted); }
+.hear-mini-player-toggle { flex-shrink: 0; width: 2rem; height: 2rem; border-radius: var(--radius-full); background-color: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; }

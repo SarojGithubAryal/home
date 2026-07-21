@@ -1,14 +1,29 @@
 const express = require('express');
 const roomController = require('../controllers/RoomController');
+const roomExperienceController = require('../controllers/RoomExperienceController');
 
 const router = express.Router();
 
-// GET /api/rooms/:roomSlug (read-only, navigation: null)
+// Existing room page routes
 router.get('/:roomSlug', roomController.getRoom);
-
-// POST /api/rooms/enter (action, returns navigation)
 router.post('/enter', roomController.enterRoom);
 
-// Future sub-experience endpoints will be read-only GETs
+// New sub‑experience endpoints (hear, read, see, memory)
+router.get('/:roomSlug/hear',   (req, res, next) => {
+  req.params.experienceType = 'hear';
+  roomExperienceController.getExperience(req, res, next);
+});
+router.get('/:roomSlug/read',   (req, res, next) => {
+  req.params.experienceType = 'read';
+  roomExperienceController.getExperience(req, res, next);
+});
+router.get('/:roomSlug/see',    (req, res, next) => {
+  req.params.experienceType = 'see';
+  roomExperienceController.getExperience(req, res, next);
+});
+router.get('/:roomSlug/memory', (req, res, next) => {
+  req.params.experienceType = 'memory';
+  roomExperienceController.getExperience(req, res, next);
+});
 
 module.exports = router;

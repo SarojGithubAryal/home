@@ -1,4 +1,4 @@
-const roomExperienceService = require('../services/RoomExperienceService');
+const roomPageExperienceService = require('../services/RoomPageExperienceService');
 const roomService = require('../services/RoomService');
 const experienceNavigationService = require('../services/ExperienceNavigationService');
 const { sendSuccess, sendError } = require('../middleware/responseHelper');
@@ -18,7 +18,7 @@ class RoomController {
         moodSlug: req.query.moodSlug || null,
       };
 
-      const experience = await roomExperienceService.build(roomSlug, context);
+      const experience = await roomPageExperienceService.build(roomSlug, context);
 
       if (!experience) {
         return sendError(res, 404, 'NOT_FOUND', `Room '${roomSlug}' not found.`);

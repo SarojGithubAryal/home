@@ -412,6 +412,55 @@ CREATE TABLE IF NOT EXISTS room_section_items (
     updated_at              TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 -- ============================================================
+-- 25. ROOM EXPERIENCE CONFIGURATION (per room, per experience type)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS room_experience_config (
+    id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    room_id           UUID NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+    experience_type   VARCHAR(20) NOT NULL,   -- 'hear', 'read', 'see', 'memory'
+    title             VARCHAR(200) NOT NULL,
+    subtitle          TEXT,
+    empty_state_text  TEXT,
+    background_asset_key VARCHAR(100),
+    theme_key         VARCHAR(50),
+    sort_order        VARCHAR(50) DEFAULT 'newest',   -- 'newest', 'oldest', 'manual'
+    search_enabled    BOOLEAN NOT NULL DEFAULT TRUE,
+    filter_enabled    BOOLEAN NOT NULL DEFAULT TRUE,
+    bookmarks_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    show_featured     BOOLEAN NOT NULL DEFAULT TRUE,
+    show_recent       BOOLEAN NOT NULL DEFAULT FALSE,
+    show_tabs         BOOLEAN NOT NULL DEFAULT TRUE,
+    is_active         BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (room_id, experience_type)
+);
+
+-- ============================================================
+-- 26. ROOM EXPERIENCE TABS (admin‑defined content categories)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS room_experience_tabs (
+    id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    config_id         UUID NOT NULL REFERENCES room_experience_config(id) ON DELETE CASCADE,
+    title             VARCHAR(100) NOT NULL,
+    content_type_slug VARCHAR(50),             -- soft reference to content_types.slug
+    display_order     INT NOT NULL DEFAULT 0,
+    is_active         BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- ============================================================
+-- 27. ROOM EXPERIENCE FEATURED ITEMS (pinned content)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS room_experience_featured_items (
+    id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    config_id         UUID NOT NULL REFERENCES room_experience_config(id) ON DELETE CASCADE,
+    content_id        UUID NOT NULL REFERENCES contents(id) ON DELETE CASCADE,
+    display_order     INT NOT NULL DEFAULT 0,
+    is_active         BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+-- ============================================================
 -- INDEXES
 -- ============================================================
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);

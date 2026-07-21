@@ -199,6 +199,81 @@ class ExperienceEngine {
   }
 
   /**
+   * Assemble a room sub-experience (hear, read, see, memory).
+   */
+  assembleRoomExperience({
+    room, experienceType, config, tabs, featured, items,
+    theme, greeting, activeTabId, searchTerm, page, limit
+  }) {
+    return {
+      type: experienceType,
+      room: {
+        id: room.id,
+        name: room.name,
+        slug: room.slug,
+        icon: room.icon,
+      },
+      config: {
+        title: config.title,
+        subtitle: config.subtitle,
+        emptyStateText: config.empty_state_text,
+        backgroundAssetKey: config.background_asset_key,
+        themeKey: config.theme_key,
+        sortOrder: config.sort_order,
+        searchEnabled: config.search_enabled,
+        filterEnabled: config.filter_enabled,
+        bookmarksEnabled: config.bookmarks_enabled,
+        showFeatured: config.show_featured,
+        showRecent: config.show_recent,
+        showTabs: config.show_tabs,
+      },
+      tabs: tabs.map(tab => ({
+        id: tab.id,
+        title: tab.title,
+        contentTypeSlug: tab.content_type_slug,
+      })),
+      activeTabId,
+      featured: featured.map(item => ({
+        id: item.id,
+        title: item.title,
+        subtitle: item.excerpt || item.subtitle || null,
+        thumbnailAssetKey: item.metadata?.thumbnail_asset_key || null,
+        badge: item.metadata?.badge || null,
+        navigation: {
+          experience: experienceType.toUpperCase(),
+          params: { contentId: item.id },
+        },
+      })),
+      items: items.map(item => ({
+        id: item.id,
+        title: item.title,
+        subtitle: item.excerpt || null,
+        thumbnailAssetKey: item.metadata?.thumbnail_asset_key || null,
+        durationLabel: item.metadata?.duration_label || null,
+        badge: item.metadata?.badge || null,
+        navigation: {
+          experience: experienceType.toUpperCase(),
+          params: { contentId: item.id },
+        },
+      })),      
+      theme,
+      greeting,
+      metadata: {
+        generatedAt: new Date().toISOString(),
+        pagination: pagination ? {
+          page: pagination.page,
+          pageSize: pagination.limit,
+          totalItems: pagination.total,
+          totalPages: pagination.totalPages,
+          hasNext: pagination.page < pagination.totalPages,
+          hasPrevious: pagination.page > 1,
+        } : null,
+        searchTerm: searchTerm || null,
+      },
+    };
+  }
+
+  /**
    * Assemble a complete Mood Landing experience.
    */
   assembleMoodLanding({ mood, greeting, theme, landingContent, rooms }) {
@@ -221,7 +296,7 @@ class ExperienceEngine {
         title: room.title,
         subtitle: room.subtitle,
         emoji: room.emoji,
-        imageVariant: room.imageVariant,
+        thumbnailAssetKey: room.imageVariant,
         navigation: {
           experience: 'ROOM',
           params: { roomSlug: room.room_slug },
@@ -241,6 +316,70 @@ class ExperienceEngine {
       metadata: {
         generatedAt: new Date().toISOString(),
       },
+    };
+  }
+
+  /**
+   * Assemble a generic content detail object.
+   * Common fields are always present; `detail` contains the type‑specific payload.
+   */
+  assembleContentDetail(content) {
+    const common = {
+      id: content.id,
+      roomId: content.room_id,
+      contentType: content.content_type ? {
+        id: content.content_type.id,
+        name: content.content_type.name,
+        slug: content.content_type.slug,
+      } : null,
+      title: content.title || null,
+      excerpt: content.excerpt || null,
+      author: content.author || null,
+      recordedAt: content.recorded_at || null,
+      isFeatured: content.is_featured || false,
+      metadata: content.metadata || {},
+      media: content.media || [],
+    };
+
+    // Build the type‑specific detail section
+    const detail = {};
+
+    if (common.contentType) {
+      switch (common.contentType.slug) {
+        case 'audio':
+          detail.audioUrl = (content.media && content.media.length > 0) ? content.media[0].url : null;
+          detail.durationSeconds = (content.media && content.media.length > 0) ? content.media[0].duration_seconds : null;
+          detail.transcript = content.body || null;
+          break;
+        case 'letter':
+        case 'note':
+        case 'quote':
+        case 'story':
+        case 'journal':
+          detail.body = content.body || null;
+          detail.readingTimeLabel = content.metadata?.duration_label || null;
+          break;
+        case 'photo':
+          detail.images = content.media.map(m => ({
+            url: m.url,
+            width: m.width,
+            height: m.height,
+            alt: m.alt_text || '',
+          }));
+          break;
+        case 'memory':
+          detail.body = content.body || null;
+          detail.timelineLabel = content.metadata?.duration_label || null;
+          break;
+        default:
+          // For any future type, expose body as generic content
+          detail.body = content.body || null;
+      }
+    }
+
+    return {
+      ...common,
+      detail,
     };
   }
 }

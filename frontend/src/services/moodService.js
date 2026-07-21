@@ -20,6 +20,7 @@
 
 import apiClient, { unwrap } from './apiClient';
 import { API_ENDPOINTS, ERROR_CODES } from '../utils/constants';
+import { getPath } from '../utils/helpers';
 
 /**
  * Fetches all available moods.
@@ -73,23 +74,28 @@ export async function selectMood(moodSelection, options = {}) {
   });
 
   if (envelope.success) {
-return {
-  success: true,
-  data: unwrap(envelope, null),
-  navigation: envelope.navigation ?? null,
-  error: null,
-};  }
+    return {
+      success: true,
+      data: unwrap(envelope, null),
+      // Per Backend API v1.0: POST /api/moods/select returns a
+      // navigation object (to MOOD_LANDING). Surfaced here so the hook
+      // and page can forward it to App.jsx's handleNavigation, instead
+      // of the page inventing its own destination.
+      navigation: getPath(envelope, 'navigation', null),
+      error: null,
+    };
+  }
 
   return {
     success: false,
     data: null,
+    navigation: null,
     error: envelope.error || {
       code: ERROR_CODES.UNKNOWN_ERROR,
       message: 'Unable to save your mood selection.',
     },
   };
 }
-
 const moodService = { getMoods, selectMood };
 
 export default moodService;

@@ -71,10 +71,10 @@ function RoomPage({ roomSlug, onBack, onNavigation }) {
   const featuredBadgeIcon = getPath(featured, 'badgeIcon', null);
   const featuredTitle = getPath(featured, 'title', null);
   const featuredSubtitle = getPath(featured, 'subtitle', null);
-  const featuredImageVariant = getPath(featured, 'imageVariant', null);
+  const featuredThumbnailAssetKey = getPath(featured, 'thumbnailAssetKey', null);
   const featuredImage = useMemo(
-    () => (featured ? AssetRegistry.resolveRoomRecommendationArtwork(roomSlug, featuredImageVariant) : null),
-    [roomSlug, featuredImageVariant, featured]
+    () => (featured ? AssetRegistry.resolveRoomRecommendationArtwork(roomSlug, featuredThumbnailAssetKey) : null),
+    [roomSlug, featuredThumbnailAssetKey, featured]
   );
   const featuredPrimaryNavigation = getPath(featured, 'primaryAction.navigation', null);
   const featuredSecondaryNavigation = getPath(featured, 'secondaryAction.navigation', null);
@@ -206,7 +206,7 @@ function RoomPage({ roomSlug, onBack, onNavigation }) {
                 <div className="room-actions-grid">
                   {actionList.map((action, index) => (
                     <button
-                      key={action.navigation?.params?.contentSlug || action.title || index}
+                      key={action.navigation?.params?.contentId || action.title || index}
                       type="button"
                       className="room-action-card"
                       data-index={index % 4}
@@ -246,12 +246,12 @@ function RoomPage({ roomSlug, onBack, onNavigation }) {
                     const thumbnailImage = AssetRegistry.resolveRoomSectionArtwork(
                       roomSlug,
                       'highlights',
-                      item.thumbnailVariant
+                      item.thumbnailAssetKey
                     );
 
                     return (
                       <button
-                        key={item.navigation?.params?.contentSlug || item.title || index}
+                        key={item.navigation?.params?.contentId || item.title || index}
                         type="button"
                         className="room-highlight-card"
                         onClick={() => handleNavigate(item.navigation)}

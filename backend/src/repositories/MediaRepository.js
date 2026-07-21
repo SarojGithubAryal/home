@@ -26,6 +26,19 @@ class MediaRepository extends BaseRepository {
     );
     return result.rows;
   }
+
+  /**
+   * Fetch all media for a list of content IDs.
+   */
+  async findAllByContentIds(contentIds) {
+    if (!contentIds.length) return [];
+    const placeholders = contentIds.map((_, i) => `$${i + 1}`).join(', ');
+    const result = await this.query(
+      `SELECT * FROM media WHERE content_id IN (${placeholders}) ORDER BY display_order ASC`,
+      contentIds
+    );
+    return result.rows;
+  }
 }
 
 module.exports = new MediaRepository();

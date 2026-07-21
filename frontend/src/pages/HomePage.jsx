@@ -1,22 +1,16 @@
 ﻿/**
  * HomePage.jsx
  *
- * HomePage remains the sole layout owner of the Home screen. This pass
- * only changes what happens after a mood selection succeeds: instead of
- * logging the intent, it calls the onMoodSelected prop supplied by
- * App.jsx, which centrally handles navigation to the next page. This
- * file has NO knowledge of MoodLandingPage — it never imports it, never
- * renders it, and never decides what page comes next. It only reports
- * "a mood was selected" upward; App.jsx decides what that means.
+ * HomePage remains the sole layout owner of the Home screen. Mood
+ * selection navigation is fully backend-driven: selectMood() returns
+ * the backend's navigation object (from POST /api/moods/select), which
+ * is forwarded upward via onNavigation. This page never decides where
+ * a mood selection leads.
  *
- * Data flow is unchanged: useHome() and useMoods() are consumed exactly
- * as before — same hooks, same services, same apiClient, same backend.
- * No business logic has moved; only the post-selection notification
- * target changed (console.log -> onMoodSelected prop call).
- *
- * Field access uses getPath() defensively throughout, since
- * 06_API_CONTRACTS.md documents Home Experience categories but not
- * exact field-level JSON shape.
+ * Data flow: useHome() and useMoods() — same hooks, same services, same
+ * apiClient, same backend. Field access uses getPath() defensively
+ * throughout, since 06_API_CONTRACTS.md documents Home Experience
+ * categories but not exact field-level JSON shape.
  */
 
 import React, { useMemo } from 'react';
@@ -43,12 +37,6 @@ function resolveHeroVariant(data) {
   );
 }
 
-// WelcomeMark always renders a fixed local wordmark ("Welcome home ❤").
-// If the backend's greeting text is itself just that same phrase, showing
-// both stacks two identical headings. This guard compares the backend
-// text against our OWN known local string (not backend content), purely
-// to avoid a visible duplicate — it never substitutes or invents backend
-// content.
 const WELCOME_MARK_PHRASE = 'welcome home';
 
 function isRedundantGreeting(text) {
@@ -106,21 +94,12 @@ function HomePage({ onNavigation }) {
     console.log('Toggle sound (pending future feature)');
   };
 
-const handleMoodSelect = async (mood) => {
-  const result = await selectMood({
-    moodId: mood.id,
-  });
-
-  console.log("HomePage received:", result);
-
-if (
-  result?.success &&
-  result.navigation &&
-  onNavigation
-) {
-  console.log("Sending to App:", result);
-  onNavigation(result);
-}};
+  const handleMoodSelect = async (mood) => {
+    const navigation = await selectMood({ moodId: mood.id });
+    if (navigation && onNavigation) {
+      onNavigation({ success: true, navigation, data: {} });
+    }
+  };
 
   const handleRecommendedRoomSelect = () => {
     console.log('Navigate to room (pending routing integration):', recommendedRoom);
