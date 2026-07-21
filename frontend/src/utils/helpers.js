@@ -148,3 +148,23 @@ export function generateClientId(prefix = 'id') {
   const timestamp = Date.now().toString(36);
   return `${prefix}-${timestamp}-${random}`;
 }
+
+/**
+ * Builds a URL query string from an object of optional parameters.
+ * Returns an empty string if no truthy keys are found.
+ *
+ * @param {object} params - key/value pairs (values may be undefined/null)
+ * @returns {string}
+ */
+export function buildListQuery(params = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      searchParams.append(key, value);
+    }
+  });
+
+  const query = searchParams.toString();
+  return query ? `?${query}` : '';
+}

@@ -28,7 +28,7 @@
  * schema.
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import PageContainer from '../../layouts/PageContainer';
 import IconButton from '../../components/common/IconButton';
 import OrnamentDivider from '../../components/common/OrnamentDivider';
@@ -42,12 +42,7 @@ import './MoodLandingPage.css';
 function MoodLandingPage({ moodSlug, onBack, onNavigation }) {
   const { data, loading, error, refetch } = useMoodLanding(moodSlug);
 
-  const heroVariant =
-    getPath(data, 'hero.backgroundVariant', null) ||
-    getPath(data, 'hero.heroVariant', null) ||
-    getPath(data, 'hero.variant', null) ||
-    null;
-  const heroImage = useMemo(() => AssetRegistry.resolveHomeHero(heroVariant), [heroVariant]);
+  const heroImage = AssetRegistry.getMoodLandingTheme();
 
   const badgeEmoji = getPath(data, 'hero.badgeEmoji', null);
   const badgeText = getPath(data, 'hero.badgeText', null);
@@ -148,14 +143,22 @@ function MoodLandingPage({ moodSlug, onBack, onNavigation }) {
 
               {roomList.length > 0 && (
                 <div className="mood-landing-destination-list">
-                  {roomList.map((room) => (
+                  {roomList.map((room) => {
+                    const roomCardImage = AssetRegistry.getRoomCard(
+                      room?.navigation?.params?.roomSlug
+                    );
+                    return (
                     <button
                       key={room.id}
                       type="button"
                       className="mood-landing-destination-card"
                       onClick={() => handleRoomSelect(room)}
                     >
-                      <span className="mood-landing-destination-image" aria-hidden="true"></span>
+                      <span
+                        className="mood-landing-destination-image"
+                        aria-hidden="true"
+                        style={roomCardImage ? { backgroundImage: `url(${roomCardImage})` } : undefined}
+                      ></span>
 
                       <span className="mood-landing-destination-body">
                         <span className="mood-landing-destination-title">
@@ -178,7 +181,8 @@ function MoodLandingPage({ moodSlug, onBack, onNavigation }) {
                         →
                       </span>
                     </button>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </section>

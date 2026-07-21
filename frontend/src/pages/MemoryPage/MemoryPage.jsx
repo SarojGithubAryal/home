@@ -52,7 +52,10 @@ function TabBar({ tabs, activeTabId, onSelectTab }) {
 }
 
 function MemoryListItem({ item, roomSlug, onNavigate }) {
-  const thumbnail = AssetRegistry.resolveRoomSectionArtwork(roomSlug, 'memory', item.thumbnailAssetKey);
+  // NOTE: AssetRegistry v1 has no per-section thumbnail resolver;
+  // renders without a background image rather than calling the
+  // removed resolveRoomSectionArtwork method.
+  const thumbnail = null;
   return (
     <button type="button" className="memory-list-item" onClick={() => onNavigate(item.navigation)}>
       <span
@@ -84,6 +87,7 @@ function MemoryPage({ roomSlug, onBack, onNavigation }) {
 
   const items = getPath(data, 'items', []);
   const itemList = Array.isArray(items) ? items : [];
+  const memoryLayoutImage = AssetRegistry.getExperienceLayout('memory');
 
   const handleNavigate = (navigation) => {
     if (!isValidNavigation(navigation)) return;
@@ -99,7 +103,10 @@ function MemoryPage({ roomSlug, onBack, onNavigation }) {
       emptyTitle="Nothing here yet"
       emptyMessage={emptyStateText || 'Check back soon.'}
     >
-      <div className="memory-canvas">
+      <div
+        className="memory-canvas"
+        style={memoryLayoutImage ? { backgroundImage: `url(${memoryLayoutImage})` } : undefined}
+      >
         <MemoryHeader
           title={configTitle}
           onBack={() => onBack && onBack()}

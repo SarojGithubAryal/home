@@ -29,28 +29,35 @@
  * durations, badges, and thumbnails come from the backend.
  */
 
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PageContainer from '../../layouts/PageContainer';
 import IconButton from '../../components/common/IconButton';
 import { useHear } from '../../hooks/useHear';
 import AssetRegistry from '../../assets/AssetRegistry';
 import { getPath, classNames } from '../../utils/helpers';
 import './HearPage.css';
+import EmptyExperience from '../../components/common/EmptyExperience';
 
 function isValidNavigation(navigation) {
   return Boolean(navigation) && typeof navigation === 'object' && navigation.experience;
 }
 
 function HearHeader({ title, onBack, onBookmark, onMore }) {
+  const hearIconImage = AssetRegistry.getExperienceIcon('hear');
+
   return (
     <div className="hear-header">
       <IconButton icon="←" ariaLabel="Go back" onClick={onBack} />
 
       <h1 className="hear-header-title">
         {title}
-        <span className="hear-header-icon" aria-hidden="true">
-          🎧
-        </span>
+        {hearIconImage ? (
+          <img src={hearIconImage} alt="" className="hear-header-icon" aria-hidden="true" />
+        ) : (
+          <span className="hear-header-icon" aria-hidden="true">
+            🎧
+          </span>
+        )}
       </h1>
 
       <div className="hear-header-actions">
@@ -83,7 +90,10 @@ function TabBar({ tabs, activeTabId, onSelectTab }) {
 }
 
 function FeaturedAudioCard({ item, roomSlug, onNavigate }) {
-  const thumbnail = AssetRegistry.resolveRoomSectionArtwork(roomSlug, 'hear', item.thumbnailAssetKey);
+  // NOTE: AssetRegistry v1 has no per-section thumbnail resolver;
+  // renders without a background image rather than calling the
+  // removed resolveRoomSectionArtwork method.
+  const thumbnail = null;
 
   return (
     <button
@@ -102,7 +112,8 @@ function FeaturedAudioCard({ item, roomSlug, onNavigate }) {
 }
 
 function AudioListItem({ item, roomSlug, isPlaying, onTogglePlay, onNavigate }) {
-  const thumbnail = AssetRegistry.resolveRoomSectionArtwork(roomSlug, 'hear', item.thumbnailAssetKey);
+  // NOTE: see FeaturedAudioCard above — no v1 equivalent yet.
+  const thumbnail = null;
 
   const handlePlayClick = (event) => {
     event.stopPropagation();
@@ -179,12 +190,6 @@ function HearPage({ roomSlug, onBack, onNavigation }) {
 
   const { data, loading, error, refetch } = useHear(roomSlug, { tabId: activeTabId });
 
-  const roomIconKey = getPath(data, 'room.icon', null);
-  const roomIconImage = useMemo(
-    () => (roomIconKey ? AssetRegistry.resolveIcon(roomIconKey) : null),
-    [roomIconKey]
-  );
-
   const configTitle = getPath(data, 'config.title', null);
   const configSubtitle = getPath(data, 'config.subtitle', null);
   const emptyStateText = getPath(data, 'config.emptyStateText', null);
@@ -199,10 +204,13 @@ function HearPage({ roomSlug, onBack, onNavigation }) {
   const featuredList = Array.isArray(featured) ? featured : [];
 
   const items = getPath(data, 'items', []);
-  const itemList = Array.isArray(items) ? items : [];
+const itemList = Array.isArray(items) ? items : [];
 
-  const playingItem = itemList.find((item) => item.id === playingItemId) || null;
+const experienceState = getPath(data, 'state', 'POPULATED');
+const isEmptyExperience = experienceState === 'EMPTY';
 
+const playingItem =
+  itemList.find((item) => item.id === playingItemId) || null;
   const handleNavigate = (navigation) => {
     if (!isValidNavigation(navigation)) return;
     if (onNavigation) {
@@ -256,48 +264,68 @@ function HearPage({ roomSlug, onBack, onNavigation }) {
           onMore={() => console.log('More options (pending feature)')}
         />
 
-        {configSubtitle && <p className="hear-subtitle">{configSubtitle}</p>}
+        
 
-        {showTabs && (
-          <TabBar tabs={tabList} activeTabId={resolvedActiveTabId} onSelectTab={handleSelectTab} />
-        )}
-
-        {showFeatured && featuredList.length > 0 && (
-          <div className="hear-featured-row">
-            {featuredList.map((item) => (
-              <FeaturedAudioCard
-                key={item.id}
-                item={item}
-                roomSlug={roomSlug}
-                onNavigate={handleNavigate}
-              />
-            ))}
-          </div>
-        )}
-
-        <div className="hear-list">
-          {itemList.map((item) => (
-            <AudioListItem
-              key={item.id}
-              item={item}
-              roomSlug={roomSlug}
-              isPlaying={playingItemId === item.id}
-              onTogglePlay={handleTogglePlay}
-              onNavigate={handleNavigate}
-            />
-          ))}
-        </div>
-
-        <audio ref={audioRef} onEnded={() => setPlayingItemId(null)} />
-      </div>
-
-      <MiniPlayerBar
-        item={playingItem}
-        isPlaying={Boolean(playingItem)}
-        onTogglePlay={handleTogglePlay}
-        onExpand={() => playingItem && handleNavigate(playingItem.navigation)}
+{isEmptyExperience ? (
+<EmptyExperience
+  icon="🎧"
+  title={emptyStateText || 'No recordings yet'}
+  subtitle={configSubtitle}
+/>) : (
+  <>
+    {showTabs && (
+      <TabBar
+        tabs={tabList}
+        activeTabId={resolvedActiveTabId}
+        onSelectTab={handleSelectTab}
       />
-    </PageContainer>
+    )}
+
+    {showFeatured && featuredList.length > 0 && (
+      <div className="hear-featured-row">
+        {featuredList.map((item) => (
+          <FeaturedAudioCard
+            key={item.id}
+            item={item}
+            roomSlug={roomSlug}
+            onNavigate={handleNavigate}
+          />
+        ))}
+      </div>
+    )}
+
+    <div className="hear-list">
+      {itemList.map((item) => (
+        <AudioListItem
+          key={item.id}
+          item={item}
+          roomSlug={roomSlug}
+          isPlaying={playingItemId === item.id}
+          onTogglePlay={handleTogglePlay}
+          onNavigate={handleNavigate}
+        />
+      ))}
+    </div>
+
+    <audio
+      ref={audioRef}
+      onEnded={() => setPlayingItemId(null)}
+    />
+  </>
+)}      
+</div>
+
+{!isEmptyExperience && (
+  <MiniPlayerBar
+    item={playingItem}
+    isPlaying={Boolean(playingItem)}
+    onTogglePlay={handleTogglePlay}
+    onExpand={() =>
+      playingItem && handleNavigate(playingItem.navigation)
+    }
+  />
+)}    
+</PageContainer>
   );
 }
 

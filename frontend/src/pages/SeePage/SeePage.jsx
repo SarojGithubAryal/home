@@ -10,6 +10,7 @@ import { useSee } from '../../hooks/useSee';
 import AssetRegistry from '../../assets/AssetRegistry';
 import { getPath, classNames } from '../../utils/helpers';
 import './SeePage.css';
+import EmptyExperience from '../../components/common/EmptyExperience';
 
 function isValidNavigation(navigation) {
   return Boolean(navigation) && typeof navigation === 'object' && navigation.experience;
@@ -52,7 +53,10 @@ function TabBar({ tabs, activeTabId, onSelectTab }) {
 }
 
 function PhotoGridItem({ item, roomSlug, onNavigate }) {
-  const thumbnail = AssetRegistry.resolveRoomSectionArtwork(roomSlug, 'see', item.thumbnailAssetKey);
+  // NOTE: AssetRegistry v1 has no per-section thumbnail resolver;
+  // renders without a background image rather than calling the
+  // removed resolveRoomSectionArtwork method.
+  const thumbnail = null;
   return (
     <button type="button" className="see-grid-item" onClick={() => onNavigate(item.navigation)}>
       <span
@@ -73,8 +77,10 @@ function SeePage({ roomSlug, onBack, onNavigation }) {
 
   const configTitle = getPath(data, 'config.title', null);
   const configSubtitle = getPath(data, 'config.subtitle', null);
-  const emptyStateText = getPath(data, 'config.emptyStateText', null);
-  const showTabs = getPath(data, 'config.showTabs', false);
+const emptyStateText = getPath(data, 'config.emptyStateText', null);
+const showTabs = getPath(data, 'config.showTabs', false);
+const experienceState = getPath(data, 'state', 'EMPTY');
+  const seeLayoutImage = AssetRegistry.getExperienceLayout('see');
 
   const tabs = getPath(data, 'tabs', []);
   const tabList = Array.isArray(tabs) ? tabs : [];
@@ -97,7 +103,10 @@ function SeePage({ roomSlug, onBack, onNavigation }) {
       emptyTitle="Nothing here yet"
       emptyMessage={emptyStateText || 'Check back soon.'}
     >
-      <div className="see-canvas">
+      <div
+        className="see-canvas"
+        style={seeLayoutImage ? { backgroundImage: `url(${seeLayoutImage})` } : undefined}
+      >
         <SeeHeader
           title={configTitle}
           onBack={() => onBack && onBack()}
@@ -105,18 +114,39 @@ function SeePage({ roomSlug, onBack, onNavigation }) {
           onMore={() => console.log('More options (pending feature)')}
         />
 
-        {configSubtitle && <p className="see-subtitle">{configSubtitle}</p>}
+{experienceState === 'EMPTY' ? (
+  <EmptyExperience
+    icon="🖼️"
+    title={emptyStateText || 'No photos yet.'}
+    subtitle={configSubtitle}
+  />
+) : (
+  <>
+    {configSubtitle && (
+      <p className="see-subtitle">{configSubtitle}</p>
+    )}
 
-        {showTabs && (
-          <TabBar tabs={tabList} activeTabId={resolvedActiveTabId} onSelectTab={setActiveTabId} />
-        )}
+    {showTabs && (
+      <TabBar
+        tabs={tabList}
+        activeTabId={resolvedActiveTabId}
+        onSelectTab={setActiveTabId}
+      />
+    )}
 
-        <div className="see-grid">
-          {itemList.map((item) => (
-            <PhotoGridItem key={item.id} item={item} roomSlug={roomSlug} onNavigate={handleNavigate} />
-          ))}
-        </div>
-      </div>
+    <div className="see-grid">
+      {itemList.map((item) => (
+        <PhotoGridItem
+          key={item.id}
+          item={item}
+          roomSlug={roomSlug}
+          onNavigate={handleNavigate}
+        />
+      ))}
+    </div>
+  </>
+)}      
+</div>
     </PageContainer>
   );
 }

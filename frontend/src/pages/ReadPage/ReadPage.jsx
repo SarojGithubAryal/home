@@ -11,6 +11,8 @@ import { useRead } from '../../hooks/useRead';
 import AssetRegistry from '../../assets/AssetRegistry';
 import { getPath, classNames } from '../../utils/helpers';
 import './ReadPage.css';
+import EmptyExperience from '../../components/common/EmptyExperience';
+
 
 function isValidNavigation(navigation) {
   return Boolean(navigation) && typeof navigation === 'object' && navigation.experience;
@@ -53,7 +55,10 @@ function TabBar({ tabs, activeTabId, onSelectTab }) {
 }
 
 function LetterListItem({ item, roomSlug, onNavigate }) {
-  const thumbnail = AssetRegistry.resolveRoomSectionArtwork(roomSlug, 'read', item.thumbnailAssetKey);
+  // NOTE: AssetRegistry v1 has no per-section thumbnail resolver;
+  // renders without a background image rather than calling the
+  // removed resolveRoomSectionArtwork method.
+  const thumbnail = null;
   return (
     <button type="button" className="read-list-item" onClick={() => onNavigate(item.navigation)}>
       <span
@@ -88,6 +93,9 @@ function ReadPage({ roomSlug, onBack, onNavigation }) {
   const items = getPath(data, 'items', []);
   const itemList = Array.isArray(items) ? items : [];
 
+  const experienceState = getPath(data, 'state', 'EMPTY');
+  const readLayoutImage = AssetRegistry.getExperienceLayout('read');
+
   const handleNavigate = (navigation) => {
     if (!isValidNavigation(navigation)) return;
     if (onNavigation) onNavigation({ success: true, navigation, data: {} });
@@ -102,7 +110,10 @@ function ReadPage({ roomSlug, onBack, onNavigation }) {
       emptyTitle="Nothing here yet"
       emptyMessage={emptyStateText || 'Check back soon.'}
     >
-      <div className="read-canvas">
+      <div
+        className="read-canvas"
+        style={readLayoutImage ? { backgroundImage: `url(${readLayoutImage})` } : undefined}
+      >
         <ReadHeader
           title={configTitle}
           onBack={() => onBack && onBack()}
@@ -110,18 +121,39 @@ function ReadPage({ roomSlug, onBack, onNavigation }) {
           onMore={() => console.log('More options (pending feature)')}
         />
 
-        {configSubtitle && <p className="read-subtitle">{configSubtitle}</p>}
+{experienceState === 'EMPTY' ? (
+  <EmptyExperience
+    icon="📖"
+    title={emptyStateText || 'No letters yet.'}
+    subtitle={configSubtitle}
+  />
+) : (
+  <>
+    {configSubtitle && (
+      <p className="read-subtitle">{configSubtitle}</p>
+    )}
 
-        {showTabs && (
-          <TabBar tabs={tabList} activeTabId={resolvedActiveTabId} onSelectTab={setActiveTabId} />
-        )}
+    {showTabs && (
+      <TabBar
+        tabs={tabList}
+        activeTabId={resolvedActiveTabId}
+        onSelectTab={setActiveTabId}
+      />
+    )}
 
-        <div className="read-list">
-          {itemList.map((item) => (
-            <LetterListItem key={item.id} item={item} roomSlug={roomSlug} onNavigate={handleNavigate} />
-          ))}
-        </div>
-      </div>
+    <div className="read-list">
+      {itemList.map((item) => (
+        <LetterListItem
+          key={item.id}
+          item={item}
+          roomSlug={roomSlug}
+          onNavigate={handleNavigate}
+        />
+      ))}
+    </div>
+  </>
+)}      
+</div>
     </PageContainer>
   );
 }

@@ -34,7 +34,7 @@
  * (e.g. "I don't know" tile copy, back-arrow glyph).
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import PageContainer from '../../layouts/PageContainer';
 import IconButton from '../../components/common/IconButton';
 import Button from '../../components/common/Button';
@@ -50,17 +50,16 @@ function isValidNavigation(navigation) {
 function RoomPage({ roomSlug, onBack, onNavigation }) {
   const { room: experience, roomLoading, roomError, refetchRoom } = useRoom(roomSlug);
 
-  const heroVariant = getPath(experience, 'hero.backgroundAssetKey', null);
-  const heroImage = useMemo(
-    () => AssetRegistry.resolveRoomHero(roomSlug, heroVariant),
-    [roomSlug, heroVariant]
-  );
+  const heroImage = AssetRegistry.getRoomTheme(roomSlug);
+  console.log("Room slug:", roomSlug);
+  console.log("Hero image:", heroImage);
 
-  const roomIconKey = getPath(experience, 'room.icon', null);
-  const roomIconImage = useMemo(
-    () => (roomIconKey ? AssetRegistry.resolveIcon(roomIconKey) : null),
-    [roomIconKey]
-  );
+  // NOTE: AssetRegistry v1 has no equivalent of the old generic icon
+  // resolver. The room-hero icon badge (top-right of the hero) has no
+  // mapping in the new asset system, so it renders nothing rather than
+  // calling a method that no longer exists. Flag for follow-up if a
+  // per-room icon asset is added later.
+  const roomIconImage = null;
 
   const heroTitle = getPath(experience, 'hero.title', null);
   const heroSubtitle = getPath(experience, 'hero.subtitle', null);
@@ -71,11 +70,11 @@ function RoomPage({ roomSlug, onBack, onNavigation }) {
   const featuredBadgeIcon = getPath(featured, 'badgeIcon', null);
   const featuredTitle = getPath(featured, 'title', null);
   const featuredSubtitle = getPath(featured, 'subtitle', null);
-  const featuredThumbnailAssetKey = getPath(featured, 'thumbnailAssetKey', null);
-  const featuredImage = useMemo(
-    () => (featured ? AssetRegistry.resolveRoomRecommendationArtwork(roomSlug, featuredThumbnailAssetKey) : null),
-    [roomSlug, featuredThumbnailAssetKey, featured]
-  );
+  // NOTE: AssetRegistry v1 has no per-room "recommendation artwork"
+  // mapping (only theme + card). Featured-card imagery renders nothing
+  // for now rather than calling the removed resolveRoomRecommendationArtwork
+  // method. Flag for follow-up once a real asset exists for this slot.
+  const featuredImage = null;
   const featuredPrimaryNavigation = getPath(featured, 'primaryAction.navigation', null);
   const featuredSecondaryNavigation = getPath(featured, 'secondaryAction.navigation', null);
 
@@ -91,11 +90,10 @@ function RoomPage({ roomSlug, onBack, onNavigation }) {
   const footer = getPath(experience, 'footer', null);
   const footerIcon = getPath(footer, 'icon', null);
   const footerText = getPath(footer, 'text', null);
-  const footerDecorativeAsset = getPath(footer, 'decorativeAsset', null);
-  const footerDecorativeImage = useMemo(
-    () => AssetRegistry.resolveDecoration(footerDecorativeAsset),
-    [footerDecorativeAsset]
-  );
+  // NOTE: AssetRegistry v1 has no decoration resolver. Footer decorative
+  // imagery renders nothing rather than calling the removed
+  // resolveDecoration method. Flag for follow-up.
+  const footerDecorativeImage = null;
 
   const handleNavigate = (navigation) => {
     if (!isValidNavigation(navigation)) return;
@@ -212,11 +210,25 @@ function RoomPage({ roomSlug, onBack, onNavigation }) {
                       data-index={index % 4}
                       onClick={() => handleNavigate(action.navigation)}
                     >
-                      {action.icon && (
-                        <span className="room-action-icon" aria-hidden="true">
-                          {action.icon}
-                        </span>
-                      )}
+                      {(() => {
+                        const experienceType = action.navigation?.experience?.toLowerCase();
+                        const actionIconImage = AssetRegistry.getExperienceIcon(experienceType);
+                        if (actionIconImage) {
+                          return (
+                            <img
+                              src={actionIconImage}
+                              alt=""
+                              className="room-action-icon"
+                              aria-hidden="true"
+                            />
+                          );
+                        }
+                        return action.icon ? (
+                          <span className="room-action-icon" aria-hidden="true">
+                            {action.icon}
+                          </span>
+                        ) : null;
+                      })()}
                       <span className="room-action-text">
                         <span className="room-action-title">{action.title}</span>
                         {action.subtitle && (
@@ -243,11 +255,11 @@ function RoomPage({ roomSlug, onBack, onNavigation }) {
 
                 <div className="room-highlights-scroll">
                   {highlightList.map((item, index) => {
-                    const thumbnailImage = AssetRegistry.resolveRoomSectionArtwork(
-                      roomSlug,
-                      'highlights',
-                      item.thumbnailAssetKey
-                    );
+                    // NOTE: AssetRegistry v1 has no per-section thumbnail
+                    // resolver. Highlight thumbnails render nothing rather
+                    // than calling the removed resolveRoomSectionArtwork
+                    // method. Flag for follow-up.
+                    const thumbnailImage = null;
 
                     return (
                       <button
