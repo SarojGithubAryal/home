@@ -19,13 +19,32 @@ function isValidNavigation(navigation) {
 }
 
 function ReadHeader({ title, onBack, onBookmark, onMore }) {
+  const readIconImage = AssetRegistry.getExperienceIcon('read');
+
   return (
     <div className="read-header">
       <IconButton icon="←" ariaLabel="Go back" onClick={onBack} />
+
       <h1 className="read-header-title">
         {title}
-        <span className="read-header-icon" aria-hidden="true">📖</span>
+
+        {readIconImage ? (
+          <img
+            src={readIconImage}
+            alt=""
+            className="read-header-icon"
+            aria-hidden="true"
+          />
+        ) : (
+          <span
+            className="read-header-icon"
+            aria-hidden="true"
+          >
+            📖
+          </span>
+        )}
       </h1>
+
       <div className="read-header-actions">
         <IconButton icon="🔖" ariaLabel="Bookmark" onClick={onBookmark} />
         <IconButton icon="⋯" ariaLabel="More options" onClick={onMore} />
@@ -33,7 +52,6 @@ function ReadHeader({ title, onBack, onBookmark, onMore }) {
     </div>
   );
 }
-
 function TabBar({ tabs, activeTabId, onSelectTab }) {
   if (!Array.isArray(tabs) || tabs.length === 0) return null;
   return (
@@ -54,7 +72,7 @@ function TabBar({ tabs, activeTabId, onSelectTab }) {
   );
 }
 
-function LetterListItem({ item, roomSlug, onNavigate }) {
+function LetterListItem({ item, onNavigate }) {
   // NOTE: AssetRegistry v1 has no per-section thumbnail resolver;
   // renders without a background image rather than calling the
   // removed resolveRoomSectionArtwork method.
@@ -94,7 +112,7 @@ function ReadPage({ roomSlug, onBack, onNavigation }) {
   const itemList = Array.isArray(items) ? items : [];
 
   const experienceState = getPath(data, 'state', 'EMPTY');
-  const readLayoutImage = AssetRegistry.getExperienceLayout('read');
+  
 
   const handleNavigate = (navigation) => {
     if (!isValidNavigation(navigation)) return;
@@ -110,10 +128,8 @@ function ReadPage({ roomSlug, onBack, onNavigation }) {
       emptyTitle="Nothing here yet"
       emptyMessage={emptyStateText || 'Check back soon.'}
     >
-      <div
-        className="read-canvas"
-        style={readLayoutImage ? { backgroundImage: `url(${readLayoutImage})` } : undefined}
-      >
+<div className="read-canvas">
+
         <ReadHeader
           title={configTitle}
           onBack={() => onBack && onBack()}
@@ -146,7 +162,7 @@ function ReadPage({ roomSlug, onBack, onNavigation }) {
         <LetterListItem
           key={item.id}
           item={item}
-          roomSlug={roomSlug}
+          
           onNavigate={handleNavigate}
         />
       ))}

@@ -27,9 +27,11 @@ import RoomPage from './pages/Room/RoomPage';
 import HearPage from './pages/HearPage/HearPage';
 import ReadPage from './pages/ReadPage/ReadPage';
 import SeePage from './pages/SeePage/SeePage';
-import AudioPlayerPage from './pages/AudioPlayerPage/AudioPlayerPage';
-import LetterPage from './pages/LetterPage/LetterPage';
-import PhotoPage from './pages/PhotoPage/PhotoPage';
+import HearDetailPage from './pages/HearDetailPage/HearDetailPage';
+import ReadDetailPage from './pages/ReadDetailPage/ReadDetailPage';
+import SeeDetailPage from './pages/SeeDetailPage/SeeDetailPage';
+import MemoryDetailPage from './pages/MemoryDetailPage/MemoryDetailPage';
+import MemoryPage from './pages/MemoryPage/MemoryPage';
 
 import PAGES from './navigation/pages';
 import resolveNavigation from './navigation/navigationResolver';
@@ -107,31 +109,26 @@ function App() {
         );
 
       case PAGES.MEMORY:
-      case PAGES.MEMORY_VIEWER:
-        // Prepared for future implementation — UI for this experience
-        // has not been designed/approved yet (no reference image, no
-        // page file). Rendering a neutral system placeholder rather
-        // than silently failing or fabricating content.
         return (
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <p>This experience is not yet available.</p>
-            <button type="button" onClick={goBack}>Back</button>
-          </div>
+          <MemoryPage roomSlug={props.roomSlug} onBack={goBack} onNavigation={handleNavigation} />
         );
+
+      case PAGES.MEMORY_VIEWER:
+        return <MemoryDetailPage contentId={props.contentId} onBack={goBack} />;
 
       case PAGES.AUDIO_PLAYER:
         return (
-          <AudioPlayerPage contentId={props.contentId} onBack={goBack} />
+          <HearDetailPage contentId={props.contentId} onBack={goBack} />
         );
 
       case PAGES.LETTER_VIEWER:
         return (
-          <LetterPage contentId={props.contentId} onBack={goBack} />
+          <ReadDetailPage contentId={props.contentId} onBack={goBack} />
         );
 
       case PAGES.PHOTO_VIEWER:
         return (
-          <PhotoPage contentId={props.contentId} onBack={goBack} />
+          <SeeDetailPage contentId={props.contentId} onBack={goBack} />
         );
 
       case PAGES.HOME:

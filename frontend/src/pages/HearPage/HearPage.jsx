@@ -89,7 +89,7 @@ function TabBar({ tabs, activeTabId, onSelectTab }) {
   );
 }
 
-function FeaturedAudioCard({ item, roomSlug, onNavigate }) {
+function FeaturedAudioCard({ item, onNavigate }) {
   // NOTE: AssetRegistry v1 has no per-section thumbnail resolver;
   // renders without a background image rather than calling the
   // removed resolveRoomSectionArtwork method.
@@ -111,7 +111,7 @@ function FeaturedAudioCard({ item, roomSlug, onNavigate }) {
   );
 }
 
-function AudioListItem({ item, roomSlug, isPlaying, onTogglePlay, onNavigate }) {
+function AudioListItem({ item, isPlaying, onTogglePlay, onNavigate }) {
   // NOTE: see FeaturedAudioCard above — no v1 equivalent yet.
   const thumbnail = null;
 

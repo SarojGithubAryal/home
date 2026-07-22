@@ -1,0 +1,18 @@
+.memory-detail-canvas { position: relative; min-height: 100dvh; display: flex; flex-direction: column; background-color: var(--color-surface); background-size: cover; background-position: center; padding: clamp(var(--space-md), 5vw, var(--space-xl)); }
+
+.memory-detail-top { display: flex; align-items: center; justify-content: space-between; }
+.memory-detail-top-actions { display: flex; gap: var(--space-2xs); }
+
+.memory-detail-sheet { margin-top: clamp(var(--space-lg), 8vmin, var(--space-2xl)); margin-inline: auto; max-width: var(--container-width-sm); width: 100%; padding: clamp(var(--space-lg), 6vw, var(--space-2xl)); display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-sm); }
+
+.memory-detail-title { font-family: var(--font-family-secondary); font-size: var(--font-size-heading); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); }
+.memory-detail-divider { color: var(--color-text-rose); }
+
+.memory-detail-body { display: flex; flex-direction: column; gap: var(--space-sm); text-align: left; align-self: stretch; margin-top: var(--space-sm); }
+.memory-detail-paragraph { font-size: var(--font-size-body); line-height: var(--line-height-relaxed); color: var(--color-text-primary); }
+
+.memory-detail-signoff { margin-top: var(--space-md); font-family: var(--font-family-accent); font-size: var(--font-size-heading); color: var(--color-text-rose); }
+.memory-detail-closing { margin-top: var(--space-md); font-size: var(--font-size-body-sm); font-style: italic; color: var(--color-text-secondary); }
+
+.memory-detail-actions { margin-top: auto; display: flex; justify-content: center; padding-bottom: clamp(var(--space-md), 4vmin, var(--space-lg)); }
+.memory-detail-comfort-btn { padding-block: var(--space-2xs); padding-inline: var(--space-lg); border-radius: var(--radius-full); background-color: var(--color-surface-rose); color: var(--color-text-rose); font-weight: var(--font-weight-semibold); }

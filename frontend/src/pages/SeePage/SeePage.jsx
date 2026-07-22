@@ -17,13 +17,32 @@ function isValidNavigation(navigation) {
 }
 
 function SeeHeader({ title, onBack, onBookmark, onMore }) {
+  const seeIconImage = AssetRegistry.getExperienceIcon('see');
+
   return (
     <div className="see-header">
       <IconButton icon="←" ariaLabel="Go back" onClick={onBack} />
+
       <h1 className="see-header-title">
         {title}
-        <span className="see-header-icon" aria-hidden="true">🖼️</span>
+
+        {seeIconImage ? (
+          <img
+            src={seeIconImage}
+            alt=""
+            className="see-header-icon"
+            aria-hidden="true"
+          />
+        ) : (
+          <span
+            className="see-header-icon"
+            aria-hidden="true"
+          >
+            🖼️
+          </span>
+        )}
       </h1>
+
       <div className="see-header-actions">
         <IconButton icon="🔖" ariaLabel="Bookmark" onClick={onBookmark} />
         <IconButton icon="⋯" ariaLabel="More options" onClick={onMore} />
@@ -31,7 +50,6 @@ function SeeHeader({ title, onBack, onBookmark, onMore }) {
     </div>
   );
 }
-
 function TabBar({ tabs, activeTabId, onSelectTab }) {
   if (!Array.isArray(tabs) || tabs.length === 0) return null;
   return (
@@ -52,7 +70,7 @@ function TabBar({ tabs, activeTabId, onSelectTab }) {
   );
 }
 
-function PhotoGridItem({ item, roomSlug, onNavigate }) {
+function PhotoGridItem({ item, onNavigate }) {
   // NOTE: AssetRegistry v1 has no per-section thumbnail resolver;
   // renders without a background image rather than calling the
   // removed resolveRoomSectionArtwork method.
@@ -80,7 +98,7 @@ function SeePage({ roomSlug, onBack, onNavigation }) {
 const emptyStateText = getPath(data, 'config.emptyStateText', null);
 const showTabs = getPath(data, 'config.showTabs', false);
 const experienceState = getPath(data, 'state', 'EMPTY');
-  const seeLayoutImage = AssetRegistry.getExperienceLayout('see');
+  
 
   const tabs = getPath(data, 'tabs', []);
   const tabList = Array.isArray(tabs) ? tabs : [];
@@ -103,15 +121,12 @@ const experienceState = getPath(data, 'state', 'EMPTY');
       emptyTitle="Nothing here yet"
       emptyMessage={emptyStateText || 'Check back soon.'}
     >
-      <div
-        className="see-canvas"
-        style={seeLayoutImage ? { backgroundImage: `url(${seeLayoutImage})` } : undefined}
-      >
+<div className="see-canvas">
         <SeeHeader
           title={configTitle}
           onBack={() => onBack && onBack()}
-          onBookmark={() => console.log('Bookmark (pending feature)')}
-          onMore={() => console.log('More options (pending feature)')}
+         onBookmark={() => {}}
+         onMore={() => {}}
         />
 
 {experienceState === 'EMPTY' ? (
@@ -136,12 +151,11 @@ const experienceState = getPath(data, 'state', 'EMPTY');
 
     <div className="see-grid">
       {itemList.map((item) => (
-        <PhotoGridItem
-          key={item.id}
-          item={item}
-          roomSlug={roomSlug}
-          onNavigate={handleNavigate}
-        />
+<PhotoGridItem
+  key={item.id}
+  item={item}
+  onNavigate={handleNavigate}
+/>
       ))}
     </div>
   </>

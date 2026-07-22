@@ -16,13 +16,32 @@ function isValidNavigation(navigation) {
 }
 
 function MemoryHeader({ title, onBack, onBookmark, onMore }) {
+  const memoryIconImage = AssetRegistry.getExperienceIcon('memory');
+
   return (
     <div className="memory-header">
       <IconButton icon="←" ariaLabel="Go back" onClick={onBack} />
+
       <h1 className="memory-header-title">
         {title}
-        <span className="memory-header-icon" aria-hidden="true">🌸</span>
+
+        {memoryIconImage ? (
+          <img
+            src={memoryIconImage}
+            alt=""
+            className="memory-header-icon"
+            aria-hidden="true"
+          />
+        ) : (
+          <span
+            className="memory-header-icon"
+            aria-hidden="true"
+          >
+            🌸
+          </span>
+        )}
       </h1>
+
       <div className="memory-header-actions">
         <IconButton icon="🔖" ariaLabel="Bookmark" onClick={onBookmark} />
         <IconButton icon="⋯" ariaLabel="More options" onClick={onMore} />
@@ -51,7 +70,7 @@ function TabBar({ tabs, activeTabId, onSelectTab }) {
   );
 }
 
-function MemoryListItem({ item, roomSlug, onNavigate }) {
+function MemoryListItem({ item, onNavigate }) {
   // NOTE: AssetRegistry v1 has no per-section thumbnail resolver;
   // renders without a background image rather than calling the
   // removed resolveRoomSectionArtwork method.
@@ -87,7 +106,7 @@ function MemoryPage({ roomSlug, onBack, onNavigation }) {
 
   const items = getPath(data, 'items', []);
   const itemList = Array.isArray(items) ? items : [];
-  const memoryLayoutImage = AssetRegistry.getExperienceLayout('memory');
+  
 
   const handleNavigate = (navigation) => {
     if (!isValidNavigation(navigation)) return;
@@ -103,15 +122,12 @@ function MemoryPage({ roomSlug, onBack, onNavigation }) {
       emptyTitle="Nothing here yet"
       emptyMessage={emptyStateText || 'Check back soon.'}
     >
-      <div
-        className="memory-canvas"
-        style={memoryLayoutImage ? { backgroundImage: `url(${memoryLayoutImage})` } : undefined}
-      >
+         <div className="memory-canvas">
         <MemoryHeader
           title={configTitle}
           onBack={() => onBack && onBack()}
-          onBookmark={() => console.log('Bookmark (pending feature)')}
-          onMore={() => console.log('More options (pending feature)')}
+          onBookmark={() => {}}
+          onMore={() => {}}
         />
 
         {configSubtitle && <p className="memory-subtitle">{configSubtitle}</p>}
@@ -122,7 +138,11 @@ function MemoryPage({ roomSlug, onBack, onNavigation }) {
 
         <div className="memory-list">
           {itemList.map((item) => (
-            <MemoryListItem key={item.id} item={item} roomSlug={roomSlug} onNavigate={handleNavigate} />
+<MemoryListItem
+  key={item.id}
+  item={item}
+  onNavigate={handleNavigate}
+/>
           ))}
         </div>
       </div>
