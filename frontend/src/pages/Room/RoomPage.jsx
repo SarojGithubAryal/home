@@ -32,6 +32,12 @@
  * label) are local UI chrome, not backend content — consistent with the
  * same precedent already established in HomePage/MoodLandingPage
  * (e.g. "I don't know" tile copy, back-arrow glyph).
+ *
+ * THEME IMAGE CONFIG: this page has no knowledge of how a room's theme
+ * image should be positioned. AssetRegistry.getRoomTheme() returns the
+ * full visual config — { image, position } — and this page simply
+ * renders both values into the hero's inline style. No positioning
+ * value is ever hardcoded here.
  */
 
 import React from 'react';
@@ -50,9 +56,16 @@ function isValidNavigation(navigation) {
 function RoomPage({ roomSlug, onBack, onNavigation }) {
   const { room: experience, roomLoading, roomError, refetchRoom } = useRoom(roomSlug);
 
-  const heroImage = AssetRegistry.getRoomTheme(roomSlug);
+  const roomTheme = AssetRegistry.getRoomTheme(roomSlug);
   console.log("Room slug:", roomSlug);
-  console.log("Hero image:", heroImage);
+  console.log("Room theme:", roomTheme);
+
+  const heroStyle = roomTheme?.image
+    ? {
+        backgroundImage: `url(${roomTheme.image})`,
+        backgroundPosition: roomTheme.position || undefined,
+      }
+    : undefined;
 
   // NOTE: AssetRegistry v1 has no equivalent of the old generic icon
   // resolver. The room-hero icon badge (top-right of the hero) has no
@@ -122,7 +135,7 @@ function RoomPage({ roomSlug, onBack, onNavigation }) {
       <div className="room-canvas">
         <div
           className="room-hero"
-          style={heroImage ? { backgroundImage: `url(${heroImage})` } : undefined}
+          style={heroStyle}
         >
           <div className="room-hero-top">
             <IconButton icon="←" ariaLabel="Go back" onClick={handleBack} />

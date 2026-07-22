@@ -19,15 +19,23 @@ import AssetRegistry from '../../assets/AssetRegistry';
  * @param {string} [props.className]
  */
 function EmptyState({ title, message, className }) {
-  const asset = AssetRegistry.resolveEmptyStateAsset();
+const asset = AssetRegistry.resolveEmptyStateAsset();
 
-  return (
-    <div className={classNames('empty-state', className)}>
-      <img className="empty-state-asset" src={asset} alt="" aria-hidden="true" />
-      {title && <p className="empty-state-title">{title}</p>}
-      {message && <p className="empty-state-message">{message}</p>}
-    </div>
-  );
+return (
+  <div className={classNames('empty-state', className)}>
+    {asset && (
+      <img
+        className="empty-state-asset"
+        src={asset}
+        alt=""
+        aria-hidden="true"
+      />
+    )}
+
+    {title && <p className="empty-state-title">{title}</p>}
+    {message && <p className="empty-state-message">{message}</p>}
+  </div>
+);
 }
 
 export default EmptyState;

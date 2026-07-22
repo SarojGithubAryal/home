@@ -1,24 +1,225 @@
-.see-canvas { display: flex; flex-direction: column; gap: clamp(var(--space-md), 3vmin, var(--space-lg)); }
+/**
+ * SeePage.css — same glass design language as HearPage.css, adapted
+ * for the photo grid layout.
+ */
 
-.see-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
-.see-header-title { display: flex; align-items: center; gap: var(--space-2xs); font-family: var(--font-family-secondary); font-size: var(--font-size-heading); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); flex: 1; }
-.see-header-icon {
-    width: 2rem;
-    height: 2rem;
-    object-fit: contain;
-    flex-shrink: 0;
+.see-canvas {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-lg), 4vmin, var(--space-xl));
+  padding: clamp(var(--space-md), 5vw, var(--space-xl));
+  padding-bottom: clamp(5rem, 12vmin, 6rem);
+  min-height: 100dvh;
+
+  background:
+    radial-gradient(120% 40% at 50% 0%, rgb(255 250 240 / 0.6) 0%, transparent 70%),
+    var(--color-background);
 }
-.see-header-actions { display: flex; gap: var(--space-2xs); }
 
-.see-subtitle { font-size: var(--font-size-body); color: var(--color-text-secondary); }
+/* =========================================================
+   HEADER
+   ========================================================= */
 
-.see-tab-bar { display: flex; gap: var(--space-2xs); overflow-x: auto; padding-bottom: var(--space-3xs); }
-.see-tab { flex-shrink: 0; padding-block: var(--space-2xs); padding-inline: var(--space-md); border-radius: var(--radius-full); background-color: var(--color-surface); font-size: var(--font-size-body-sm); font-weight: var(--font-weight-medium); color: var(--color-text-secondary); transition: background-color var(--transition-base), color var(--transition-base); }
-.see-tab--active { background-color: var(--color-primary); color: var(--color-primary-contrast); }
+.see-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  animation: see-fade-in 0.5s ease-out both;
+}
 
-.see-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
-.see-grid-item { display: flex; flex-direction: column; gap: var(--space-2xs); text-align: left; }
-.see-grid-item-image { display: block; width: 100%; aspect-ratio: 1 / 1; border-radius: var(--radius-lg); background-color: var(--color-surface); background-size: cover; background-position: center; box-shadow: var(--shadow-low); }
-.see-grid-item-body { display: flex; flex-direction: column; gap: var(--space-3xs); padding-inline: var(--space-3xs); }
-.see-grid-item-title { font-family: var(--font-family-secondary); font-size: var(--font-size-body); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); }
-.see-grid-item-subtitle { font-size: var(--font-size-body-sm); color: var(--color-text-secondary); }
+.see-header .icon-button {
+  background-color: rgb(255 250 240 / 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 0.0625rem solid rgb(255 255 255 / 0.55);
+  box-shadow: 0 0.25rem 0.85rem rgb(0 0 0 / 0.06);
+  transition: transform 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+}
+
+.see-header .icon-button:hover {
+  background-color: rgb(255 250 240 / 0.65);
+  box-shadow: 0 0.4rem 1.1rem rgb(0 0 0 / 0.09);
+  transform: translateY(-1px);
+}
+
+.see-header-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.see-header-icon {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  flex-shrink: 0;
+  padding: 0.4rem;
+  border-radius: var(--radius-full);
+  background-color: rgb(255 250 240 / 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 0.0625rem solid rgb(255 255 255 / 0.5);
+  box-shadow: 0 0.2rem 0.6rem rgb(0 0 0 / 0.05);
+}
+
+.see-header-actions {
+  display: flex;
+  gap: var(--space-2xs);
+}
+
+.see-header-actions .icon-button {
+  background-color: rgb(255 250 240 / 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 0.0625rem solid rgb(255 255 255 / 0.55);
+  box-shadow: 0 0.25rem 0.85rem rgb(0 0 0 / 0.06);
+  transition: transform 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+}
+
+.see-header-actions .icon-button:hover {
+  background-color: rgb(255 250 240 / 0.65);
+  box-shadow: 0 0.4rem 1.1rem rgb(0 0 0 / 0.09);
+  transform: translateY(-1px);
+}
+
+.see-subtitle {
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.see-tab-bar {
+  display: flex;
+  gap: var(--space-2xs);
+  overflow-x: auto;
+  padding-bottom: var(--space-3xs);
+  animation: see-fade-in 0.5s ease-out 0.05s both;
+}
+
+.see-tab {
+  flex-shrink: 0;
+  padding-block: var(--space-2xs);
+  padding-inline: var(--space-md);
+  border-radius: var(--radius-full);
+
+  background-color: rgb(255 250 242 / 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 0.0625rem solid rgb(255 255 255 / 0.5);
+  box-shadow: 0 0.2rem 0.6rem rgb(0 0 0 / 0.04);
+
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  transition: background-color 200ms ease, box-shadow 200ms ease, color 200ms ease;
+}
+
+.see-tab:hover {
+  background-color: rgb(255 250 242 / 0.6);
+  box-shadow: 0 0.3rem 0.85rem rgb(0 0 0 / 0.06);
+}
+
+.see-tab--active {
+  background-color: var(--color-primary);
+  border-color: transparent;
+  color: var(--color-primary-contrast);
+  box-shadow: 0 0.3rem 0.9rem rgb(0 0 0 / 0.1);
+}
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.see-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(var(--space-md), 3vmin, var(--space-lg));
+}
+
+.see-grid-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  text-align: left;
+  animation: see-fade-up 0.45s ease-out both;
+}
+
+.see-grid .see-grid-item:nth-child(1) { animation-delay: 0.05s; }
+.see-grid .see-grid-item:nth-child(2) { animation-delay: 0.1s; }
+.see-grid .see-grid-item:nth-child(3) { animation-delay: 0.15s; }
+.see-grid .see-grid-item:nth-child(4) { animation-delay: 0.2s; }
+.see-grid .see-grid-item:nth-child(n+5) { animation-delay: 0.25s; }
+
+.see-grid-item-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-lg);
+
+  background-color: rgb(255 250 242 / 0.5);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  border: 0.0625rem solid rgb(255 255 255 / 0.5);
+  box-shadow: 0 0.5rem 1.6rem rgb(0 0 0 / 0.07);
+
+  background-size: cover;
+  background-position: center;
+  transition: box-shadow 240ms ease, transform 240ms ease;
+}
+
+.see-grid-item:hover .see-grid-item-image {
+  box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 0.1);
+  transform: translateY(-2px);
+}
+
+.see-grid-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  padding-inline: var(--space-3xs);
+}
+
+.see-grid-item-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.see-grid-item-subtitle {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes see-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes see-fade-up {
+  from { opacity: 0; transform: translateY(0.375rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .see-header,
+  .see-tab-bar,
+  .see-grid-item {
+    animation: none;
+  }
+}

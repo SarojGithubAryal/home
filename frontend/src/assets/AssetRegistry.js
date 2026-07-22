@@ -11,6 +11,17 @@
  * Later versions can replace these mappings with
  * mood, weather, season and time aware logic
  * without changing any page/component code.
+ *
+ * ROOM THEME CONFIG: each room theme is now an object of
+ * { image, position } rather than a bare image reference. Position is
+ * per-image visual composition data (equivalent to CSS
+ * background-position), and it lives here — not in RoomPage.css or
+ * RoomPage.jsx — because only AssetRegistry knows how each individual
+ * image is framed. This also means a future time-of-day system
+ * (morning/day/evening/night, each with its own image + position) can
+ * be added entirely inside getRoomTheme()'s implementation later
+ * without RoomPage ever changing, since RoomPage only ever consumes
+ * whatever { image, position } shape getRoomTheme() currently returns.
  */
 
 /* --------------------------
@@ -82,32 +93,53 @@ const EXPERIENCE = {
   },
 };
 
+/**
+ * Each room's `theme` is { image, position }. `position` is a
+ * placeholder value per room for now — final numbers will be tuned
+ * later, this only establishes the architecture.
+ */
 const ROOMS = {
   mom: {
-    theme: MomTheme,
+    theme: {
+      image: MomTheme,
+      position: "center 200%",
+    },
     card: MomCard,
   },
 
   dad: {
-    theme: DadTheme,
+    theme: {
+      image: DadTheme,
+      position: "center 225%",
+    },
     card: DadCard,
   },
 
   me: {
-    theme: MeTheme,
+    theme: {
+      image: MeTheme,
+      position: "center 280%",
+    },
     card: MeCard,
   },
 
   memory: {
-    theme: MemoryTheme,
+    theme: {
+      image: MemoryTheme,
+      position: "center 250%",
+    },
     card: MemoryCard,
   },
 
   grandfather: {
-    // theme: GrandfatherTheme,
+    // theme: {
+    //   image: GrandfatherTheme,
+    //   position: "center 50%",
+    // },
     // card: GrandfatherCard,
   },
 };
+
 const AssetRegistry = {
   /**
    * Home
@@ -131,6 +163,10 @@ const AssetRegistry = {
 
   /**
    * Room themes
+   *
+   * Returns { image, position } for the given room, or null if the
+   * room or its theme isn't configured. Callers should never assume
+   * position defaults to anything — always read it from here.
    */
 
   getRoomTheme(room) {
@@ -152,6 +188,11 @@ const AssetRegistry = {
   getExperienceLayout(type) {
     return EXPERIENCE.layouts[type] ?? null;
   },
+
+  resolveEmptyStateAsset(type = 'default') {
+  return null;
+},
 };
+
 
 export default AssetRegistry;

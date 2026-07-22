@@ -1,20 +1,23 @@
 /**
  * MoodLandingPage.css
  *
- * MoodLandingPage is the single source of layout for the Mood Landing
- * screen, following the exact philosophy established for HomePage.css:
- * this page owns spacing, section order, alignment, responsive
- * behavior, and screen proportions. Nested reusable components
- * (IconButton, OrnamentDivider, Loading, ErrorState) continue to style
- * only themselves in their own CSS files.
+ * Visual polish pass only — no layout hierarchy, spacing structure, or
+ * section order changed. Every requirement below is achieved through
+ * CSS refinement of the existing rules. JSX is completely untouched.
  *
- * The application occupies the full browser viewport — no centered
- * prototype card, no fixed-width mockup. Every dimension below is
- * viewport-relative or token-derived; no pixel values are hardcoded
- * except where a hairline border is unavoidable.
+ * ARCHITECTURE NOTE: the hero image is now a full-page background
+ * layer (position: absolute; inset: 0; height: 100%) instead of a
+ * top-only band. Because it's the only absolutely-positioned child of
+ * `.mood-landing-canvas`, it's removed from normal flow — the canvas's
+ * actual height is driven entirely by `.mood-landing-panel` (the only
+ * in-flow content), and the hero stretches to match that height
+ * automatically. This is what makes the photo continue for the full
+ * scroll length instead of just behind the top section.
  *
- * Every value below consumes a token from tokens.css. No new tokens
- * are introduced here — this file only reuses what already exists.
+ * Shared components (IconButton, OrnamentDivider) are restyled only
+ * within this page's scope via descendant selectors — their own .css
+ * files are not modified, so Home/Room/other pages using the same
+ * components are unaffected.
  */
 
 /* =========================================================
@@ -22,35 +25,62 @@
    ========================================================= */
 
 .mood-landing-canvas {
+  position: relative;
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  min-height: 100dvh;
+  overflow: hidden;
+  background-color: var(--color-background);
 }
 
 /* =========================================================
-   1. HERO
-   Shorter than Home's hero (no mood grid needs to fit beneath
-   it on this screen), but built with the same
-   viewport-relative sizing approach — clamp()/dvh, no fixed
-   pixel heights.
+   1. HERO — now the full-page background layer
    ========================================================= */
 
 .mood-landing-hero {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  min-height: clamp(16rem, 40dvh, 28rem);
-
+  height: 100%;
+  z-index: 0;
   display: flex;
   flex-direction: column;
-
-  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
-  overflow: hidden;
-
   background-color: var(--color-surface);
   background-size: cover;
-  background-position: center;
+  /* Pushed up from center — brings the image's main subject matter
+     into the visible band just above where the cards start, instead
+     of it drifting down toward the bottom of a very tall page. */
+  background-position: center 155%;
 
-  box-shadow: var(--shadow-hero);
+  animation: mood-landing-fade-in 0.5s ease-out both;
+}
+
+/* The scrim: warm wash building from the LEFT (where text/cards read)
+   fading toward the right (where the photo shows through clean), plus
+   a second wash building from the BOTTOM so cards stay legible no
+   matter how far down the page they sit. The photo itself is never
+   cropped or hidden — only tinted. This single layer replaces the old
+   "hero fades out, panel takes over" seam entirely. */
+.mood-landing-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      to bottom,
+      rgb(250 240 224 / 0.12) 0%,
+      rgb(250 240 224 / 0.55) 32%,
+      rgb(250 240 224 / 0.95) 50%,
+      rgb(250 240 224 / 0.99) 62%,
+      var(--color-background) 100%
+    ),
+    linear-gradient(
+      to right,
+      rgb(250 240 224 / 0.85) 0%,
+      rgb(250 240 224 / 0.55) 38%,
+      rgb(250 240 224 / 0.18) 72%,
+      transparent 100%
+    );
 }
 
 .mood-landing-hero-top {
@@ -58,15 +88,36 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: var(--z-index-overlay);
-
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: clamp(var(--space-sm), 4vw, var(--space-lg));
 }
 
+/* Scoped glass treatment for the back/audio icon buttons on this page
+   only — IconButton.css itself is untouched, so Home/Room/detail pages
+   keep their current button appearance. */
+.mood-landing-hero-top .icon-button {
+  background-color: rgb(255 250 240 / 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 0.0625rem solid rgb(255 255 255 / 0.5);
+  box-shadow: 0 0.25rem 0.85rem rgb(0 0 0 / 0.06);
+  transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+}
+
+.mood-landing-hero-top .icon-button:hover {
+  background-color: rgb(255 250 240 / 0.6);
+  box-shadow: 0 0.4rem 1.1rem rgb(0 0 0 / 0.09);
+  transform: translateY(-1px);
+}
+
+.mood-landing-hero-top .icon-button:active {
+  transform: translateY(0) scale(0.96);
+}
+
+/* Warm glass mood pill */
 .mood-landing-badge {
   display: inline-flex;
   align-items: center;
@@ -74,8 +125,11 @@
   padding-block: var(--space-2xs);
   padding-inline: var(--space-md);
   border-radius: var(--radius-full);
-  background-color: var(--color-surface-raised);
-  box-shadow: var(--shadow-low);
+  background-color: rgb(255 250 240 / 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 0.0625rem solid rgb(255 255 255 / 0.55);
+  box-shadow: 0 0.25rem 0.85rem rgb(0 0 0 / 0.06);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-semibold);
   color: var(--color-primary);
@@ -85,37 +139,32 @@
   font-size: var(--font-size-body-lg);
 }
 
+/* =========================================================
+   2. HERO CONTENT — pinned to the upper portion of the full-page
+      hero, not stretched to fill it (that's what the scrim ::before
+      is for). Sits above the scrim via z-index.
+   ========================================================= */
+
 .mood-landing-hero-overlay {
   position: relative;
-  z-index: var(--z-index-content);
+  z-index: 2;
   width: 100%;
-  flex: 1;
-
+  flex: none;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-
   padding: clamp(var(--space-md), 5vw, var(--space-xl));
-  padding-top: clamp(var(--space-2xl), 10dvh, var(--space-3xl));
-
-  background: linear-gradient(
-    to top,
-    var(--color-overlay) 0%,
-    transparent 60%
-  );
+  padding-top: clamp(5.5rem, 14dvh, 8rem);
+  padding-bottom: clamp(var(--space-xl), 6dvh, var(--space-2xl));
 }
-
-/* =========================================================
-   2. HERO CONTENT
-   One unified block, matching the "no independent widgets"
-   philosophy carried over from Home's hero refinement.
-   ========================================================= */
 
 .mood-landing-hero-content {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
   color: var(--color-text-primary);
+
+  animation: mood-landing-fade-up 0.6s ease-out 0.1s both;
 }
 
 .mood-landing-headline {
@@ -124,6 +173,7 @@
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-tight);
   color: inherit;
+  text-shadow: 0 0.0625rem 0.75rem rgb(0 0 0 / 0.06);
 }
 
 .mood-landing-headline-decoration {
@@ -137,23 +187,37 @@
   opacity: var(--opacity-muted);
 }
 
+/* Scoped OrnamentDivider treatment — sits on the warm hero, so give it
+   a touch more presence than its default muted-line appearance. */
+.mood-landing-hero-content .ornament-divider {
+  margin-top: var(--space-2xs);
+}
+
+.mood-landing-hero-content .ornament-divider-line {
+  background-color: var(--color-text-rose);
+  opacity: 0.35;
+}
+
+.mood-landing-hero-content .ornament-divider-mark {
+  color: var(--color-text-rose);
+  opacity: 0.7;
+}
+
 /* =========================================================
-   3. PANEL
-   Overlaps the hero from below, identical mechanism to
-   HomePage's .home-mood-panel.
+   3. PANEL — the only in-flow content in the canvas now. Fully
+      transparent: no background-color, no box-shadow, no
+      border-radius. It just determines page height and pushes the
+      cards down far enough to clear the headline area; the hero
+      layer behind it provides the entire visual surface.
    ========================================================= */
 
 .mood-landing-panel {
   position: relative;
-  z-index: var(--z-index-content);
-  flex: 1;
-  margin-top: clamp(-3.5rem, -9dvh, -1.5rem);
-  padding-top: var(--space-md);
+  z-index: 1;
+  margin-top: clamp(16rem, 36dvh, 25rem);
   padding-inline: clamp(var(--space-md), 5vw, var(--space-xl));
-  padding-bottom: var(--space-sm);
-  background-color: var(--color-background);
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  box-shadow: var(--shadow-high);
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-xl);
 }
 
 .mood-landing-content-stack {
@@ -187,11 +251,7 @@
 }
 
 /* =========================================================
-   5. DESTINATION LIST / CARDS
-   Rounded, soft shadow, image left, text center, arrow right,
-   large touch target, natural spacing — matching the reference.
-   Image area is a reserved placeholder block only; no image
-   loading is implemented yet, per instructions.
+   5. DESTINATION LIST / CARDS — premium glass treatment
    ========================================================= */
 
 .mood-landing-destination-list {
@@ -209,25 +269,52 @@
   min-height: clamp(5.5rem, 14vmin, 7rem);
   padding: var(--space-sm);
   border-radius: var(--radius-lg);
-  background-color: var(--color-surface-raised);
-  box-shadow: var(--shadow-medium);
+
+  /* Frosted glass surface: translucent warm tint + blur, no hard
+     border — the card reads as floating in the room rather than
+     pasted onto a page. */
+  background-color: rgb(255 250 242 / 0.5);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  border: 0.0625rem solid rgb(255 255 255 / 0.5);
+  box-shadow: 0 0.5rem 1.75rem rgb(0 0 0 / 0.07);
+
   text-align: left;
-  transition: box-shadow var(--transition-base), transform var(--transition-fast);
+  transition: box-shadow 240ms ease, transform 240ms ease, background-color 240ms ease;
+
+  animation: mood-landing-fade-up 0.5s ease-out both;
 }
 
+/* Staggered entrance for each card in sequence. */
+.mood-landing-destination-list .mood-landing-destination-card:nth-child(1) { animation-delay: 0.05s; }
+.mood-landing-destination-list .mood-landing-destination-card:nth-child(2) { animation-delay: 0.1s; }
+.mood-landing-destination-list .mood-landing-destination-card:nth-child(3) { animation-delay: 0.15s; }
+.mood-landing-destination-list .mood-landing-destination-card:nth-child(4) { animation-delay: 0.2s; }
+.mood-landing-destination-list .mood-landing-destination-card:nth-child(5) { animation-delay: 0.25s; }
+
 .mood-landing-destination-card:hover {
-  box-shadow: var(--shadow-high);
+  background-color: rgb(255 250 242 / 0.65);
+  box-shadow: 0 0.75rem 2.25rem rgb(0 0 0 / 0.1);
+  transform: translateY(-2px);
 }
 
 .mood-landing-destination-card:active {
-  transform: scale(0.99);
+  transform: translateY(0) scale(0.99);
 }
 
+/* Image fades into the card rather than ending on a hard edge — the
+   image itself is never cropped, only masked so its right edge blends
+   into the card's translucent surface. */
 .mood-landing-destination-image {
   flex-shrink: 0;
   width: clamp(4.5rem, 12vmin, 5.5rem);
   border-radius: var(--radius-md);
   background-color: var(--color-surface);
+  background-size: cover;
+  background-position: center;
+
+  -webkit-mask-image: linear-gradient(to right, black 55%, transparent 100%);
+  mask-image: linear-gradient(to right, black 55%, transparent 100%);
 }
 
 .mood-landing-destination-body {
@@ -239,6 +326,7 @@
   gap: var(--space-3xs);
 }
 
+/* Title darker/heavier, description lighter — clearer hierarchy. */
 .mood-landing-destination-title {
   font-family: var(--font-family-secondary);
   font-size: var(--font-size-subheading);
@@ -253,8 +341,11 @@
 .mood-landing-destination-subtitle {
   font-size: var(--font-size-body-sm);
   color: var(--color-text-secondary);
+  opacity: 0.85;
 }
 
+/* Glass arrow circle: subtle transparency, blur, soft shadow, gentle
+   hover scale + glow. */
 .mood-landing-destination-arrow {
   flex-shrink: 0;
   align-self: center;
@@ -264,15 +355,27 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full);
-  background-color: var(--color-surface);
+
+  background-color: rgb(255 255 255 / 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 0.0625rem solid rgb(255 255 255 / 0.6);
+  box-shadow: 0 0.2rem 0.6rem rgb(0 0 0 / 0.07);
+
   color: var(--color-text-secondary);
   font-size: var(--font-size-body-lg);
+
+  transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+}
+
+.mood-landing-destination-card:hover .mood-landing-destination-arrow {
+  transform: scale(1.08);
+  background-color: rgb(255 255 255 / 0.75);
+  box-shadow: 0 0.3rem 0.9rem rgb(0 0 0 / 0.1), 0 0 0 0.25rem rgb(255 255 255 / 0.25);
 }
 
 /* =========================================================
    6. ALTERNATIVE OPTION
-   Rendered as its own large rounded button, matching the
-   reference's "I'm looking for something else" row.
    ========================================================= */
 
 .mood-landing-alternative {
@@ -282,13 +385,26 @@
   width: 100%;
   padding: var(--space-md);
   border-radius: var(--radius-lg);
-  background-color: var(--color-surface-raised);
-  box-shadow: var(--shadow-low);
-  transition: box-shadow var(--transition-base);
+
+  background-color: rgb(255 250 242 / 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 0.0625rem solid rgb(255 255 255 / 0.4);
+  box-shadow: 0 0.4rem 1.25rem rgb(0 0 0 / 0.05);
+
+  transition: box-shadow 240ms ease, transform 240ms ease, background-color 240ms ease;
+
+  animation: mood-landing-fade-up 0.5s ease-out 0.3s both;
 }
 
 .mood-landing-alternative:hover {
-  box-shadow: var(--shadow-medium);
+  background-color: rgb(255 250 242 / 0.6);
+  box-shadow: 0 0.6rem 1.75rem rgb(0 0 0 / 0.08);
+  transform: translateY(-1px);
+}
+
+.mood-landing-alternative:active {
+  transform: translateY(0) scale(0.99);
 }
 
 .mood-landing-alternative-icon {
@@ -306,4 +422,38 @@
   flex-shrink: 0;
   font-size: var(--font-size-heading);
   color: var(--color-text-muted);
+  transition: transform 220ms ease;
+}
+
+.mood-landing-alternative:hover .mood-landing-alternative-chevron {
+  transform: translateX(2px);
+}
+
+/* =========================================================
+   ENTRANCE ANIMATIONS
+   ========================================================= */
+
+@keyframes mood-landing-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes mood-landing-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mood-landing-hero,
+  .mood-landing-hero-content,
+  .mood-landing-destination-card,
+  .mood-landing-alternative {
+    animation: none;
+  }
 }

@@ -8,65 +8,61 @@
  * MoodTile, UnknownMoodTile) continue to style only themselves in
  * their own CSS files.
  *
- * Phase 3: the Hero is now one cohesive emotional composition rather
- * than a stack of independent widgets. The affirmation (daily message)
- * is a plain text line within the Hero — no card, no panel, no shadow,
- * no elevated surface, no independent background. The eye travels
- * background -> greeting -> welcome -> affirmation -> mood section with
- * nothing competing for attention inside the Hero itself.
- *
- * The application occupies the full browser viewport — no centered
- * prototype card, no fixed-width mockup. Every dimension below is
- * viewport-relative or token-derived; no pixel values are hardcoded.
+ * This pass: deduplicated .home-hero-overlay (previously declared
+ * twice, second silently winning), added a soft left-side blur/fade on
+ * the hero image, restored missing .home-recommended-* and .home-footer
+ * rules (referenced in JSX but had no CSS), and tied the hero/mood
+ * panel overlap to the panel's own corner radius so the seam between
+ * them reads as one continuous surface with no visible double-edge.
  *
  * Every value below consumes a token from tokens.css.
  */
 
 /* =========================================================
    0. APPLICATION CANVAS
-   Full-viewport width. Establishes the page as a flex column so
-   the hero and mood panel stack naturally and grow with the
-   viewport.
    ========================================================= */
 
 .home-canvas {
   width: 100%;
   min-height: 100dvh;
-
   display: flex;
   flex-direction: column;
-
   overflow: hidden;
 }
 
 /* =========================================================
    1. HERO
-   One continuous visual scene: background image, soft overlay,
-   and a single flowing content block. Viewport-relative sizing
-   via clamp()/dvh — no fixed pixel height anywhere.
    ========================================================= */
 
 .home-hero {
   position: relative;
-
   width: 100%;
   min-height: 50dvh;
-
   display: flex;
   flex-direction: column;
-
   overflow: hidden;
-
   border-radius: 0 0 var(--radius-xl) var(--radius-xl);
-
   background-color: var(--color-surface);
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-
   box-shadow: var(--shadow-hero);
-
   flex-shrink: 0;
+}
+
+/* Soft blur/fade on the left side of the hero image only — a blurred
+   duplicate of the background, masked so it fades out by the
+   horizontal midpoint, leaving the right side of the image crisp. */
+.home-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 15%, transparent 55%);
+  mask-image: linear-gradient(to right, black 0%, black 15%, transparent 55%);
 }
 
 .home-hero-top {
@@ -75,61 +71,41 @@
   left: 0;
   right: 0;
   z-index: var(--z-index-overlay);
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-padding:
-    clamp(1rem,4vw,1.5rem)
-    clamp(1rem,5vw,2rem);
+  padding: clamp(1rem, 4vw, 1.5rem) clamp(1rem, 5vw, 2rem);
 }
 
+/* Single, consolidated overlay rule (previously declared twice). */
 .home-hero-overlay {
   position: relative;
-
   z-index: var(--z-index-content);
-
   flex: 1;
-
   display: flex;
-  align-items: center;
-
+  align-items: flex-start;
+  justify-content: center;
   padding-inline: clamp(var(--space-lg), 6vw, var(--space-2xl));
-
-  padding-top: clamp(var(--space-2xl), 6dvh, var(--space-3xl));
-
-  padding-bottom: clamp(var(--space-lg), 5dvh, var(--space-2xl));
-
-  background:
-    linear-gradient(
-      to top,
-      rgb(255 255 255 / 45%) 0%,
-      rgb(255 255 255 / 10%) 45%,
-      transparent 100%
-    );
+  padding-top: clamp(5.5rem, 12dvh, 8rem);
+  padding-bottom: clamp(2rem, 7dvh, 4rem);
+  background: linear-gradient(
+    to top,
+    rgb(255 255 255 / 45%) 0%,
+    rgb(255 255 255 / 10%) 45%,
+    transparent 100%
+  );
 }
 
 /* =========================================================
    2. HERO CONTENT
-   One unified block. Every line inside — greeting, welcome
-   mark, divider, supporting text, affirmation — belongs to the
-   same flowing message. No child here is styled as a card,
-   panel, or elevated surface.
    ========================================================= */
 
 .home-hero-content {
-width:min(26rem,92%);
-
+  width: min(26rem, 92%);
   display: flex;
   flex-direction: column;
-
   gap: 0;
-
   color: var(--color-text-primary);
-
-  /* Keep hero text away from the menu button */
-  margin-top: clamp(3rem, 6vh, 4.5rem);
 }
 
 .home-greeting {
@@ -138,7 +114,7 @@ width:min(26rem,92%);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-tight);
   color: inherit;
-  margin-bottom:.6rem;
+  margin-bottom: 0.6rem;
 }
 
 .home-welcome-mark {
@@ -147,7 +123,7 @@ width:min(26rem,92%);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-tight);
   color: inherit;
-  margin-bottom:.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .home-welcome-mark-heart {
@@ -156,43 +132,26 @@ width:min(26rem,92%);
 
 .home-hero-supporting-text {
   max-width: 18rem;
-
   font-size: var(--font-size-body);
-
   line-height: var(--line-height-relaxed);
-
   color: inherit;
-
-  opacity: .82;
+  opacity: 0.82;
 }
 
 /* =========================================================
    3. AFFIRMATION
-   Intentionally bare: no background, no border, no shadow, no
-   radius, no independent container. It is simply the next line
-   in the Hero's single message, distinguished only by weight/
-   emphasis via typography tokens — never by surface treatment.
    ========================================================= */
 
 .home-affirmation {
-  width:min(24rem,90%);
-
+  width: min(24rem, 90%);
   margin-top: 1.25rem;
-
   padding: var(--space-md);
-
   border-radius: var(--radius-lg);
-
-  background: rgb(255 255 255 / .58);
-
+  background: rgb(255 255 255 / 0.58);
   backdrop-filter: blur(10px);
-
   box-shadow: var(--shadow-low);
-
   font-size: var(--font-size-body-lg);
-
   font-weight: var(--font-weight-medium);
-
   line-height: var(--line-height-relaxed);
 }
 
@@ -206,70 +165,106 @@ width:min(26rem,92%);
 
 /* =========================================================
    4. MOOD PANEL
-   Begins immediately after the Hero — no intervening card. The
-   Hero and mood panel overlap slightly (viewport-relative, not
-   a fixed negative margin) so the transition reads as one
-   continuous surface rather than two stacked blocks.
+   Overlap tied to the panel's own corner radius so the hero's
+   bottom edge and the panel's top edge meet with no visible
+   double-corner seam, at any viewport size.
    ========================================================= */
 
 .home-mood-panel {
   position: relative;
-
   z-index: var(--z-index-content);
-
-  margin-top: -1.2dvh;
-
+  margin-top: calc(-1 * var(--radius-xl));
   flex: 1;
-
   display: flex;
-
   flex-direction: column;
-
-  padding:
-
-    var(--space-lg)
-
-    clamp(var(--space-md), 5vw, var(--space-xl))
-
-    var(--space-md);
-
-  background: var(--color-background);
-
+  padding: var(--space-lg) clamp(var(--space-md), 5vw, var(--space-xl)) var(--space-md);
+  background: var(--color-surface);
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-
   box-shadow: var(--shadow-high);
 }
 
 .home-content-stack {
   display: flex;
-
   flex-direction: column;
-
   gap: var(--space-lg);
-
   flex: 1;
 }
-.home-hero-overlay {
-  position: relative;
-  z-index: var(--z-index-content);
 
-  flex: 1;
-
+.home-mood-body {
   display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* =========================================================
+   5. RECOMMENDED ROOM CARD
+   Previously referenced in JSX with no matching CSS — rendered
+   as unstyled plain text. Margin-top on the section gives it
+   clear separation from the mood grid / "I don't know" tile
+   above it, rather than the card touching that content directly.
+   ========================================================= */
+
+.home-recommended-section {
+  margin-top: var(--space-sm);
+}
+
+.home-recommended-heading {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.home-recommended-card {
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-medium);
+}
 
-  padding-inline: clamp(var(--space-lg), 6vw, var(--space-2xl));
+.home-recommended-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  width: 100%;
+}
 
-  /* much larger breathing room */
-  padding-top: clamp(5.5rem, 12dvh, 8rem);
-  padding-bottom: clamp(2rem, 7dvh, 4rem);
+.home-recommended-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-body-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
 
-  background:
-    linear-gradient(
-      to top,
-      rgb(255 255 255 / 45%) 0%,
-      rgb(255 255 255 / 10%) 45%,
-      transparent 100%
-    );
+.home-recommended-description {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+/* =========================================================
+   6. FOOTER
+   Centered per reference: divider, leaf mark, and text all
+   align on the same vertical axis.
+   ========================================================= */
+
+.home-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  text-align: center;
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  padding-bottom: clamp(var(--space-lg), 4dvh, var(--space-xl));
+}
+
+.home-footer-text {
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
 }
