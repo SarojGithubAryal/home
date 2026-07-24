@@ -1,97 +1,141 @@
 /**
- * ReadPage.css — same glass design language as HearPage.css/SeePage.css.
+ * ReadPage.css — same glass design language and page architecture as
+ * the finalized HearPage.css.
  */
 
 .read-canvas {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(var(--space-lg), 4vmin, var(--space-xl));
-  padding: clamp(var(--space-md), 5vw, var(--space-xl));
-  padding-bottom: clamp(5rem, 12vmin, 6rem);
+  width: 100%;
   min-height: 100dvh;
 
   background:
-    radial-gradient(120% 40% at 50% 0%, rgb(255 250 240 / 0.6) 0%, transparent 70%),
-    var(--color-background);
+    linear-gradient(
+      to bottom,
+      #f9f4ed 0%,
+      #f9f4ed 72%,
+      rgba(249, 244, 237, 0.94) 84%,
+      rgba(249, 244, 237, 0.78) 92%,
+      rgba(249, 244, 237, 0.45) 100%
+    );
+  display: flex;
+  flex-direction: column;
+
+  padding-inline: clamp(1.2rem, 5vw, 2rem);
+  padding-top: clamp(1rem, 3vw, 1.5rem);
+  padding-bottom: clamp(5rem, 12vmin, 6rem);
+}
+
+.read-subtitle {
+  margin-top: var(--space-xs);
+  margin-left: var(--space-xs);
+
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-relaxed);
+
+  color: var(--color-text-secondary);
+}
+
+.read-page-quote {
+  margin-left: var(--space-xs);
+  margin-top: var(--space-md);
+
+  padding-left: var(--space-sm);
+
+  border-left: 0.18rem solid rgba(0, 0, 0, 0.12);
+
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-body-lg);
+  line-height: var(--line-height-relaxed);
+
+  color: var(--color-text-primary);
+
+  opacity: 0.9;
+}
+
+.read-stats {
+  margin-left: var(--space-xs);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.read-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.read-stat-value {
+  font-size: var(--font-size-subheading);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.read-stat-label {
+  margin-top: 0.15rem;
+
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
 }
 
 /* =========================================================
-   HEADER
+   HEADER — robust flex layout, matching HearPage exactly
    ========================================================= */
 
 .read-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: nowrap;
+
   gap: var(--space-sm);
-  animation: read-fade-in 0.5s ease-out both;
+  margin-bottom: var(--space-lg);
 }
 
-.read-header .icon-button {
-  background-color: rgb(255 250 240 / 0.5);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 0.0625rem solid rgb(255 255 255 / 0.55);
-  box-shadow: 0 0.25rem 0.85rem rgb(0 0 0 / 0.06);
-  transition: transform 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
-}
-
-.read-header .icon-button:hover {
-  background-color: rgb(255 250 240 / 0.65);
-  box-shadow: 0 0.4rem 1.1rem rgb(0 0 0 / 0.09);
-  transform: translateY(-1px);
+.read-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .read-header-title {
   display: flex;
   align-items: center;
   gap: var(--space-2xs);
-  font-family: var(--font-family-secondary);
-  font-size: var(--font-size-heading);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  flex: 1;
-}
 
-.read-header-icon {
-  width: 2rem;
-  height: 2rem;
-  object-fit: contain;
-  flex-shrink: 0;
-  padding: 0.4rem;
-  border-radius: var(--radius-full);
-  background-color: rgb(255 250 240 / 0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 0.0625rem solid rgb(255 255 255 / 0.5);
-  box-shadow: 0 0.2rem 0.6rem rgb(0 0 0 / 0.05);
+  min-width: 0;
+  margin: 0;
+
+  font-family: var(--font-family-secondary);
+  font-size: clamp(2rem, 5vw, 2.6rem);
+  font-weight: var(--font-weight-semibold);
+
+  color: var(--color-text-primary);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .read-header-actions {
   display: flex;
-  gap: var(--space-2xs);
+  align-items: center;
+  gap: var(--space-xs);
+  flex: 0 0 auto;
 }
 
-.read-header-actions .icon-button {
-  background-color: rgb(255 250 240 / 0.5);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 0.0625rem solid rgb(255 255 255 / 0.55);
-  box-shadow: 0 0.25rem 0.85rem rgb(0 0 0 / 0.06);
-  transition: transform 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
-}
+.read-header-icon {
+  width: clamp(1.25rem, 3vw, 1.75rem);
+  height: clamp(1.25rem, 3vw, 1.75rem);
 
-.read-header-actions .icon-button:hover {
-  background-color: rgb(255 250 240 / 0.65);
-  box-shadow: 0 0.4rem 1.1rem rgb(0 0 0 / 0.09);
-  transform: translateY(-1px);
-}
-
-.read-subtitle {
-  font-size: var(--font-size-body);
-  color: var(--color-text-secondary);
-  line-height: var(--line-height-relaxed);
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 /* =========================================================
@@ -99,6 +143,7 @@
    ========================================================= */
 
 .read-tab-bar {
+  margin-left: var(--space-xs);
   display: flex;
   gap: var(--space-2xs);
   overflow-x: auto;
@@ -141,6 +186,8 @@
    ========================================================= */
 
 .read-list {
+  margin-left: var(--space-xs);
+  margin-top: var(--space-lg);
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
@@ -239,7 +286,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .read-header,
   .read-tab-bar,
   .read-list-item {
     animation: none;

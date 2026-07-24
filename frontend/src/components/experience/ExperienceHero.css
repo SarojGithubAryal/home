@@ -1,0 +1,151 @@
+/**
+ * ExperienceHero.css
+ *
+ * Structural styling only for this phase — mirrors RoomPage.css's hero
+ * exactly (absolute full-bleed background layer + warm scrim + top bar
+ * + content), so every Experience page shares the identical "one
+ * continuous surface" architecture Room already established. Detailed
+ * visual polish (glass treatments, fine spacing, motion) is Phase 2.
+ */
+
+.experience-hero {
+  position: relative;
+  width: 100%;
+  z-index: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  /* Soft warm cream gradient — replaces the former room-theme hero
+     image entirely. Same warm-cream tokens used elsewhere in the app,
+     just no image layer beneath them. */
+  background: linear-gradient(
+    to bottom,
+    var(--color-surface-raised) 0%,
+    var(--color-surface) 100%
+  );
+}
+
+.experience-hero-top {
+  position: relative;
+  z-index: 3;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: clamp(var(--space-sm), 4vw, var(--space-lg));
+}
+.experience-hero-top-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.experience-hero-icon-badge {
+  width: clamp(2.25rem, 6vmin, 2.75rem);
+  height: clamp(2.25rem, 6vmin, 2.75rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-low);
+  font-size: var(--font-size-subheading);
+  overflow: hidden;
+}
+
+.experience-hero-icon-image {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+}
+
+.experience-hero-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  flex: none;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  padding: clamp(var(--space-md), 5vw, var(--space-xl));
+  padding-top: var(--space-lg);
+  /* Comfortable breathing space beneath the header content, per task:
+     "header should feel visually separated from the content list
+     instead of appearing cramped." Uses an existing spacing token. */
+  padding-bottom: var(--space-2xl);
+}
+
+.experience-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  color: var(--color-text-primary);
+}
+
+.experience-hero-greeting {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  opacity: var(--opacity-muted);
+}
+
+.experience-hero-title {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: inherit;
+}
+
+.experience-hero-subtitle {
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.experience-hero-quote-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  margin-top: var(--space-xs);
+}
+
+.experience-hero-quote {
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-body-lg);
+  color: var(--color-text-primary);
+  opacity: 0.85;
+}
+
+.experience-hero-stats {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.experience-hero-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.experience-hero-stat-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  object-fit: contain;
+}
+
+.experience-hero-stat-value {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.experience-hero-stat-label {
+  opacity: var(--opacity-muted);
+}

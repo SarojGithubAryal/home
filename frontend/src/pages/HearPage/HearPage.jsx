@@ -39,294 +39,358 @@ import './HearPage.css';
 import EmptyExperience from '../../components/common/EmptyExperience';
 
 function isValidNavigation(navigation) {
-  return Boolean(navigation) && typeof navigation === 'object' && navigation.experience;
+    return Boolean(navigation) && typeof navigation === 'object' && navigation.experience;
 }
 
 function HearHeader({ title, onBack, onBookmark, onMore }) {
-  const hearIconImage = AssetRegistry.getExperienceIcon('hear');
+    const hearIconImage = AssetRegistry.getExperienceIcon('hear');
 
-  return (
-    <div className="hear-header">
-      <IconButton icon="←" ariaLabel="Go back" onClick={onBack} />
+    return (
+        <div className="hear-header">
+            <div className="hear-header-left">
+                <IconButton
+                    icon="←"
+                    ariaLabel="Go back"
+                    onClick={onBack}
+                />
 
-      <h1 className="hear-header-title">
-        {title}
-        {hearIconImage ? (
-          <img src={hearIconImage} alt="" className="hear-header-icon" aria-hidden="true" />
-        ) : (
-          <span className="hear-header-icon" aria-hidden="true">
-            🎧
-          </span>
-        )}
-      </h1>
+                <h1 className="hear-header-title">
+                    {title}
 
-      <div className="hear-header-actions">
-        <IconButton icon="🔖" ariaLabel="Bookmark" onClick={onBookmark} />
-        <IconButton icon="⋯" ariaLabel="More options" onClick={onMore} />
-      </div>
-    </div>
-  );
+                    {hearIconImage ? (
+                        <img
+                            src={hearIconImage}
+                            alt=""
+                            className="hear-header-icon"
+                            aria-hidden="true"
+                        />
+                    ) : (
+                        <span
+                            className="hear-header-icon"
+                            aria-hidden="true"
+                        >
+                            🎧
+                        </span>
+                    )}
+                </h1>
+            </div>
+
+            <div className="hear-header-actions">
+                <IconButton
+                    icon="🔖"
+                    ariaLabel="Bookmark"
+                    onClick={onBookmark}
+                />
+
+                <IconButton
+                    icon="⋯"
+                    ariaLabel="More options"
+                    onClick={onMore}
+                />
+            </div>
+        </div>
+    );
 }
 
 function TabBar({ tabs, activeTabId, onSelectTab }) {
-  if (!Array.isArray(tabs) || tabs.length === 0) return null;
+    if (!Array.isArray(tabs) || tabs.length === 0) return null;
 
-  return (
-    <div className="hear-tab-bar" role="tablist">
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          type="button"
-          role="tab"
-          aria-selected={tab.id === activeTabId}
-          className={classNames('hear-tab', tab.id === activeTabId && 'hear-tab--active')}
-          onClick={() => onSelectTab(tab.id)}
-        >
-          {tab.title}
-        </button>
-      ))}
-    </div>
-  );
+    return (
+        <div className="hear-tab-bar" role="tablist">
+            {tabs.map((tab) => (
+                <button
+                    key={tab.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={tab.id === activeTabId}
+                    className={classNames('hear-tab', tab.id === activeTabId && 'hear-tab--active')}
+                    onClick={() => onSelectTab(tab.id)}
+                >
+                    {tab.title}
+                </button>
+            ))}
+        </div>
+    );
 }
 
 function FeaturedAudioCard({ item, onNavigate }) {
-  // NOTE: AssetRegistry v1 has no per-section thumbnail resolver;
-  // renders without a background image rather than calling the
-  // removed resolveRoomSectionArtwork method.
-  const thumbnail = null;
+    // NOTE: AssetRegistry v1 has no per-section thumbnail resolver;
+    // renders without a background image rather than calling the
+    // removed resolveRoomSectionArtwork method.
+    const thumbnail = null;
 
-  return (
-    <button
-      type="button"
-      className="hear-featured-card"
-      style={thumbnail ? { backgroundImage: `url(${thumbnail})` } : undefined}
-      onClick={() => onNavigate(item.navigation)}
-    >
-      <span className="hear-featured-overlay">
-        {item.badge && <span className="hear-featured-badge">{item.badge}</span>}
-        <span className="hear-featured-title">{item.title}</span>
-        {item.subtitle && <span className="hear-featured-subtitle">{item.subtitle}</span>}
-      </span>
-    </button>
-  );
+    return (
+        <button
+            type="button"
+            className="hear-featured-card"
+            style={thumbnail ? { backgroundImage: `url(${thumbnail})` } : undefined}
+            onClick={() => onNavigate(item.navigation)}
+        >
+            <span className="hear-featured-overlay">
+                {item.badge && <span className="hear-featured-badge">{item.badge}</span>}
+                <span className="hear-featured-title">{item.title}</span>
+                {item.subtitle && <span className="hear-featured-subtitle">{item.subtitle}</span>}
+            </span>
+        </button>
+    );
 }
 
 function AudioListItem({ item, isPlaying, onTogglePlay, onNavigate }) {
-  // NOTE: see FeaturedAudioCard above — no v1 equivalent yet.
-  const thumbnail = null;
+    // NOTE: see FeaturedAudioCard above — no v1 equivalent yet.
+    const thumbnail = null;
 
-  const handlePlayClick = (event) => {
-    event.stopPropagation();
-    onTogglePlay(item);
-  };
+    const handlePlayClick = (event) => {
+        event.stopPropagation();
+        onTogglePlay(item);
+    };
 
-  return (
-    <button
-      type="button"
-      className={classNames('hear-list-item', isPlaying && 'hear-list-item--playing')}
-      onClick={() => onNavigate(item.navigation)}
-    >
-      <span
-        className="hear-list-item-thumbnail"
-        style={thumbnail ? { backgroundImage: `url(${thumbnail})` } : undefined}
-        aria-hidden="true"
-      >
-        {item.badge && <span className="hear-list-item-badge">{item.badge}</span>}
-      </span>
+    return (
+        <button
+            type="button"
+            className={classNames('hear-list-item', isPlaying && 'hear-list-item--playing')}
+            onClick={() => onNavigate(item.navigation)}
+        >
+            <span
+                className="hear-list-item-thumbnail"
+                style={thumbnail ? { backgroundImage: `url(${thumbnail})` } : undefined}
+                aria-hidden="true"
+            >
+                {item.badge && <span className="hear-list-item-badge">{item.badge}</span>}
+            </span>
 
-      <span className="hear-list-item-body">
-        <span className="hear-list-item-title">{item.title}</span>
-        {item.subtitle && <span className="hear-list-item-subtitle">{item.subtitle}</span>}
-        {item.durationLabel && (
-          <span className="hear-list-item-meta">{item.durationLabel}</span>
-        )}
-      </span>
+            <span className="hear-list-item-body">
+                <span className="hear-list-item-title">{item.title}</span>
+                {item.subtitle && <span className="hear-list-item-subtitle">{item.subtitle}</span>}
+                {item.durationLabel && (
+                    <span className="hear-list-item-meta">{item.durationLabel}</span>
+                )}
+            </span>
 
-      <span
-        role="button"
-        tabIndex={0}
-        className="hear-list-item-play"
-        aria-label={isPlaying ? 'Pause' : 'Play'}
-        onClick={handlePlayClick}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') handlePlayClick(event);
-        }}
-      >
-        {isPlaying ? '⏸' : '▶'}
-      </span>
-    </button>
-  );
+            <span
+                role="button"
+                tabIndex={0}
+                className="hear-list-item-play"
+                aria-label={isPlaying ? 'Pause' : 'Play'}
+                onClick={handlePlayClick}
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') handlePlayClick(event);
+                }}
+            >
+                {isPlaying ? '⏸' : '▶'}
+            </span>
+        </button>
+    );
 }
 
 function MiniPlayerBar({ item, isPlaying, onTogglePlay, onExpand }) {
-  if (!item) return null;
+    if (!item) return null;
 
-  return (
-    <div className="hear-mini-player" onClick={onExpand}>
-      <span className="hear-mini-player-title">{item.title}</span>
-      {item.durationLabel && (
-        <span className="hear-mini-player-meta">{item.durationLabel}</span>
-      )}
-      <span
-        role="button"
-        tabIndex={0}
-        className="hear-mini-player-toggle"
-        aria-label={isPlaying ? 'Pause' : 'Play'}
-        onClick={(event) => {
-          event.stopPropagation();
-          onTogglePlay(item);
-        }}
-      >
-        {isPlaying ? '⏸' : '▶'}
-      </span>
-    </div>
-  );
+    return (
+        <div className="hear-mini-player" onClick={onExpand}>
+            <span className="hear-mini-player-title">{item.title}</span>
+            {item.durationLabel && (
+                <span className="hear-mini-player-meta">{item.durationLabel}</span>
+            )}
+            <span
+                role="button"
+                tabIndex={0}
+                className="hear-mini-player-toggle"
+                aria-label={isPlaying ? 'Pause' : 'Play'}
+                onClick={(event) => {
+                    event.stopPropagation();
+                    onTogglePlay(item);
+                }}
+            >
+                {isPlaying ? '⏸' : '▶'}
+            </span>
+        </div>
+    );
 }
 
 function HearPage({ roomSlug, onBack, onNavigation }) {
-  const [activeTabId, setActiveTabId] = useState(null);
-  const [playingItemId, setPlayingItemId] = useState(null);
-  const audioRef = useRef(null);
+    const [activeTabId, setActiveTabId] = useState(null);
+    const [playingItemId, setPlayingItemId] = useState(null);
+    const audioRef = useRef(null);
 
-  const { data, loading, error, refetch } = useHear(roomSlug, { tabId: activeTabId });
+    const { data, loading, error, refetch } = useHear(roomSlug, { tabId: activeTabId });
 
-  const configTitle = getPath(data, 'config.title', null);
-  const configSubtitle = getPath(data, 'config.subtitle', null);
-  const emptyStateText = getPath(data, 'config.emptyStateText', null);
-  const showTabs = getPath(data, 'config.showTabs', false);
-  const showFeatured = getPath(data, 'config.showFeatured', false);
+    const configTitle = getPath(data, 'config.title', null);
+    const configSubtitle = getPath(data, 'config.subtitle', null);
 
-  const tabs = getPath(data, 'tabs', []);
-  const tabList = Array.isArray(tabs) ? tabs : [];
-  const resolvedActiveTabId = activeTabId || getPath(data, 'activeTabId', null);
+    const pageQuote = getPath(data, 'pageQuote', null);
 
-  const featured = getPath(data, 'featured', []);
-  const featuredList = Array.isArray(featured) ? featured : [];
+    const stats = getPath(data, 'stats', []);
 
-  const items = getPath(data, 'items', []);
-const itemList = Array.isArray(items) ? items : [];
+    const emptyStateText = getPath(data, 'config.emptyStateText', null);
+    const showTabs = getPath(data, 'config.showTabs', false);
+    const showFeatured = getPath(data, 'config.showFeatured', false);
 
-const experienceState = getPath(data, 'state', 'POPULATED');
-const isEmptyExperience = experienceState === 'EMPTY';
+    const tabs = getPath(data, 'tabs', []);
+    const tabList = Array.isArray(tabs) ? tabs : [];
+    const resolvedActiveTabId = activeTabId || getPath(data, 'activeTabId', null);
 
-const playingItem =
-  itemList.find((item) => item.id === playingItemId) || null;
-  const handleNavigate = (navigation) => {
-    if (!isValidNavigation(navigation)) return;
-    if (onNavigation) {
-      onNavigation({
-        success: true,
-        navigation,
-        data: {},
-      });
-    }
-  };
+    const featured = getPath(data, 'featured', []);
+    const featuredList = Array.isArray(featured) ? featured : [];
 
-  const handleTogglePlay = (item) => {
-    const mediaUrl = getPath(item, 'media.0.url', null);
+    const items = getPath(data, 'items', []);
+    const itemList = Array.isArray(items) ? items : [];
 
-    if (playingItemId === item.id) {
-      audioRef.current?.pause();
-      setPlayingItemId(null);
-      return;
-    }
+    const experienceState = getPath(data, 'state', 'POPULATED');
+    const isEmptyExperience = experienceState === 'EMPTY';
 
-    setPlayingItemId(item.id);
+    const playingItem =
+        itemList.find((item) => item.id === playingItemId) || null;
+    const handleNavigate = (navigation) => {
+        if (!isValidNavigation(navigation)) return;
+        if (onNavigation) {
+            onNavigation({
+                success: true,
+                navigation,
+                data: {},
+            });
+        }
+    };
 
-    if (audioRef.current && mediaUrl) {
-      audioRef.current.src = mediaUrl;
-      audioRef.current.play().catch(() => {});
-    }
-  };
+    const handleTogglePlay = (item) => {
+        const mediaUrl = getPath(item, 'media.0.url', null);
 
-  const handleSelectTab = (tabId) => {
-    setActiveTabId(tabId);
-  };
+        if (playingItemId === item.id) {
+            audioRef.current?.pause();
+            setPlayingItemId(null);
+            return;
+        }
 
-  const handleBack = () => {
-    if (onBack) onBack();
-  };
+        setPlayingItemId(item.id);
 
-  return (
-    <PageContainer
-      loading={loading}
-      error={error}
-      data={data}
-      onRetry={refetch}
-      emptyTitle="Nothing here yet"
-      emptyMessage={emptyStateText || 'Check back soon.'}
-    >
-      <div className="hear-canvas">
-        <HearHeader
-          title={configTitle}
-          onBack={handleBack}
-          onBookmark={() => console.log('Bookmark (pending feature)')}
-          onMore={() => console.log('More options (pending feature)')}
-        />
+        if (audioRef.current && mediaUrl) {
+            audioRef.current.src = mediaUrl;
+            audioRef.current.play().catch(() => { });
+        }
+    };
 
-        
+    const handleSelectTab = (tabId) => {
+        setActiveTabId(tabId);
+    };
 
-{isEmptyExperience ? (
-<EmptyExperience
-  icon="🎧"
-  title={emptyStateText || 'No recordings yet'}
-  subtitle={configSubtitle}
-/>) : (
-  <>
-    {showTabs && (
-      <TabBar
-        tabs={tabList}
-        activeTabId={resolvedActiveTabId}
-        onSelectTab={handleSelectTab}
-      />
-    )}
+    const handleBack = () => {
+        if (onBack) onBack();
+    };
 
-    {showFeatured && featuredList.length > 0 && (
-      <div className="hear-featured-row">
-        {featuredList.map((item) => (
-          <FeaturedAudioCard
-            key={item.id}
-            item={item}
-            roomSlug={roomSlug}
-            onNavigate={handleNavigate}
-          />
-        ))}
-      </div>
-    )}
+    return (
+        <PageContainer
+            loading={loading}
+            error={error}
+            data={data}
+            onRetry={refetch}
+            emptyTitle="Nothing here yet"
+            emptyMessage={emptyStateText || 'Check back soon.'}
+        >
+            <div className="hear-canvas">
+                <div className="hear-content">
+                    <HearHeader
+                        title={configTitle}
+                        onBack={handleBack}
+                        onBookmark={() => console.log('Bookmark (pending feature)')}
+                        onMore={() => console.log('More options (pending feature)')}
+                    />
 
-    <div className="hear-list">
-      {itemList.map((item) => (
-        <AudioListItem
-          key={item.id}
-          item={item}
-          roomSlug={roomSlug}
-          isPlaying={playingItemId === item.id}
-          onTogglePlay={handleTogglePlay}
-          onNavigate={handleNavigate}
-        />
-      ))}
-    </div>
+                    {!isEmptyExperience && (
+                        <>
+                            {configSubtitle && (
+                                <div className="hear-subtitle">
+                                    {configSubtitle}
+                                </div>
+                            )}
 
-    <audio
-      ref={audioRef}
-      onEnded={() => setPlayingItemId(null)}
-    />
-  </>
-)}      
-</div>
+                            {pageQuote?.text && (
+                                <div className="hear-page-quote">
+                                    {pageQuote.text}
+                                </div>
+                            )}
 
-{!isEmptyExperience && (
-  <MiniPlayerBar
-    item={playingItem}
-    isPlaying={Boolean(playingItem)}
-    onTogglePlay={handleTogglePlay}
-    onExpand={() =>
-      playingItem && handleNavigate(playingItem.navigation)
-    }
-  />
-)}    
-</PageContainer>
-  );
+                            {Array.isArray(stats) && stats.length > 0 && (
+                                <div className="hear-stats">
+                                    {stats.map((stat) => (
+                                        <div
+                                            key={stat.id}
+                                            className="hear-stat"
+                                        >
+                                            <div className="hear-stat-value">
+                                                {stat.value}
+                                            </div>
+
+                                            <div className="hear-stat-label">
+                                                {stat.label}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </>
+                    )}
+
+                    {isEmptyExperience ? (
+                        <EmptyExperience
+                            icon="🎧"
+                            title={emptyStateText || 'No recordings yet'}
+                            subtitle={configSubtitle}
+                        />) : (
+                        <>
+                            {showTabs && (
+                                <TabBar
+                                    tabs={tabList}
+                                    activeTabId={resolvedActiveTabId}
+                                    onSelectTab={handleSelectTab}
+                                />
+                            )}
+
+                            {showFeatured && featuredList.length > 0 && (
+                                <div className="hear-featured-row">
+                                    {featuredList.map((item) => (
+                                        <FeaturedAudioCard
+                                            key={item.id}
+                                            item={item}
+                                            roomSlug={roomSlug}
+                                            onNavigate={handleNavigate}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className="hear-list">
+                                {itemList.map((item) => (
+                                    <AudioListItem
+                                        key={item.id}
+                                        item={item}
+                                        roomSlug={roomSlug}
+                                        isPlaying={playingItemId === item.id}
+                                        onTogglePlay={handleTogglePlay}
+                                        onNavigate={handleNavigate}
+                                    />
+                                ))}
+                            </div>
+
+                            <audio
+                                ref={audioRef}
+                                onEnded={() => setPlayingItemId(null)}
+                            />
+                        </>
+                    )}
+                </div>
+            </div>
+
+            {!isEmptyExperience && (
+                <MiniPlayerBar
+                    item={playingItem}
+                    isPlaying={Boolean(playingItem)}
+                    onTogglePlay={handleTogglePlay}
+                    onExpand={() =>
+                        playingItem && handleNavigate(playingItem.navigation)
+                    }
+                />
+            )}
+        </PageContainer>
+    );
 }
 
 export default HearPage;

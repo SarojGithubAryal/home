@@ -1,7 +1,8 @@
 /**
- * ReadPage.jsx — mirrors HearPage.jsx exactly, adapted for the Read
- * Experience (GET /api/rooms/:roomSlug/read). Internal helper
- * components only (ReadHeader, TabBar, FeaturedLetterCard, LetterListItem).
+ * ReadPage.jsx — mirrors HearPage.jsx's finalized structure, adapted
+ * for the Read Experience (GET /api/rooms/:roomSlug/read). List
+ * rendering and empty-state gating are unchanged from the original
+ * file.
  */
 
 import React, { useMemo, useState } from 'react';
@@ -13,7 +14,6 @@ import { getPath, classNames } from '../../utils/helpers';
 import './ReadPage.css';
 import EmptyExperience from '../../components/common/EmptyExperience';
 
-
 function isValidNavigation(navigation) {
   return Boolean(navigation) && typeof navigation === 'object' && navigation.experience;
 }
@@ -23,27 +23,26 @@ function ReadHeader({ title, onBack, onBookmark, onMore }) {
 
   return (
     <div className="read-header">
-      <IconButton icon="←" ariaLabel="Go back" onClick={onBack} />
+      <div className="read-header-left">
+        <IconButton icon="←" ariaLabel="Go back" onClick={onBack} />
 
-      <h1 className="read-header-title">
-        {title}
+        <h1 className="read-header-title">
+          {title}
 
-        {readIconImage ? (
-          <img
-            src={readIconImage}
-            alt=""
-            className="read-header-icon"
-            aria-hidden="true"
-          />
-        ) : (
-          <span
-            className="read-header-icon"
-            aria-hidden="true"
-          >
-            📖
-          </span>
-        )}
-      </h1>
+          {readIconImage ? (
+            <img
+              src={readIconImage}
+              alt=""
+              className="read-header-icon"
+              aria-hidden="true"
+            />
+          ) : (
+            <span className="read-header-icon" aria-hidden="true">
+              📖
+            </span>
+          )}
+        </h1>
+      </div>
 
       <div className="read-header-actions">
         <IconButton icon="🔖" ariaLabel="Bookmark" onClick={onBookmark} />
@@ -52,6 +51,7 @@ function ReadHeader({ title, onBack, onBookmark, onMore }) {
     </div>
   );
 }
+
 function TabBar({ tabs, activeTabId, onSelectTab }) {
   if (!Array.isArray(tabs) || tabs.length === 0) return null;
   return (
@@ -87,9 +87,7 @@ function LetterListItem({ item, onNavigate }) {
       <span className="read-list-item-body">
         <span className="read-list-item-title">{item.title}</span>
         {item.subtitle && <span className="read-list-item-subtitle">{item.subtitle}</span>}
-        <span className="read-list-item-meta">
-          {item.durationLabel}
-        </span>
+        <span className="read-list-item-meta">{item.durationLabel}</span>
       </span>
     </button>
   );
@@ -101,6 +99,10 @@ function ReadPage({ roomSlug, onBack, onNavigation }) {
 
   const configTitle = getPath(data, 'config.title', null);
   const configSubtitle = getPath(data, 'config.subtitle', null);
+
+  const pageQuote = getPath(data, 'pageQuote', null);
+  const stats = getPath(data, 'stats', []);
+
   const emptyStateText = getPath(data, 'config.emptyStateText', null);
   const showTabs = getPath(data, 'config.showTabs', false);
 
@@ -112,7 +114,7 @@ function ReadPage({ roomSlug, onBack, onNavigation }) {
   const itemList = Array.isArray(items) ? items : [];
 
   const experienceState = getPath(data, 'state', 'EMPTY');
-  
+  const isEmptyExperience = experienceState === 'EMPTY';
 
   const handleNavigate = (navigation) => {
     if (!isValidNavigation(navigation)) return;
@@ -128,48 +130,63 @@ function ReadPage({ roomSlug, onBack, onNavigation }) {
       emptyTitle="Nothing here yet"
       emptyMessage={emptyStateText || 'Check back soon.'}
     >
-<div className="read-canvas">
+      <div className="read-canvas">
+        <div className="read-content">
+          <ReadHeader
+            title={configTitle}
+            onBack={() => onBack && onBack()}
+            onBookmark={() => console.log('Bookmark (pending feature)')}
+            onMore={() => console.log('More options (pending feature)')}
+          />
 
-        <ReadHeader
-          title={configTitle}
-          onBack={() => onBack && onBack()}
-          onBookmark={() => console.log('Bookmark (pending feature)')}
-          onMore={() => console.log('More options (pending feature)')}
-        />
+          {!isEmptyExperience && (
+            <>
+              {configSubtitle && (
+                <div className="read-subtitle">{configSubtitle}</div>
+              )}
 
-{experienceState === 'EMPTY' ? (
-  <EmptyExperience
-    icon="📖"
-    title={emptyStateText || 'No letters yet.'}
-    subtitle={configSubtitle}
-  />
-) : (
-  <>
-    {configSubtitle && (
-      <p className="read-subtitle">{configSubtitle}</p>
-    )}
+              {pageQuote?.text && (
+                <div className="read-page-quote">{pageQuote.text}</div>
+              )}
 
-    {showTabs && (
-      <TabBar
-        tabs={tabList}
-        activeTabId={resolvedActiveTabId}
-        onSelectTab={setActiveTabId}
-      />
-    )}
+              {Array.isArray(stats) && stats.length > 0 && (
+                <div className="read-stats">
+                  {stats.map((stat) => (
+                    <div key={stat.id} className="read-stat">
+                      <div className="read-stat-value">{stat.value}</div>
+                      <div className="read-stat-label">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
 
-    <div className="read-list">
-      {itemList.map((item) => (
-        <LetterListItem
-          key={item.id}
-          item={item}
-          
-          onNavigate={handleNavigate}
-        />
-      ))}
-    </div>
-  </>
-)}      
-</div>
+          {isEmptyExperience ? (
+            <EmptyExperience
+              icon="📖"
+              title={emptyStateText || 'No letters yet.'}
+              subtitle={configSubtitle}
+            />
+          ) : (
+            <>
+              {showTabs && (
+                <TabBar
+                  tabs={tabList}
+                  activeTabId={resolvedActiveTabId}
+                  onSelectTab={setActiveTabId}
+                />
+              )}
+
+              <div className="read-list">
+                {itemList.map((item) => (
+                  <LetterListItem key={item.id} item={item} onNavigate={handleNavigate} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </PageContainer>
   );
 }

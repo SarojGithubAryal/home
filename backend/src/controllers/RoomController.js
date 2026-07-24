@@ -12,7 +12,6 @@ class RoomController {
     try {
       const { roomSlug } = req.params;
       const context = {
-        timeOfDay: req.query.timeOfDay || null,
         weatherCondition: req.query.weatherCondition || null,
         season: req.query.season || null,
         moodSlug: req.query.moodSlug || null,

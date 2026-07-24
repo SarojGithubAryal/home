@@ -5,6 +5,7 @@ const moodLandingContentService = require('./MoodLandingContentService');
 const greetingEngine = require('../engines/GreetingEngine');
 const themeEngine = require('../engines/ThemeEngine');
 const experienceEngine = require('../engines/ExperienceEngine');
+const getTimeContext = require('../utils/timeContext');
 
 class MoodExperienceService {
   /**
@@ -22,13 +23,14 @@ class MoodExperienceService {
     const rooms = landingData?.rooms || [];
 
     // Greeting
+    const timeCtx = getTimeContext();
     const greetingCandidates = await greetingService.getMatchingGreetings({
-      timeOfDay: context.timeOfDay,
+      timeOfDay: timeCtx.timeOfDay,
       moodId: mood.id,
     });
     const greeting = greetingEngine.select({
       candidates: greetingCandidates,
-      context: { timeOfDay: context.timeOfDay },
+      context: { timeOfDay: timeCtx.timeOfDay },
     });
 
     // Theme
@@ -36,8 +38,8 @@ class MoodExperienceService {
     const theme = themeEngine.determine({
       mood,
       themes,
-      // optionally use landingContent.theme_override if set
     });
+    theme.timeVariant = timeCtx.timeVariant;
 
     return experienceEngine.assembleMoodLanding({
       mood,

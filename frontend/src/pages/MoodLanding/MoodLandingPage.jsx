@@ -42,7 +42,13 @@ import './MoodLandingPage.css';
 function MoodLandingPage({ moodSlug, onBack, onNavigation }) {
   const { data, loading, error, refetch } = useMoodLanding(moodSlug);
 
-  const heroImage = AssetRegistry.getMoodLandingTheme();
+  // Backend is now the single source of truth for time — never
+  // calculated client-side. Falls back to null if theme/timeVariant
+  // is absent from the payload; AssetRegistry.getMoodLandingTheme()
+  // already defaults to "day" internally when passed a falsy value.
+  const timeVariant = getPath(data, 'theme.timeVariant', null);
+
+  const heroImage = AssetRegistry.getMoodLandingTheme(timeVariant);
 
   const badgeEmoji = getPath(data, 'hero.badgeEmoji', null);
   const badgeText = getPath(data, 'hero.badgeText', null);

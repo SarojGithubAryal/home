@@ -1,6 +1,9 @@
 /**
- * MemoryPage.jsx — mirrors ReadPage.jsx/SeePage.jsx, adapted for the
- * Memory Experience (GET /api/rooms/:roomSlug/memory).
+ * MemoryPage.jsx — mirrors HearPage.jsx's finalized structure, adapted
+ * for the Memory Experience (GET /api/rooms/:roomSlug/memory). This
+ * page never had empty-state gating in the original implementation,
+ * so none is introduced here — only header/subtitle/quote/stats
+ * structure and spacing are brought in line with HearPage.
  */
 
 import React, { useState } from 'react';
@@ -20,27 +23,26 @@ function MemoryHeader({ title, onBack, onBookmark, onMore }) {
 
   return (
     <div className="memory-header">
-      <IconButton icon="←" ariaLabel="Go back" onClick={onBack} />
+      <div className="memory-header-left">
+        <IconButton icon="←" ariaLabel="Go back" onClick={onBack} />
 
-      <h1 className="memory-header-title">
-        {title}
+        <h1 className="memory-header-title">
+          {title}
 
-        {memoryIconImage ? (
-          <img
-            src={memoryIconImage}
-            alt=""
-            className="memory-header-icon"
-            aria-hidden="true"
-          />
-        ) : (
-          <span
-            className="memory-header-icon"
-            aria-hidden="true"
-          >
-            🌸
-          </span>
-        )}
-      </h1>
+          {memoryIconImage ? (
+            <img
+              src={memoryIconImage}
+              alt=""
+              className="memory-header-icon"
+              aria-hidden="true"
+            />
+          ) : (
+            <span className="memory-header-icon" aria-hidden="true">
+              🌸
+            </span>
+          )}
+        </h1>
+      </div>
 
       <div className="memory-header-actions">
         <IconButton icon="🔖" ariaLabel="Bookmark" onClick={onBookmark} />
@@ -97,6 +99,10 @@ function MemoryPage({ roomSlug, onBack, onNavigation }) {
 
   const configTitle = getPath(data, 'config.title', null);
   const configSubtitle = getPath(data, 'config.subtitle', null);
+
+  const pageQuote = getPath(data, 'pageQuote', null);
+  const stats = getPath(data, 'stats', []);
+
   const emptyStateText = getPath(data, 'config.emptyStateText', null);
   const showTabs = getPath(data, 'config.showTabs', false);
 
@@ -106,7 +112,6 @@ function MemoryPage({ roomSlug, onBack, onNavigation }) {
 
   const items = getPath(data, 'items', []);
   const itemList = Array.isArray(items) ? items : [];
-  
 
   const handleNavigate = (navigation) => {
     if (!isValidNavigation(navigation)) return;
@@ -122,28 +127,47 @@ function MemoryPage({ roomSlug, onBack, onNavigation }) {
       emptyTitle="Nothing here yet"
       emptyMessage={emptyStateText || 'Check back soon.'}
     >
-         <div className="memory-canvas">
-        <MemoryHeader
-          title={configTitle}
-          onBack={() => onBack && onBack()}
-          onBookmark={() => {}}
-          onMore={() => {}}
-        />
+      <div className="memory-canvas">
+        <div className="memory-content">
+          <MemoryHeader
+            title={configTitle}
+            onBack={() => onBack && onBack()}
+            onBookmark={() => {}}
+            onMore={() => {}}
+          />
 
-        {configSubtitle && <p className="memory-subtitle">{configSubtitle}</p>}
+          {configSubtitle && (
+            <div className="memory-subtitle">{configSubtitle}</div>
+          )}
 
-        {showTabs && (
-          <TabBar tabs={tabList} activeTabId={resolvedActiveTabId} onSelectTab={setActiveTabId} />
-        )}
+          {pageQuote?.text && (
+            <div className="memory-page-quote">{pageQuote.text}</div>
+          )}
 
-        <div className="memory-list">
-          {itemList.map((item) => (
-<MemoryListItem
-  key={item.id}
-  item={item}
-  onNavigate={handleNavigate}
-/>
-          ))}
+          {Array.isArray(stats) && stats.length > 0 && (
+            <div className="memory-stats">
+              {stats.map((stat) => (
+                <div key={stat.id} className="memory-stat">
+                  <div className="memory-stat-value">{stat.value}</div>
+                  <div className="memory-stat-label">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {showTabs && (
+            <TabBar
+              tabs={tabList}
+              activeTabId={resolvedActiveTabId}
+              onSelectTab={setActiveTabId}
+            />
+          )}
+
+          <div className="memory-list">
+            {itemList.map((item) => (
+              <MemoryListItem key={item.id} item={item} onNavigate={handleNavigate} />
+            ))}
+          </div>
         </div>
       </div>
     </PageContainer>

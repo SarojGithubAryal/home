@@ -38,17 +38,45 @@ function HomePage({ onNavigation }) {
     selecting,
   } = useMoods();
 
-  const heroImage = AssetRegistry.getHomeTheme();
-  
+  // Backend is now the single source of truth for time — never
+  // calculated client-side. Falls back to null if theme/timeVariant
+  // is absent from the payload; AssetRegistry.getHomeTheme() already
+  // defaults to "day" internally when passed a falsy value.
+  const timeVariant = getPath(data, 'theme.timeVariant', null);
+
+  const heroImage = AssetRegistry.getHomeTheme(timeVariant);
+
   const rawGreetingText =
     getPath(data, 'greeting.text', null) ||
     getPath(data, 'greeting', null);
 
-  const greetingText =
+  const baseGreetingText =
     typeof rawGreetingText === 'string' &&
     !isRedundantGreeting(rawGreetingText)
       ? rawGreetingText
       : null;
+
+  // Per backend contract: the greeting name comes from
+  // greeting.username specifically — NOT userProfile.displayName,
+  // which is currently only a placeholder field. getPath() falls back
+  // to null safely if greeting.username is missing or the greeting
+  // shape ever changes, so this never throws — it just omits the name.
+  const greetingUsername = getPath(data, 'greeting.username', null);
+
+  // Appends ", {username}!" to the backend's greeting text (e.g.
+  // "Good afternoon." -> "Good afternoon, Sana!"), without touching
+  // the greeting text itself or any time-of-day logic. Strips a
+  // single trailing "!" or "." from the base greeting before
+  // appending, since the combined string supplies its own closing
+  // "!". If greeting.username is missing or empty, greetingText stays
+  // exactly baseGreetingText — no dangling comma or exclamation mark.
+  const hasGreetingUsername =
+    typeof greetingUsername === 'string' && greetingUsername.trim().length > 0;
+
+  const greetingText =
+    baseGreetingText && hasGreetingUsername
+      ? `${baseGreetingText.replace(/[.!]+$/, '')}, ${greetingUsername.trim()}!`
+      : baseGreetingText;
 
   const heroSupportingText =
     getPath(data, 'hero.subtitle', null);

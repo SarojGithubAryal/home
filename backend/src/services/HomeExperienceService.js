@@ -9,6 +9,7 @@ const experienceEngine = require('../engines/ExperienceEngine');
 const greetingEngine = require('../engines/GreetingEngine');
 const themeEngine = require('../engines/ThemeEngine');
 const recommendationEngine = require('../engines/RecommendationEngine');
+const getTimeContext = require('../utils/timeContext');
 
 class HomeExperienceService {
   /**
@@ -27,8 +28,9 @@ class HomeExperienceService {
     }
 
     // 3. Greeting candidates
+    const timeCtx = getTimeContext();
     const greetingCandidates = await greetingService.getMatchingGreetings({
-      timeOfDay: context.timeOfDay,
+      timeOfDay: timeCtx.timeOfDay,
       weatherCondition: context.weatherCondition,
       season: context.season,
       moodId: mood?.id,
@@ -38,7 +40,7 @@ class HomeExperienceService {
     const greeting = greetingEngine.select({
       candidates: greetingCandidates,
       context: {
-        timeOfDay: context.timeOfDay,
+        timeOfDay: timeCtx.timeOfDay,
         weatherCondition: context.weatherCondition,
         season: context.season,
         moodId: mood?.id,
@@ -50,10 +52,10 @@ class HomeExperienceService {
     const theme = themeEngine.determine({
       weather: context.weatherCondition ? { condition: context.weatherCondition } : null,
       season: context.season,
-      timeOfDay: context.timeOfDay,
       mood,
       themes,
     });
+    theme.timeVariant = timeCtx.timeVariant;
 
     // 6. Content recommendation (will be null, no content yet)
     const rules = await recommendationService.getAllRules();
@@ -62,7 +64,6 @@ class HomeExperienceService {
       contents: [],
       context: {
         moodId: mood?.id,
-        timeOfDay: context.timeOfDay,
         weatherCondition: context.weatherCondition,
         season: context.season,
       },

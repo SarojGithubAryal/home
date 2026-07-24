@@ -53,7 +53,6 @@ class MoodController {
     try {
       const { moodSlug } = req.params;
       const context = {
-        timeOfDay: req.query.timeOfDay || null,
         weatherCondition: req.query.weatherCondition || null,
         season: req.query.season || null,
       };
