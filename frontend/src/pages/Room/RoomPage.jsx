@@ -60,7 +60,7 @@ function RoomPage({ roomSlug, onBack, onNavigation }) {
     // calculated client-side. Falls back to null if theme/timeVariant
     // is absent from the payload; AssetRegistry.getRoomTheme() already
     // defaults to "day" internally when passed a falsy value.
-    const timeVariant = getPath(experience, 'theme.timeVariant', null);
+    const timeVariant = getPath(experience, 'theme.timeVariant', undefined);
 
     const roomTheme = AssetRegistry.getRoomTheme(roomSlug, timeVariant);
     console.log("Room slug:", roomSlug);

@@ -42,7 +42,7 @@ function HomePage({ onNavigation }) {
   // calculated client-side. Falls back to null if theme/timeVariant
   // is absent from the payload; AssetRegistry.getHomeTheme() already
   // defaults to "day" internally when passed a falsy value.
-  const timeVariant = getPath(data, 'theme.timeVariant', null);
+  const timeVariant = getPath(data, 'theme.timeVariant', undefined);
 
   const heroImage = AssetRegistry.getHomeTheme(timeVariant);
 
