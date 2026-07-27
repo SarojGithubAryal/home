@@ -10,5 +10,7 @@ router.use('/home', homeRoutes);
 router.use('/rooms', roomRoutes);
 router.use('/moods', moodRoutes);
 router.use('/user', userRoutes);
+router.use('/admin', require('./admin.routes'));
+router.use('/contents', require('./contentRoutes'));
 
 module.exports = router;

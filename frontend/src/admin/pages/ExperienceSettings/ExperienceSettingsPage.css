@@ -1,0 +1,483 @@
+.experience-page {
+  padding: clamp(1rem, 3vw, 2rem);
+  background: var(--admin-color-background, #fafafa);
+  font-family: var(--admin-font-family, system-ui, -apple-system, 'Segoe UI', sans-serif);
+  color: var(--admin-color-text-primary, #18181b);
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-bottom: clamp(1.5rem, 4vw, 2.25rem);
+}
+
+.page-header h2 {
+  font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  color: var(--admin-color-text-secondary, #6b7280);
+  margin: 0.25rem 0 0 0;
+}
+
+/* ---- Section Cards ---- */
+
+.experience-section {
+  background: var(--admin-color-surface, #ffffff);
+  border-radius: var(--admin-radius-lg, 1rem);
+  padding: clamp(1.1rem, 3vw, 1.6rem);
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
+  box-shadow: var(--admin-shadow-low, 0 0.0625rem 0.1875rem rgb(0 0 0 / 0.06));
+  border: 1px solid var(--admin-color-border, #e5e7eb);
+}
+
+.section-header {
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--admin-color-border, #e5e7eb);
+}
+
+.section-header h3 {
+  font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+  font-weight: 600;
+  margin: 0;
+  color: var(--admin-color-text-primary);
+}
+
+.section-description {
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+  color: var(--admin-color-text-secondary, #6b7280);
+  margin: 0.15rem 0 0 0;
+}
+
+.section-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+}
+
+/* ---- Buttons ---- */
+
+.btn {
+  padding: 0.4rem 1.1rem;
+  border-radius: var(--admin-radius-sm, 0.5rem);
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+  font-weight: 500;
+  border: 1px solid var(--admin-color-border, #e5e7eb);
+  background: var(--admin-color-surface, #ffffff);
+  color: var(--admin-color-text-secondary, #6b7280);
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--admin-color-accent-soft, #ede9fe);
+  border-color: var(--admin-color-accent, #7c6ff0);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--admin-color-accent, #7c6ff0);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--admin-color-accent, #7c6ff0);
+  color: #fff;
+  border-color: var(--admin-color-accent, #7c6ff0);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #6b5de8;
+  border-color: #6b5de8;
+}
+
+.btn-secondary {
+  background: var(--admin-color-surface, #ffffff);
+  color: var(--admin-color-text-secondary, #6b7280);
+}
+
+/* ---- List Card (tighter, easier to scan) ---- */
+
+.list-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  background: var(--admin-color-background, #fafafa);
+  border-radius: var(--admin-radius-md, 0.75rem);
+  padding: clamp(0.75rem, 2vw, 1rem);
+  margin-bottom: 0.6rem;
+  border: 1px solid var(--admin-color-border, #e5e7eb);
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.list-card:hover {
+  border-color: var(--admin-color-accent-soft, #ede9fe);
+  box-shadow: var(--admin-shadow-medium, 0 0.25rem 0.75rem rgb(0 0 0 / 0.08));
+}
+
+.list-card:last-child {
+  margin-bottom: 0;
+}
+
+.list-card-content {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.list-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.list-card-actions .btn {
+  padding: 0.3rem 0.85rem;
+}
+
+.empty-state {
+  padding: clamp(1.5rem, 4vw, 2rem);
+  text-align: center;
+  color: var(--admin-color-text-muted, #9ca3af);
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+}
+
+/* ---- Greetings ---- */
+
+.greeting-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.85rem;
+}
+
+.greeting-text {
+  font-weight: 500;
+  font-size: var(--admin-font-size-body, 0.95rem);
+}
+
+.greeting-time {
+  font-size: var(--admin-font-size-caption, 0.75rem);
+  color: var(--admin-color-text-muted, #9ca3af);
+}
+
+/* ---- Quotes ---- */
+
+.quote-body {
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+  line-height: 1.55;
+  margin: 0 0 0.15rem 0;
+  font-style: italic;
+  color: var(--admin-color-text-primary);
+}
+
+.quote-author {
+  font-size: var(--admin-font-size-caption, 0.75rem);
+  color: var(--admin-color-text-secondary, #6b7280);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* ---- Daily Messages ---- */
+
+.message-text {
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+  margin: 0 0 0.15rem 0;
+  color: var(--admin-color-text-primary);
+  font-weight: 500;
+}
+
+.message-subtext {
+  font-size: var(--admin-font-size-caption, 0.75rem);
+  color: var(--admin-color-text-secondary, #6b7280);
+  margin: 0 0 0.15rem 0;
+}
+
+.message-author {
+  font-size: var(--admin-font-size-caption, 0.75rem);
+  color: var(--admin-color-text-muted, #9ca3af);
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.scheduled-date {
+  font-size: var(--admin-font-size-caption, 0.75rem);
+  color: var(--admin-color-text-muted, #9ca3af);
+  margin: 0.15rem 0 0 0;
+}
+
+/* ---- Config Items ---- */
+
+.config-item {
+  margin: 0.25rem 0;
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+}
+
+.config-item strong {
+  font-weight: 600;
+  color: var(--admin-color-text-secondary, #6b7280);
+  margin-right: 0.4rem;
+}
+
+/* ---- Badges & Tags ---- */
+
+.meta-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--admin-radius-full, 999px);
+  font-weight: 600;
+  font-size: var(--admin-font-size-caption, 0.7rem);
+  background: var(--admin-color-border, #e5e7eb);
+  color: var(--admin-color-text-secondary, #6b7280);
+}
+
+.status-badge.active {
+  background: var(--admin-color-success-soft, #dcfce7);
+  color: var(--admin-color-success, #16a34a);
+}
+
+.status-badge.inactive {
+  background: var(--admin-color-warning-soft, #fef3c7);
+  color: var(--admin-color-warning, #d97706);
+}
+
+.language-tag,
+.type-tag,
+.page-tag,
+.priority-tag {
+  font-size: var(--admin-font-size-caption, 0.7rem);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--admin-radius-full, 999px);
+  background: var(--admin-color-border, #e5e7eb);
+  color: var(--admin-color-text-secondary, #6b7280);
+  font-weight: 500;
+}
+
+/* ---- Toggle (checkbox styled as a switch, CSS-only) ---- */
+
+.toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--admin-font-size-caption, 0.75rem);
+  color: var(--admin-color-text-secondary, #6b7280);
+  cursor: pointer;
+}
+
+.toggle-label input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 2.25rem;
+  height: 1.25rem;
+  border-radius: var(--admin-radius-full, 999px);
+  background: var(--admin-color-border, #e5e7eb);
+  cursor: pointer;
+  transition: background 180ms ease;
+  flex-shrink: 0;
+}
+
+.toggle-label input[type='checkbox']::before {
+  content: '';
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0.0625rem 0.125rem rgb(0 0 0 / 0.15);
+  transition: transform 180ms ease;
+}
+
+.toggle-label input[type='checkbox']:checked {
+  background: var(--admin-color-accent, #7c6ff0);
+}
+
+.toggle-label input[type='checkbox']:checked::before {
+  transform: translateX(1rem);
+}
+
+/* ---- Modals / Forms ---- */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.modal-content {
+  background: var(--admin-color-surface, #ffffff);
+  border-radius: var(--admin-radius-lg, 1rem);
+  max-width: 28rem;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--admin-shadow-medium, 0 0.25rem 0.75rem rgb(0 0 0 / 0.08));
+}
+
+.modal-body {
+  padding: clamp(1.1rem, 3vw, 1.5rem);
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.modal-title {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  font-weight: 600;
+  margin: 0 0 0.4rem 0;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-field-label {
+  font-weight: 500;
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+  color: var(--admin-color-text-secondary, #6b7280);
+}
+
+.form-field-control input,
+.form-field-control select,
+.form-field-control textarea {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--admin-color-border, #e5e7eb);
+  border-radius: var(--admin-radius-sm, 0.5rem);
+  font-size: var(--admin-font-size-body, 0.95rem);
+  background: var(--admin-color-surface, #ffffff);
+  width: 100%;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.form-field-control input:focus,
+.form-field-control select:focus,
+.form-field-control textarea:focus {
+  outline: none;
+  border-color: var(--admin-color-accent, #7c6ff0);
+  box-shadow: 0 0 0 3px rgba(124, 111, 240, 0.14);
+}
+
+/* Standalone checkbox in modal forms (Active field) — same track/thumb
+   pattern as .toggle-label, applied directly since no wrapper class
+   exists there in the JSX. */
+.form-field-control input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 2.25rem;
+  height: 1.25rem;
+  border-radius: var(--admin-radius-full, 999px);
+  background: var(--admin-color-border, #e5e7eb);
+  cursor: pointer;
+  transition: background 180ms ease;
+}
+
+.form-field-control input[type='checkbox']::before {
+  content: '';
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0.0625rem 0.125rem rgb(0 0 0 / 0.15);
+  transition: transform 180ms ease;
+}
+
+.form-field-control input[type='checkbox']:checked {
+  background: var(--admin-color-accent, #7c6ff0);
+}
+
+.form-field-control input[type='checkbox']:checked::before {
+  transform: translateX(1rem);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.admin-placeholder {
+  padding: clamp(2rem, 6vw, 3rem);
+  text-align: center;
+  color: var(--admin-color-text-secondary, #6b7280);
+}
+
+.admin-placeholder button {
+  margin-top: 0.85rem;
+  padding: 0.4rem 1.2rem;
+  border-radius: var(--admin-radius-sm, 0.5rem);
+  border: 1px solid var(--admin-color-border, #e5e7eb);
+  background: var(--admin-color-surface, #ffffff);
+  cursor: pointer;
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 48rem) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .list-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .list-card-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 30rem) {
+  .greeting-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

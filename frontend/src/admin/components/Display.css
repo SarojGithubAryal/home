@@ -1,0 +1,129 @@
+/* ---- AdminCard ---- */
+
+.admin-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--admin-space-sm);
+  padding: var(--admin-space-md);
+  background-color: var(--admin-color-surface);
+  border: 0.0625rem solid var(--admin-color-border);
+  border-radius: var(--admin-radius-lg);
+  box-shadow: var(--admin-shadow-low);
+}
+
+.admin-card-icon {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--admin-radius-md);
+  background-color: var(--admin-color-accent-soft);
+  font-size: 1.1rem;
+}
+
+.admin-card-icon--success { background-color: var(--admin-color-success-soft); }
+.admin-card-icon--warning { background-color: var(--admin-color-warning-soft); }
+
+.admin-card-body { min-width: 0; }
+
+.admin-card-label {
+  font-size: var(--admin-font-size-body-sm);
+  color: var(--admin-color-text-secondary);
+}
+
+.admin-card-value {
+  font-size: var(--admin-font-size-display);
+  font-weight: 700;
+  color: var(--admin-color-text-primary);
+  margin-top: 0.125rem;
+}
+
+.admin-card-subtitle {
+  font-size: var(--admin-font-size-caption);
+  color: var(--admin-color-text-muted);
+  margin-top: 0.25rem;
+}
+
+/* ---- StatusBadge ---- */
+
+.admin-status-badge {
+  display: inline-flex;
+  padding-block: 0.125rem;
+  padding-inline: var(--admin-space-xs);
+  border-radius: var(--admin-radius-full);
+  font-size: var(--admin-font-size-caption);
+  font-weight: 600;
+}
+
+.admin-status-badge--published { background-color: var(--admin-color-success-soft); color: var(--admin-color-success); }
+.admin-status-badge--scheduled { background-color: var(--admin-color-accent-soft); color: var(--admin-color-accent); }
+.admin-status-badge--draft { background-color: var(--admin-color-warning-soft); color: var(--admin-color-warning); }
+
+/* ---- SectionHeader ---- */
+
+.admin-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--admin-space-sm);
+  margin-bottom: var(--admin-space-sm);
+}
+
+.admin-section-header-title {
+  font-size: var(--admin-font-size-heading);
+  font-weight: 700;
+  color: var(--admin-color-text-primary);
+}
+
+.admin-section-header-subtitle {
+  font-size: var(--admin-font-size-body-sm);
+  color: var(--admin-color-text-secondary);
+  margin-top: 0.125rem;
+}
+
+/* ---- EmptyState / LoadingState / ErrorState ---- */
+
+.admin-empty-state,
+.admin-loading-state,
+.admin-error-state {
+  padding: var(--admin-space-lg);
+  text-align: center;
+  color: var(--admin-color-text-secondary);
+}
+
+.admin-empty-state-title {
+  font-weight: 600;
+  color: var(--admin-color-text-primary);
+}
+
+.admin-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--admin-space-xs);
+}
+
+.admin-loading-spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  border: 0.15rem solid var(--admin-color-border);
+  border-top-color: var(--admin-color-accent);
+  animation: admin-spin 700ms linear infinite;
+}
+
+@keyframes admin-spin {
+  to { transform: rotate(360deg); }
+}
+
+.admin-error-state-retry {
+  margin-top: var(--admin-space-xs);
+  padding-block: var(--admin-space-2xs);
+  padding-inline: var(--admin-space-md);
+  border-radius: var(--admin-radius-full);
+  background-color: var(--admin-color-error-soft);
+  color: var(--admin-color-error);
+  font-weight: 600;
+}

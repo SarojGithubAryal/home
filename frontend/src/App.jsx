@@ -43,27 +43,14 @@ function App() {
 
   const currentEntry = history[history.length - 1];
 
-  /**
-   * Pushes a new page onto the history stack.
-   */
   const navigate = useCallback((page, props = {}) => {
     setHistory((prev) => [...prev, { page, props }]);
   }, []);
 
-  /**
-   * Generic back handler, given to every page as onBack. Pops the
-   * history stack, returning to whatever screen was actually visited
-   * before — never a hardcoded destination.
-   */
   const goBack = useCallback(() => {
     setHistory((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
   }, []);
 
-  /**
-   * Receives a backend response after a user action:
-   * { success, navigation: { experience, params }, data }
-   * Resolves it into a frontend page and navigates to it.
-   */
   const handleNavigation = useCallback(
     (response) => {
       if (!response?.success) return;

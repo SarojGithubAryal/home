@@ -1,0 +1,221 @@
+/* ------------------------------------------------------------------
+   SettingsPage.css
+   Matches the row-card visual language from the reference image
+   (icon + label/value + edit chevron), scoped to only the five real
+   backend fields. Reuses the same .modal-overlay/.modal-content/
+   .modal-body/.modal-form/.form-field/.btn class names already
+   established in ExperienceSettingsPage.css for consistency.
+   ------------------------------------------------------------------ */
+
+.settings-page {
+  padding: clamp(1rem, 3vw, 2rem);
+  background: var(--admin-color-background, #fafafa);
+  font-family: var(--admin-font-family, system-ui, -apple-system, 'Segoe UI', sans-serif);
+  color: var(--admin-color-text-primary, #18181b);
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.settings-header {
+  margin-bottom: clamp(1.5rem, 4vw, 2.25rem);
+}
+
+.settings-header h2 {
+  font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.settings-subtitle {
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  color: var(--admin-color-text-secondary, #6b7280);
+  margin: 0.25rem 0 0 0;
+}
+
+.settings-section {
+  margin-bottom: var(--admin-space-lg, 2rem);
+}
+
+.settings-section-title {
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--admin-color-text-secondary, #6b7280);
+  margin: 0 0 var(--admin-space-xs, 0.75rem) 0.25rem;
+}
+
+.settings-card {
+  background: var(--admin-color-surface, #ffffff);
+  border-radius: var(--admin-radius-lg, 1rem);
+  border: 1px solid var(--admin-color-border, #e5e7eb);
+  box-shadow: var(--admin-shadow-low, 0 0.0625rem 0.1875rem rgb(0 0 0 / 0.06));
+  overflow: hidden;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1rem);
+  padding: clamp(0.9rem, 2.5vw, 1.25rem);
+  border-bottom: 1px solid var(--admin-color-border, #e5e7eb);
+  transition: background 180ms ease;
+}
+
+.settings-row:hover {
+  background: rgba(124, 111, 240, 0.03);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row-icon {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--admin-radius-md, 0.75rem);
+  background: var(--admin-color-accent-soft, #ede9fe);
+  font-size: 1.15rem;
+}
+
+.settings-row-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.settings-row-label {
+  font-weight: 500;
+  font-size: var(--admin-font-size-body, 0.95rem);
+  color: var(--admin-color-text-primary);
+}
+
+.settings-row-value {
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+  color: var(--admin-color-text-secondary, #6b7280);
+  text-transform: capitalize;
+}
+
+.settings-row-status {
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+  color: var(--admin-color-text-muted, #9ca3af);
+}
+
+.settings-row-status--on {
+  color: var(--admin-color-success, #16a34a);
+}
+
+.settings-row-edit {
+  flex-shrink: 0;
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--admin-color-accent, #7c6ff0);
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--admin-radius-sm, 0.5rem);
+  transition: background 180ms ease;
+  cursor: pointer;
+}
+
+.settings-row-edit:focus-visible {
+  outline: 2px solid var(--admin-color-accent, #7c6ff0);
+  outline-offset: 2px;
+}
+
+.settings-row-edit:hover {
+  background: var(--admin-color-accent-soft, #ede9fe);
+}
+
+/* ---- Toggle switch ---- */
+
+.settings-toggle {
+  flex-shrink: 0;
+  position: relative;
+  display: inline-block;
+  width: 2.75rem;
+  height: 1.5rem;
+}
+
+.settings-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.settings-toggle-track {
+  position: absolute;
+  inset: 0;
+  background: var(--admin-color-border, #e5e7eb);
+  border-radius: var(--admin-radius-full, 999px);
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.settings-toggle-track::before {
+  content: '';
+  position: absolute;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0.0625rem 0.125rem rgb(0 0 0 / 0.15);
+  transition: transform 0.2s;
+}
+
+.settings-toggle input:checked + .settings-toggle-track {
+  background: var(--admin-color-accent, #7c6ff0);
+}
+
+.settings-toggle input:checked + .settings-toggle-track::before {
+  transform: translateX(1.25rem);
+}
+
+.settings-toggle input:disabled + .settings-toggle-track {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---- Reuse modal/button/form classes already defined globally by
+   ExperienceSettingsPage.css. If SettingsPage is ever rendered
+   without ExperienceSettingsPage.css having loaded first, these
+   fallback rules keep the modal usable. ---- */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: var(--admin-space-md, 1.5rem);
+}
+
+.modal-content {
+  background: var(--admin-color-surface, #ffffff);
+  border-radius: var(--admin-radius-lg, 1rem);
+  max-width: 28rem;
+  width: 100%;
+  box-shadow: var(--admin-shadow-medium, 0 0.25rem 0.75rem rgb(0 0 0 / 0.08));
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 768px) {
+  .settings-page {
+    padding: var(--admin-space-sm, 1rem);
+  }
+
+  .settings-row {
+    padding: var(--admin-space-sm, 1rem);
+  }
+}

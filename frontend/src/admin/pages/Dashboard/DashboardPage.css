@@ -1,0 +1,102 @@
+.admin-notification-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--admin-radius-full);
+  font-size: 1.1rem;
+  color: var(--admin-color-text-secondary);
+}
+
+.admin-dashboard-body {
+  padding: 0 var(--admin-space-md) var(--admin-space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--admin-space-md);
+}
+
+.admin-dashboard-greeting {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--admin-space-sm);
+  flex-wrap: wrap;
+}
+
+.admin-dashboard-greeting-title {
+  font-size: var(--admin-font-size-display);
+  font-weight: 700;
+  color: var(--admin-color-text-primary);
+}
+
+.admin-dashboard-greeting-subtitle {
+  font-size: var(--admin-font-size-body);
+  color: var(--admin-color-text-secondary);
+  margin-top: 0.125rem;
+}
+
+.admin-dashboard-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.125rem;
+  padding: var(--admin-space-xs) var(--admin-space-sm);
+  border-radius: var(--admin-radius-md);
+  background-color: var(--admin-color-accent-soft);
+  color: var(--admin-color-accent);
+  font-weight: 600;
+  font-size: var(--admin-font-size-body-sm);
+}
+
+.admin-dashboard-clock-date {
+  font-weight: 400;
+  color: var(--admin-color-text-secondary);
+  font-size: var(--admin-font-size-caption);
+}
+
+.admin-dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: var(--admin-space-sm);
+}
+
+.admin-dashboard-section-title {
+  font-size: var(--admin-font-size-heading);
+  font-weight: 700;
+  margin-bottom: var(--admin-space-xs);
+}
+
+.admin-dashboard-uploads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--admin-space-2xs);
+  background-color: var(--admin-color-surface);
+  border: 0.0625rem solid var(--admin-color-border);
+  border-radius: var(--admin-radius-lg);
+  overflow: hidden;
+}
+
+.admin-dashboard-upload-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--admin-space-sm);
+  padding: var(--admin-space-sm) var(--admin-space-md);
+  border-bottom: 0.0625rem solid var(--admin-color-border);
+}
+
+.admin-dashboard-upload-row:last-child {
+  border-bottom: none;
+}
+
+.admin-dashboard-upload-title {
+  font-size: var(--admin-font-size-body);
+  color: var(--admin-color-text-primary);
+}
+
+.admin-dashboard-upload-date {
+  font-size: var(--admin-font-size-caption);
+  color: var(--admin-color-text-muted);
+  flex-shrink: 0;
+}

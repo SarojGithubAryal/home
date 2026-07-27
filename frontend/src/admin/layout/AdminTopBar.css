@@ -1,0 +1,43 @@
+.admin-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--admin-space-sm);
+  padding: var(--admin-space-md) var(--admin-space-md) var(--admin-space-sm);
+}
+
+.admin-top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--admin-space-sm);
+  min-width: 0;
+}
+
+.admin-top-bar-icon {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+}
+
+.admin-top-bar-titles {
+  min-width: 0;
+}
+
+.admin-top-bar-title {
+  font-size: var(--admin-font-size-heading);
+  font-weight: 700;
+  color: var(--admin-color-text-primary);
+  line-height: 1.2;
+}
+
+.admin-top-bar-subtitle {
+  font-size: var(--admin-font-size-body-sm);
+  color: var(--admin-color-text-secondary);
+  margin-top: 0.125rem;
+}
+
+.admin-top-bar-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--admin-space-2xs);
+}

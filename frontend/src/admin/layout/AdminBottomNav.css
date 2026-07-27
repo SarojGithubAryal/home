@@ -1,0 +1,56 @@
+.admin-bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+
+  padding: var(--admin-space-xs) var(--admin-space-sm) var(--admin-space-sm);
+  background-color: var(--admin-color-surface);
+  border-top: 0.0625rem solid var(--admin-color-border);
+  box-shadow: 0 -0.125rem 0.5rem rgb(0 0 0 / 0.04);
+}
+
+.admin-bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+  color: var(--admin-color-text-muted);
+  font-size: var(--admin-font-size-caption);
+  font-weight: 500;
+  transition: color 150ms ease;
+}
+
+.admin-bottom-nav-icon {
+  font-size: 1.25rem;
+}
+
+.admin-bottom-nav-item--active {
+  color: var(--admin-color-accent);
+}
+
+/* Center "Upload" item rendered as a raised circular button, matching
+   every reference image's floating "+" button. */
+.admin-bottom-nav-item--upload .admin-bottom-nav-icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--admin-radius-full);
+  background-color: var(--admin-color-accent);
+  color: var(--admin-color-accent-contrast);
+  font-size: 1.4rem;
+  box-shadow: var(--admin-shadow-medium);
+  margin-top: -1.5rem;
+}
+
+.admin-bottom-nav-item--upload {
+  color: var(--admin-color-accent);
+}

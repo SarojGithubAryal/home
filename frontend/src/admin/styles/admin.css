@@ -1,0 +1,80 @@
+/**
+ * admin.css
+ *
+ * Single consolidated stylesheet for the entire Admin Panel — tokens
+ * + base resets + component styles, per the approved consolidation.
+ * Deliberately a SEPARATE token namespace (--admin-*) from the user
+ * app's tokens.css: the admin visual language (Notion/Supabase-
+ * inspired, neutral, professional) is intentionally different from the
+ * user app's warm-cream/glass aesthetic, and this file is only ever
+ * imported when AdminApp mounts — never loaded for the user app.
+ */
+
+:root {
+  /* ---- Color tokens ---- */
+  --admin-color-background: #fafafa;
+  --admin-color-surface: #ffffff;
+  --admin-color-border: #e5e7eb;
+  --admin-color-text-primary: #18181b;
+  --admin-color-text-secondary: #6b7280;
+  --admin-color-text-muted: #9ca3af;
+  --admin-color-accent: #7c6ff0;
+  --admin-color-accent-soft: #ede9fe;
+  --admin-color-accent-contrast: #ffffff;
+  --admin-color-success: #16a34a;
+  --admin-color-success-soft: #dcfce7;
+  --admin-color-warning: #d97706;
+  --admin-color-warning-soft: #fef3c7;
+  --admin-color-error: #dc2626;
+  --admin-color-error-soft: #fee2e2;
+
+  /* ---- Spacing ---- */
+  --admin-space-3xs: 0.25rem;
+  --admin-space-2xs: 0.5rem;
+  --admin-space-xs: 0.75rem;
+  --admin-space-sm: 1rem;
+  --admin-space-md: 1.5rem;
+  --admin-space-lg: 2rem;
+  --admin-space-xl: 3rem;
+
+  /* ---- Radius / shadow ---- */
+  --admin-radius-sm: 0.5rem;
+  --admin-radius-md: 0.75rem;
+  --admin-radius-lg: 1rem;
+  --admin-radius-full: 999px;
+  --admin-shadow-low: 0 0.0625rem 0.1875rem rgb(0 0 0 / 0.06);
+  --admin-shadow-medium: 0 0.25rem 0.75rem rgb(0 0 0 / 0.08);
+
+  /* ---- Typography ---- */
+  --admin-font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --admin-font-size-caption: 0.75rem;
+  --admin-font-size-body-sm: 0.875rem;
+  --admin-font-size-body: 0.95rem;
+  --admin-font-size-heading: 1.25rem;
+  --admin-font-size-display: 1.75rem;
+}
+
+.admin-layout,
+.admin-layout * {
+  box-sizing: border-box;
+  font-family: var(--admin-font-family);
+}
+
+.admin-layout {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--admin-color-background);
+  color: var(--admin-color-text-primary);
+}
+
+.admin-layout-content {
+  flex: 1;
+  padding-bottom: 5.5rem; /* clears the fixed bottom nav */
+}
+
+.admin-placeholder {
+  padding: var(--admin-space-xl);
+  text-align: center;
+  color: var(--admin-color-text-secondary);
+}
