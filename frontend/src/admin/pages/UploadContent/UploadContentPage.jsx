@@ -19,7 +19,9 @@ export default function UploadContentPage() {
     validationErrors,
     isSubmitting,
     submit,
-    uploadNotImplemented,
+    submitError,
+    submitSuccess,
+    setSubmitSuccess,
   } = useUploadContent();
 
   const handleChange = (e) => {
@@ -30,22 +32,20 @@ export default function UploadContentPage() {
     }));
   };
 
-  // Non‑functional placeholder actions for UI buttons
   const handleCancel = (e) => {
     e.preventDefault();
-    // In future: reset form or navigate away
     console.log('Cancel clicked');
   };
 
   const handleSaveDraft = (e) => {
     e.preventDefault();
-    // In future: save as draft
     console.log('Save Draft clicked');
   };
 
+  const handleDismissSuccess = () => setSubmitSuccess(false);
+
   return (
     <div className="upload-content-page">
-      {/* Header */}
       <div className="upload-header">
         <h2>Upload / Edit Content</h2>
         <p className="upload-subtitle">Create new content for your Home</p>
@@ -139,7 +139,6 @@ export default function UploadContentPage() {
           <div className="section-content">
             <div className="form-group">
               <label>Thumbnail / Audio File *</label>
-              {/* Drag & Drop Zone */}
               <div
                 className={`drop-zone ${isDragging ? 'dragging' : ''}`}
                 onDragEnter={handleDragEnter}
@@ -168,7 +167,6 @@ export default function UploadContentPage() {
                 </div>
               </div>
 
-              {/* File List */}
               {selectedFiles.length > 0 && (
                 <div className="file-list">
                   {selectedFiles.map((file, index) => (
@@ -177,7 +175,7 @@ export default function UploadContentPage() {
                         <span className="file-name">{file.name}</span>
                         <span className="file-meta">
                           {(file.size / 1024 / 1024).toFixed(1)} MB
-                          {file.type.startsWith('audio/') && ' • 05:23'} {/* placeholder duration */}
+                          {file.type.startsWith('audio/') && ' • 05:23'}
                         </span>
                       </div>
                       <button
@@ -300,9 +298,16 @@ export default function UploadContentPage() {
           </button>
         </div>
 
-        {uploadNotImplemented && (
-          <div className="info-message">
-            Upload API has not yet been implemented.
+        {submitSuccess && (
+          <div className="success-message">
+            <p>Content published successfully!</p>
+            <button onClick={handleDismissSuccess} className="btn btn-secondary">Dismiss</button>
+          </div>
+        )}
+
+        {submitError && (
+          <div className="error-message">
+            <p>Error: {submitError}</p>
           </div>
         )}
       </div>

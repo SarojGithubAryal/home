@@ -10,6 +10,7 @@ const contentSchema = Joi.object({
   metadata: Joi.object().default({}),
   is_published: Joi.boolean().default(true),
   is_featured: Joi.boolean().default(false),
+  mediaIds: Joi.array().items(Joi.string().uuid()).default([]),
 });
 
 const experienceSchema = Joi.object({

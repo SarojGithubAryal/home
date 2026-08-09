@@ -95,6 +95,7 @@ import MomCard from "./rooms/mom/mom_card.webp";
 import DadCard from "./rooms/dad/dad_card.webp";
 import MeCard from "./rooms/me/me_card.webp";
 import MemoryCard from "./rooms/memory/memory_card.webp";
+import PageContainer from "../layouts/PageContainer";
 
 /**
  * Grandfather card is optional.
@@ -111,9 +112,21 @@ const EXPERIENCE = {
   },
 
   layouts: {
-    read: ReadLayout,
-    see: SeeLayout,
-    memory: MemoryLayout,
+    read: {
+      url: ReadLayout,
+      size: '70% auto',   // subtle zoom-out (height 105% of container, width auto)
+      position: 'center',
+    },
+    see: {
+      url: SeeLayout,
+      size: '70% auto',
+      position: 'center',
+    },
+    memory: {
+      url: MemoryLayout,
+      size: 'auto 105%',
+      position: 'center',
+    },
   },
 };
 
@@ -256,12 +269,20 @@ const AssetRegistry = {
    */
 
   getExperienceLayout(type) {
-    return EXPERIENCE.layouts[type] ?? null;
+    const config = EXPERIENCE.layouts[type];
+    if (!config) return null;
+    // Return a copy so callers can't mutate the source
+    return { ...config };
   },
 
   resolveEmptyStateAsset(type = 'default') {
     return null;
   },
+
+  resolveErrorStateAsset() {
+  // Return a tiny grey placeholder SVG – prevents crash, visually minimal.
+  return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f0f0f0"/%3E%3C/svg%3E';
+},
 };
 
 export default AssetRegistry;

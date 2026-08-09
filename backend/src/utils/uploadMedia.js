@@ -1,25 +1,24 @@
-/**
- * Pluggable media uploader.
- * Currently no provider configured; returns a placeholder URL.
- * Future: integrate with Dropbox, Google Drive, or local storage.
- */
-
 const providers = {
-  dropbox: null,   // will be a module
+  dropbox: null,
   googleDrive: null,
   local: null,
 };
 
 function setProvider(name, module) {
+  if (!module) throw new Error(`Provider '${name}' module cannot be null.`);
   providers[name] = module;
 }
 
-async function upload(file, options = {}) {
-  const provider = options.provider || 'local';
-  if (!providers[provider]) {
-    throw new Error(`Upload provider '${provider}' not configured.`);
-  }
-  return providers[provider].upload(file, options);
+function getProvider(name) {
+  const provider = providers[name];
+  if (!provider) throw new Error(`Provider '${name}' not configured.`);
+  return provider;
 }
 
-module.exports = { setProvider, upload };
+async function upload(file, options = {}) {
+  const providerName = options.provider || 'dropbox';
+  const provider = getProvider(providerName);
+  return provider.upload(file, options);
+}
+
+module.exports = { setProvider, getProvider, upload };

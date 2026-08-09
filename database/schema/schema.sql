@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS contents (
 -- ============================================================
 CREATE TABLE IF NOT EXISTS media (
     id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    content_id        UUID NOT NULL REFERENCES contents(id) ON DELETE CASCADE,
+    content_id        UUID REFERENCES contents(id) ON DELETE CASCADE,
     media_type        VARCHAR(20) NOT NULL CHECK (media_type IN (
                           'image','audio','video','document','thumbnail','other'
                       )),
@@ -90,9 +90,15 @@ CREATE TABLE IF NOT EXISTS media (
     duration_seconds  INT,
     file_size_bytes   BIGINT,
     mime_type         VARCHAR(100),
+    metadata          JSONB,
     display_order     INT NOT NULL DEFAULT 0,
     created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Ensure older databases have content_id nullable (standalone uploads allowed)
+ALTER TABLE media ALTER COLUMN content_id DROP NOT NULL;
+-- Ensure older databases have the metadata column
+ALTER TABLE media ADD COLUMN IF NOT EXISTS metadata JSONB;
 
 -- ============================================================
 -- 6. MOODS
@@ -196,7 +202,7 @@ CREATE TABLE IF NOT EXISTS room_themes (
 -- 12. CONTENT MOODS (junction)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS content_moods (
-    content_id        UUID NOT NULL REFERENCES contents(id) ON DELETE CASCADE,
+    content_id        UUID REFERENCES contents(id) ON DELETE CASCADE,
     mood_id           UUID NOT NULL REFERENCES moods(id) ON DELETE CASCADE,
     PRIMARY KEY (content_id, mood_id)
 );

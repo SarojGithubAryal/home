@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const requiredVars = ['DATABASE_URL'];
+const requiredVars = ['DATABASE_URL', 'DROPBOX_ACCESS_TOKEN'];
 
 requiredVars.forEach((key) => {
   if (!process.env[key]) {
@@ -12,5 +12,6 @@ requiredVars.forEach((key) => {
 module.exports = {
   port: parseInt(process.env.PORT, 10) || 4000,
   nodeEnv: process.env.NODE_ENV || 'development',
-  databaseUrl: process.env.DATABASE_URL
+  databaseUrl: process.env.DATABASE_URL,
+  dropboxAccessToken: process.env.DROPBOX_ACCESS_TOKEN,
 };

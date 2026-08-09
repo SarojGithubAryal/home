@@ -63,8 +63,6 @@ function RoomPage({ roomSlug, onBack, onNavigation }) {
     const timeVariant = getPath(experience, 'theme.timeVariant', undefined);
 
     const roomTheme = AssetRegistry.getRoomTheme(roomSlug, timeVariant);
-    console.log("Room slug:", roomSlug);
-    console.log("Room theme:", roomTheme);
 
     const heroStyle = roomTheme?.image
         ? {

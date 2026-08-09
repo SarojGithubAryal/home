@@ -20,6 +20,7 @@ export function useContent(contentId) {
   const abortControllerRef = useRef(null);
 
   const fetchContent = useCallback(async () => {
+    console.log('useContent called with contentId:', contentId);
     if (!contentId) {
       setData(null);
       setLoading(false);

@@ -54,17 +54,25 @@ const EXPERIENCE_MAP = Object.freeze({
 });
 
 /**
+ * Map from content-list experiences to their detail page when a
+ * contentId is present. The backend sends `READ` + contentId for a
+ * specific letter, but the frontend has distinct list vs. detail pages.
+ */
+const CONTENT_DETAIL_MAP = {
+  HEAR: PAGES.AUDIO_PLAYER,
+  READ: PAGES.LETTER_VIEWER,
+  SEE: PAGES.PHOTO_VIEWER,
+  MEMORY: PAGES.MEMORY_VIEWER,
+};
+
+/**
  * Resolves a backend navigation object into a frontend page.
  *
  * @param {object|null} navigation
  * @returns {{page:string, props:object}|null}
  */
 export function resolveNavigation(navigation) {
-  console.log("========== RESOLVER ==========");
-  console.log("Resolver input:", navigation);
-
   if (!navigation) {
-    console.warn("No navigation object.");
     return null;
   }
 
@@ -73,10 +81,17 @@ export function resolveNavigation(navigation) {
     params = {},
   } = navigation;
 
-  const page = EXPERIENCE_MAP[experience];
+  // If the backend sends a contentId, it's a content detail navigation.
+  // Override the experience to the corresponding detail viewer.
+  const hasContentId = Boolean(params?.contentId);
+  const resolvedExperience = hasContentId && CONTENT_DETAIL_MAP[experience]
+    ? CONTENT_DETAIL_MAP[experience]
+    : experience;
+
+  const page = EXPERIENCE_MAP[resolvedExperience];
 
   if (!page) {
-    console.warn(`Unknown experience: ${experience}`);
+    console.warn(`Unknown experience: ${resolvedExperience}`);
     return null;
   }
 

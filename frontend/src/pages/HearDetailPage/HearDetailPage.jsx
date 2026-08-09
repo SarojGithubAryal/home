@@ -1,13 +1,13 @@
 /**
- * HearDetailPage.jsx (renamed from AudioPlayerPage.jsx)
+ * HearDetailPage.jsx
  *
- * Full-screen audio player. Reached only from HearPage (list) via
+ * Full‑screen audio player. Reached only from HearPage (list) via
  * navigation.params.contentId. Uses GET /api/contents/:contentId.
  * Renders exactly one item — no list, no tabs, no browsing.
  *
- * "Why am I seeing this" reads defensively from content.metadata (no
- * fixed field name confirmed) — renders only if the backend actually
- * supplies it, never fabricated.
+ * Visual design now inherits the warm, calm HOME language:
+ * hero background (cover image when available), subtle overlay,
+ * soft typography, and an audio player styled to match.
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -37,7 +37,6 @@ function HearDetailPage({ contentId, onBack }) {
   const subtitle = getPath(content, 'excerpt', null);
   const badge = getPath(content, 'content_type', null);
   const dateLabel = getPath(content, 'dates.formatted', null) || getPath(content, 'dates.createdAt', null);
-  const whySeeingText = getPath(content, 'metadata.whySeeingText', null);
 
   const media = getPath(content, 'media', []);
   const mediaList = Array.isArray(media) ? media : [];
@@ -72,54 +71,69 @@ function HearDetailPage({ contentId, onBack }) {
   const progressPercent = duration ? (currentTime / duration) * 100 : 0;
 
   return (
-    <PageContainer loading={loading} error={error} data={data} onRetry={refetch}>
-      <div className="hear-detail-canvas" style={heroImage ? { backgroundImage: `url(${heroImage})` } : undefined}>
-        <div className="hear-detail-top">
-          <IconButton icon="←" ariaLabel="Go back" onClick={() => onBack && onBack()} />
-          <div className="hear-detail-top-actions">
-            <IconButton icon="🔖" ariaLabel="Bookmark" onClick={() => console.log('Bookmark (pending feature)')} />
-            <IconButton icon="⋯" ariaLabel="More options" onClick={() => console.log('More options (pending feature)')} />
-          </div>
-        </div>
-
+    <PageContainer loading={loading} error={error} data={data} isEmpty={!content} onRetry={refetch}>
+      <div
+        className="hear-detail-canvas"
+        style={heroImage ? { backgroundImage: `url(${heroImage})` } : undefined}
+      >
         <div className="hear-detail-overlay">
-          {badge && <span className="hear-detail-badge">{badge}</span>}
-          {title && <h1 className="hear-detail-title">{title}</h1>}
-          <span className="hear-detail-divider" aria-hidden="true">♥</span>
-          {subtitle && <p className="hear-detail-subtitle">{subtitle}</p>}
-
-          <div className="hear-detail-meta">
-            {dateLabel && <span>📅 {dateLabel}</span>}
-            <span>🕐 {formatTime(duration)}</span>
-          </div>
-
-          <input type="range" min="0" max="100" value={progressPercent} onChange={handleSeek} className="hear-detail-progress" aria-label="Seek" />
-          <div className="hear-detail-time-row">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
-
-          <div className="hear-detail-transport">
-            <button type="button" className="hear-detail-transport-btn" onClick={() => seekBy(-15)} aria-label="Rewind 15 seconds">↺15</button>
-            <button type="button" className="hear-detail-transport-btn" aria-label="Previous">⏮</button>
-            <button type="button" className="hear-detail-transport-btn hear-detail-transport-btn--primary" onClick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'}>
-              {isPlaying ? '⏸' : '▶'}
-            </button>
-            <button type="button" className="hear-detail-transport-btn" aria-label="Next">⏭</button>
-            <button type="button" className="hear-detail-transport-btn" onClick={() => seekBy(15)} aria-label="Forward 15 seconds">15↻</button>
-          </div>
-
-          <button type="button" className="hear-detail-comfort-btn" onClick={() => setComforted(!comforted)} aria-pressed={comforted}>
-            {comforted ? '❤' : '♡'} This comforts me
-          </button>
-
-          {whySeeingText && (
-            <div className="hear-detail-why-seeing">
-              <span className="hear-detail-why-seeing-icon" aria-hidden="true">🌸</span>
-              <span className="hear-detail-why-seeing-text">{whySeeingText}</span>
-              <span aria-hidden="true">›</span>
+          <div className="hear-detail-top">
+            <IconButton icon="←" ariaLabel="Go back" onClick={() => onBack && onBack()} />
+            <div className="hear-detail-top-actions">
+              <IconButton icon="🔖" ariaLabel="Bookmark" onClick={() => console.log('Bookmark (pending feature)')} />
+              <IconButton icon="⋯" ariaLabel="More options" onClick={() => console.log('More options (pending feature)')} />
             </div>
-          )}
+          </div>
+
+          <div className="hear-detail-content">
+            {badge && <span className="hear-detail-badge">{badge}</span>}
+            {title && <h1 className="hear-detail-title">{title}</h1>}
+            <span className="hear-detail-divider" aria-hidden="true">♥</span>
+            {subtitle && <p className="hear-detail-subtitle">{subtitle}</p>}
+
+            <div className="hear-detail-meta">
+              {dateLabel && <span>📅 {dateLabel}</span>}
+              <span>🕐 {formatTime(duration)}</span>
+            </div>
+
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={progressPercent}
+              onChange={handleSeek}
+              className="hear-detail-progress"
+              aria-label="Seek"
+            />
+            <div className="hear-detail-time-row">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+
+            <div className="hear-detail-transport">
+              <button type="button" className="hear-detail-transport-btn" onClick={() => seekBy(-15)} aria-label="Rewind 15 seconds">↺15</button>
+              <button type="button" className="hear-detail-transport-btn" aria-label="Previous">⏮</button>
+              <button
+                type="button"
+                className="hear-detail-transport-btn hear-detail-transport-btn--primary"
+                onClick={togglePlay}
+                aria-label={isPlaying ? 'Pause' : 'Play'}
+              >
+                {isPlaying ? '⏸' : '▶'}
+              </button>
+              <button type="button" className="hear-detail-transport-btn" aria-label="Next">⏭</button>
+              <button type="button" className="hear-detail-transport-btn" onClick={() => seekBy(15)} aria-label="Forward 15 seconds">15↻</button>
+            </div>
+
+            <button
+              type="button"
+              className="hear-detail-comfort-btn"
+              onClick={() => setComforted(!comforted)}
+              aria-pressed={comforted}
+            >
+              {comforted ? '❤' : '♡'} This comforts me
+            </button>
+          </div>
         </div>
 
         <audio

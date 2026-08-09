@@ -39,7 +39,8 @@ class AdminController {
       const { error } = validator.validateContent(req.body);
       if (error) return sendError(res, 400, 'VALIDATION_ERROR', error.message);
 
-      const content = await adminService.createContent(req.body);
+      const { mediaIds, ...contentData } = req.body;
+      const content = await adminService.createContent(contentData, mediaIds || []);
       sendSuccess(res, { content }, null);
     } catch (err) {
       next(err);
@@ -106,6 +107,45 @@ class AdminController {
 
       const settings = await adminService.updateSettings(req.body);
       sendSuccess(res, settings, null);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  // ========== MEDIA ==========
+
+  async uploadMedia(req, res, next) {
+    try {
+      if (!req.file) {
+        return sendError(res, 400, 'VALIDATION_ERROR', 'No file uploaded.');
+      }
+
+      const media = await adminService.uploadMedia(req.file);
+      sendSuccess(res, { media }, null);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async updateMedia(req, res, next) {
+    try {
+      if (!req.file) {
+        return sendError(res, 400, 'VALIDATION_ERROR', 'No file uploaded for replacement.');
+      }
+
+      const media = await adminService.updateMedia(req.params.id, req.file);
+      if (!media) return sendError(res, 404, 'NOT_FOUND', 'Media not found');
+      sendSuccess(res, { media }, null);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async deleteMedia(req, res, next) {
+    try {
+      const success = await adminService.deleteMedia(req.params.id);
+      if (!success) return sendError(res, 404, 'NOT_FOUND', 'Media not found');
+      sendSuccess(res, { deleted: true }, null);
     } catch (err) {
       next(err);
     }

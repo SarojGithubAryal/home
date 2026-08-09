@@ -1,25 +1,136 @@
-.hear-detail-canvas { position: relative; min-height: 100dvh; display: flex; flex-direction: column; background-color: var(--color-surface); background-size: cover; background-position: center; }
+/* HearDetailPage.css – Warm audio detail page */
 
-.hear-detail-top { position: absolute; top: 0; left: 0; right: 0; z-index: var(--z-index-overlay); display: flex; align-items: center; justify-content: space-between; padding: clamp(var(--space-sm), 4vw, var(--space-lg)); }
-.hear-detail-top-actions { display: flex; gap: var(--space-2xs); }
+.hear-detail-canvas {
+  position: relative;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--background);
+}
 
-.hear-detail-overlay { position: relative; z-index: var(--z-index-content); margin-top: auto; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2xs); padding: clamp(var(--space-lg), 6vw, var(--space-2xl)); padding-top: clamp(var(--space-3xl), 22dvh, 16rem); background: linear-gradient(to top, var(--color-overlay) 0%, transparent 75%); width: 100%; }
+.hear-detail-overlay {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.35); /* darken the hero image */
+  backdrop-filter: blur(1px);
+}
 
-.hear-detail-badge { padding-block: var(--space-3xs); padding-inline: var(--space-sm); border-radius: var(--radius-full); background-color: var(--color-surface-raised); font-size: var(--font-size-body-sm); font-weight: var(--font-weight-semibold); color: var(--color-text-rose); }
-.hear-detail-title { font-family: var(--font-family-secondary); font-size: var(--font-size-display); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); }
-.hear-detail-divider { color: var(--color-text-rose); font-size: var(--font-size-body); }
-.hear-detail-subtitle { font-size: var(--font-size-body); color: var(--color-text-secondary); }
+.hear-detail-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-md) 0;
+}
 
-.hear-detail-meta { display: flex; gap: var(--space-md); width: 100%; font-size: var(--font-size-body-sm); color: var(--color-text-muted); margin-top: var(--space-sm); }
-.hear-detail-progress { width: 100%; accent-color: var(--color-text-rose); }
-.hear-detail-time-row { display: flex; justify-content: space-between; width: 100%; font-size: var(--font-size-caption); color: var(--color-text-muted); }
+.hear-detail-top-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
 
-.hear-detail-transport { display: flex; align-items: center; justify-content: center; gap: var(--space-md); width: 100%; margin-top: var(--space-md); }
-.hear-detail-transport-btn { width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-body); color: var(--color-text-primary); border-radius: var(--radius-full); }
-.hear-detail-transport-btn--primary { width: 3.75rem; height: 3.75rem; background-color: var(--color-text-rose); color: var(--color-text-inverse); font-size: var(--font-size-heading); box-shadow: var(--shadow-medium); }
+.hear-detail-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-md);
+  max-width: 520px;
+  margin: 0 auto;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
 
-.hear-detail-comfort-btn { margin-top: var(--space-md); align-self: center; padding-block: var(--space-2xs); padding-inline: var(--space-lg); border-radius: var(--radius-full); background-color: var(--color-surface-rose); color: var(--color-text-rose); font-weight: var(--font-weight-semibold); }
+.hear-detail-badge {
+  font-size: 0.85rem;
+  color: var(--primary);
+  background: rgba(255,255,255,0.15);
+  padding: 0.2em 0.8em;
+  border-radius: var(--radius-pill);
+  margin-bottom: var(--space-sm);
+}
 
-.hear-detail-why-seeing { margin-top: var(--space-md); width: 100%; display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-md); border-radius: var(--radius-lg); background-color: var(--color-surface-raised); box-shadow: var(--shadow-low); }
-.hear-detail-why-seeing-icon { font-size: var(--font-size-subheading); }
-.hear-detail-why-seeing-text { flex: 1; font-size: var(--font-size-body-sm); color: var(--color-text-secondary); }
+.hear-detail-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 var(--space-xs);
+}
+
+.hear-detail-divider {
+  font-size: 1.2rem;
+  color: var(--primary);
+  margin: var(--space-md) 0;
+}
+
+.hear-detail-subtitle {
+  font-size: 1rem;
+  opacity: 0.9;
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+.hear-detail-meta {
+  display: flex;
+  gap: var(--space-lg);
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin-bottom: var(--space-lg);
+}
+
+.hear-detail-progress {
+  width: 100%;
+  height: 4px;
+  accent-color: var(--primary);
+  margin-bottom: var(--space-sm);
+}
+
+.hear-detail-time-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  width: 100%;
+  opacity: 0.8;
+  margin-bottom: var(--space-xl);
+}
+
+.hear-detail-transport {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.hear-detail-transport-btn {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 1.1rem;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.hear-detail-transport-btn:hover { background: rgba(255,255,255,0.25); }
+
+.hear-detail-transport-btn--primary {
+  background: var(--primary);
+  font-size: 1.4rem;
+  padding: var(--space-sm) var(--space-lg);
+}
+.hear-detail-transport-btn--primary:hover { background: var(--primary-dark); }
+
+.hear-detail-comfort-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  border-radius: var(--radius-pill);
+  padding: var(--space-sm) var(--space-xl);
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: var(--space-lg);
+  transition: background 0.2s;
+}
+.hear-detail-comfort-btn[aria-pressed="true"] { background: var(--primary); }

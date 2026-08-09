@@ -1,7 +1,7 @@
 /**
  * SeeDetailPage.jsx (renamed from PhotoPage.jsx)
  *
- * Full-screen photo view. Reached only from SeePage (list). Uses
+ * Full‑screen photo view. Reached only from SeePage (list). Uses
  * GET /api/contents/:contentId. Renders see_layout.webp (via
  * AssetRegistry) as the background; the backend photo fills the
  * Polaroid placeholder area via object-fit: contain, never stretched.
@@ -17,7 +17,8 @@ import './SeeDetailPage.css';
 
 function SeeDetailPage({ contentId, onBack }) {
   const { data, loading, error, refetch } = useContent(contentId);
-  const layoutImage = AssetRegistry.getExperienceLayout('see');
+  const layoutConfig = AssetRegistry.getExperienceLayout('see');
+  const layoutUrl = layoutConfig?.url;
   const [comforted, setComforted] = useState(false);
 
   const content = getPath(data, 'content', null);
@@ -35,7 +36,15 @@ function SeeDetailPage({ contentId, onBack }) {
     <PageContainer loading={loading} error={error} data={data} onRetry={refetch}>
       <div
         className="see-detail-canvas"
-        style={layoutImage ? { backgroundImage: `url(${layoutImage})` } : undefined}
+        style={
+          layoutUrl
+            ? {
+                backgroundImage: `url(${layoutUrl})`,
+                backgroundSize: layoutConfig.size,
+                backgroundPosition: layoutConfig.position,
+              }
+            : undefined
+        }
       >
         <div className="see-detail-top">
           <IconButton icon="←" ariaLabel="Go back" onClick={() => onBack && onBack()} />

@@ -2,7 +2,7 @@
  * MemoryDetailPage.jsx (new — previously stopgapped by reusing
  * LetterPage; that stopgap is now retired)
  *
- * Full-screen memory view. Reached only from MemoryPage (list). Uses
+ * Full‑screen memory view. Reached only from MemoryPage (list). Uses
  * GET /api/contents/:contentId. Renders memory_layout.webp (via
  * AssetRegistry) as the background; decorative flowers on that image
  * stay untouched — only the paper's placeholder area receives content.
@@ -18,7 +18,8 @@ import './MemoryDetailPage.css';
 
 function MemoryDetailPage({ contentId, onBack }) {
   const { data, loading, error, refetch } = useContent(contentId);
-  const layoutImage = AssetRegistry.getExperienceLayout('memory');
+  const layoutConfig = AssetRegistry.getExperienceLayout('memory');
+  const layoutUrl = layoutConfig?.url;
 
   const content = getPath(data, 'content', null);
   const title = getPath(content, 'title', null);
@@ -32,7 +33,15 @@ function MemoryDetailPage({ contentId, onBack }) {
     <PageContainer loading={loading} error={error} data={data} onRetry={refetch}>
       <div
         className="memory-detail-canvas"
-        style={layoutImage ? { backgroundImage: `url(${layoutImage})` } : undefined}
+        style={
+          layoutUrl
+            ? {
+                backgroundImage: `url(${layoutUrl})`,
+                backgroundSize: layoutConfig.size,
+                backgroundPosition: layoutConfig.position,
+              }
+            : undefined
+        }
       >
         <div className="memory-detail-top">
           <IconButton icon="←" ariaLabel="Go back" onClick={() => onBack && onBack()} />

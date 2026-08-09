@@ -108,10 +108,10 @@ function App() {
           <HearDetailPage contentId={props.contentId} onBack={goBack} />
         );
 
-      case PAGES.LETTER_VIEWER:
-        return (
-          <ReadDetailPage contentId={props.contentId} onBack={goBack} />
-        );
+case PAGES.LETTER_VIEWER:
+  return (
+    <ReadDetailPage contentId={props.contentId} onBack={goBack} />
+  );
 
       case PAGES.PHOTO_VIEWER:
         return (

@@ -1,5 +1,6 @@
 const pool = require('../config/database');
 const auditLogger = require('../utils/auditLogger');
+const uploadMediaUtil = require('../utils/uploadMedia');   // single import at the top
 
 class AdminService {
   // ========== DASHBOARD ==========
@@ -32,35 +33,27 @@ class AdminService {
   }) {
     const offset = (page - 1) * limit;
 
-    // Base query – always join content_types for type filtering
     let query = `
       SELECT DISTINCT c.*
       FROM contents c
       JOIN content_types ct ON c.content_type_id = ct.id
     `;
     const joins = [];
-    const conditions = ['c.is_published = TRUE'];   // default: only published? No, admin should see all. Remove this or make optional.
-    // For admin, we do NOT restrict by is_published unless status filter is applied.
-    // We'll treat status filter later.
+    const conditions = [];
     const params = [];
     let paramIndex = 1;
 
-    // ---- FILTERS ----
-
-    // type
     if (type) {
       conditions.push(`ct.slug = $${paramIndex++}`);
       params.push(type);
     }
 
-    // room – join rooms table on c.room_id
     if (room) {
       joins.push(`JOIN rooms r ON c.room_id = r.id`);
       conditions.push(`r.slug = $${paramIndex++}`);
       params.push(room);
     }
 
-    // mood – join content_moods and moods
     if (mood) {
       joins.push(`JOIN content_moods cm ON c.id = cm.content_id`);
       joins.push(`JOIN moods m ON cm.mood_id = m.id`);
@@ -68,19 +61,15 @@ class AdminService {
       params.push(mood);
     }
 
-    // status filter
     if (status) {
-      const now = new Date().toISOString();
       switch (status) {
         case 'draft':
           conditions.push('c.is_published = FALSE');
           break;
         case 'published':
           conditions.push('c.is_published = TRUE');
-          // If publishDate column existed, we'd add: AND c.publish_date <= NOW()
           break;
         case 'scheduled':
-          // No publish_date column yet – return empty set for safety
           conditions.push('FALSE');
           break;
         default:
@@ -88,7 +77,6 @@ class AdminService {
       }
     }
 
-    // search
     if (search) {
       conditions.push(
         `(c.title ILIKE $${paramIndex} OR c.body ILIKE $${paramIndex} OR c.author ILIKE $${paramIndex} OR c.excerpt ILIKE $${paramIndex})`
@@ -97,22 +85,19 @@ class AdminService {
       paramIndex++;
     }
 
-    // Build the full WHERE clause
     query += joins.length ? ' ' + joins.join(' ') : '';
     query += conditions.length ? ' WHERE ' + conditions.join(' AND ') : '';
 
-    // ---- SORTING ----
     const sortableFields = {
       created_at: 'c.created_at',
       updated_at: 'c.updated_at',
       title: 'c.title',
-      display_order: 'c.display_order',   // priority
+      display_order: 'c.display_order',
     };
     const sortColumn = sortableFields[sort] || 'c.created_at';
     const direction = order === 'asc' ? 'ASC' : 'DESC';
     query += ` ORDER BY ${sortColumn} ${direction}`;
 
-    // ---- PAGINATION ----
     const countQuery = `SELECT COUNT(*) FROM (${query}) AS sub`;
     query += ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
     params.push(limit, offset);
@@ -121,7 +106,6 @@ class AdminService {
     const total = parseInt(totalResult.rows[0].count);
     const result = await pool.query(query, params);
 
-    // ---- AVAILABLE FILTERS (distinct values from DB) ----
     const [roomsResult, moodsResult, typesResult] = await Promise.all([
       pool.query(`SELECT DISTINCT r.slug FROM rooms r JOIN contents c ON c.room_id = r.id WHERE c.is_published = TRUE`),
       pool.query(`SELECT DISTINCT m.slug FROM moods m JOIN content_moods cm ON cm.mood_id = m.id JOIN contents c ON c.id = cm.content_id WHERE c.is_published = TRUE`),
@@ -144,20 +128,29 @@ class AdminService {
       },
     };
   }
+
   async getContent(id) {
     const result = await pool.query('SELECT * FROM contents WHERE id = $1', [id]);
     return result.rows[0] || null;
   }
 
-  async createContent(data) {
+  async createContent(data, mediaIds = []) {
     const { room_id, content_type_id, title, body, excerpt, author, metadata, is_published, is_featured } = data;
     const result = await pool.query(
       `INSERT INTO contents (room_id, content_type_id, title, body, excerpt, author, metadata, is_published, is_featured)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
       [room_id, content_type_id, title, body, excerpt, author, metadata || {}, is_published ?? true, is_featured ?? false]
     );
-    auditLogger.log('CREATE', 'content', result.rows[0].id);
-    return result.rows[0];
+    const content = result.rows[0];
+
+    if (mediaIds.length > 0) {
+      for (const mediaId of mediaIds) {
+        await pool.query(`UPDATE media SET content_id = $1 WHERE id = $2`, [content.id, mediaId]);
+      }
+    }
+
+    auditLogger.log('CREATE', 'content', content.id);
+    return content;
   }
 
   async updateContent(id, data) {
@@ -182,9 +175,40 @@ class AdminService {
   }
 
   async deleteContent(id) {
+    // Fetch all media attached to this content
+    const mediaResult = await pool.query('SELECT * FROM media WHERE content_id = $1', [id]);
+    const mediaItems = mediaResult.rows;
+
+    // Delete associated Dropbox files
+    const DropboxService = require('../services/DropboxService');
+    const env = require('../config/env');
+    const dropbox = new DropboxService(env.dropboxAccessToken);
+
+    for (const media of mediaItems) {
+      const dropboxPath = media.metadata?.dropboxPath;
+      if (dropboxPath) {
+        try {
+          await dropbox.deleteFile(dropboxPath);
+          console.log(`Dropbox file deleted: ${dropboxPath}`);
+        } catch (err) {
+          if (err.status === 409 || (err.error && err.error.error_summary?.startsWith('path_lookup/not_found'))) {
+            console.log(`Dropbox file already missing: ${dropboxPath}`);
+          } else {
+            // Genuine failure – abort content deletion to avoid orphaned files
+            console.error(`Failed to delete Dropbox file (${dropboxPath}) for content ${id}:`, err.message);
+            throw new Error(`Cannot delete content ${id} because a Dropbox file could not be removed.`);
+          }
+        }
+      }
+    }
+
+    // Delete the content row; DB cascade will remove associated media rows automatically
     const result = await pool.query('DELETE FROM contents WHERE id = $1 RETURNING id', [id]);
-    if (result.rows.length) auditLogger.log('DELETE', 'content', id);
-    return result.rows.length > 0;
+    if (result.rows.length) {
+      auditLogger.log('DELETE', 'content', id);
+      return true;
+    }
+    return false;
   }
 
   // ========== EXPERIENCE ==========
@@ -206,10 +230,8 @@ class AdminService {
   }
 
   async updateExperience(data) {
-    // data contains sections like { greetings: [...], quotes: [...], homeConfig: {...}, ... }
     const results = {};
     if (data.greetings) {
-      // we could upsert each greeting; for simplicity we'll truncate and re-insert? Safer to upsert by ID.
       for (const g of data.greetings) {
         if (g.id) {
           await pool.query(
@@ -286,7 +308,6 @@ class AdminService {
 
   // ========== SETTINGS ==========
   async getSettings() {
-    // For now, return user_settings of the owner
     const result = await pool.query('SELECT * FROM user_settings WHERE user_id = (SELECT id FROM users WHERE is_active LIMIT 1)');
     return result.rows[0] || {};
   }
@@ -308,6 +329,143 @@ class AdminService {
     }
     auditLogger.log('UPDATE', 'settings');
     return settings;
+  }
+
+  // ========== MEDIA ==========
+
+  async uploadMedia(file) {
+    const { originalname, buffer, mimetype } = file;
+    const dropboxPath = `/uploads/${Date.now()}-${originalname}`;
+
+    try {
+      // Upload to Dropbox (using the single import at the top)
+      await uploadMediaUtil.upload(buffer, {
+        provider: 'dropbox',
+        dropboxPath,
+        mimeType: mimetype,
+      });
+
+      // Get shared link
+      const dropboxProvider = uploadMediaUtil.getProvider('dropbox');
+      const sharedUrl = await dropboxProvider.getSharedLink(dropboxPath);
+
+      // Insert media record
+      const result = await pool.query(
+        `INSERT INTO media (content_id, media_type, url, alt_text, file_size_bytes, mime_type, width, height, duration_seconds)
+         VALUES (NULL, $1, $2, $3, $4, $5, NULL, NULL, NULL) RETURNING *`,
+        [
+          this._mapMimeToMediaType(mimetype),
+          sharedUrl,
+          originalname,
+          buffer.length,
+          mimetype,
+        ]
+      );
+
+      const media = result.rows[0];
+      await pool.query(`UPDATE media SET metadata = $1 WHERE id = $2`, [
+        { dropboxPath },
+        media.id,
+      ]);
+
+      auditLogger.log('UPLOAD', 'media', media.id);
+      return media;
+    } catch (err) {
+      if (err.status === 401 || (err.error && err.error.status === 401)) {
+        throw new Error('Dropbox authentication failed. Please check your DROPBOX_ACCESS_TOKEN.');
+      }
+      throw err;
+    }
+  }
+
+  async updateMedia(mediaId, file) {
+    const existing = await pool.query('SELECT * FROM media WHERE id = $1', [mediaId]);
+    if (!existing.rows.length) return null;
+
+    const oldMedia = existing.rows[0];
+    const oldDropboxPath = oldMedia.metadata?.dropboxPath;
+
+    // 1. Upload the new file to Dropbox first (never touch the old file yet)
+    const { originalname, buffer, mimetype } = file;
+    const newDropboxPath = `/uploads/${Date.now()}-${originalname}`;
+    let newSharedUrl;
+
+    try {
+      await uploadMediaUtil.upload(buffer, { provider: 'dropbox', dropboxPath: newDropboxPath, mimeType: mimetype });
+      const dropboxProvider = uploadMediaUtil.getProvider('dropbox');
+      newSharedUrl = await dropboxProvider.getSharedLink(newDropboxPath);
+    } catch (uploadErr) {
+      // If new upload fails, old file and DB remain untouched
+      if (uploadErr.status === 401 || (uploadErr.error && uploadErr.error.status === 401)) {
+        throw new Error('Dropbox authentication failed. Please check your DROPBOX_ACCESS_TOKEN.');
+      }
+      throw uploadErr;
+    }
+
+    // 2. Update the database to point to the new file
+    const result = await pool.query(
+      `UPDATE media SET url=$1, file_size_bytes=$2, mime_type=$3, alt_text=$4, metadata=$5 WHERE id=$6 RETURNING *`,
+      [newSharedUrl, buffer.length, mimetype, originalname, { dropboxPath: newDropboxPath }, mediaId]
+    );
+    const updatedMedia = result.rows[0];
+
+    // 3. Attempt to delete the OLD Dropbox file (best-effort, after successful replacement)
+    if (oldDropboxPath) {
+      try {
+        const DropboxService = require('../services/DropboxService');
+        const env = require('../config/env');
+        const dropbox = new DropboxService(env.dropboxAccessToken);
+        await dropbox.deleteFile(oldDropboxPath);
+        console.log(`Old Dropbox file deleted: ${oldDropboxPath}`);
+      } catch (err) {
+        // Log but do not fail – the new file is already safe and DB points to it
+        console.error(`Failed to delete old Dropbox file (${oldDropboxPath}) after successful replacement:`, err.message);
+      }
+    }
+
+    auditLogger.log('REPLACE', 'media', mediaId);
+    return updatedMedia;
+  }
+
+  async deleteMedia(mediaId) {
+    const existing = await pool.query('SELECT * FROM media WHERE id = $1', [mediaId]);
+    if (!existing.rows.length) return false;
+
+    const media = existing.rows[0];
+    const dropboxPath = media.metadata?.dropboxPath;
+
+    // Attempt Dropbox deletion first
+    let dropboxClean = true;
+    if (dropboxPath) {
+      try {
+        const DropboxService = require('../services/DropboxService');
+        const env = require('../config/env');
+        const dropbox = new DropboxService(env.dropboxAccessToken);
+        await dropbox.deleteFile(dropboxPath);
+        console.log(`Dropbox file deleted: ${dropboxPath}`);
+      } catch (err) {
+        // If file is already missing, treat as success
+        if (err.status === 409 || (err.error && err.error.error_summary?.startsWith('path_lookup/not_found'))) {
+          console.log(`Dropbox file already missing: ${dropboxPath}`);
+        } else {
+          // Genuine failure – preserve DB record and return error
+          console.error(`Failed to delete Dropbox file (${dropboxPath}):`, err.message);
+          return false;
+        }
+      }
+    }
+
+    // Delete DB record only after Dropbox cleanup is confirmed (or file was already gone)
+    await pool.query('DELETE FROM media WHERE id = $1', [mediaId]);
+    auditLogger.log('DELETE', 'media', mediaId);
+    return true;
+  }
+  _mapMimeToMediaType(mime) {
+    if (mime.startsWith('image/')) return 'image';
+    if (mime.startsWith('audio/')) return 'audio';
+    if (mime.startsWith('video/')) return 'video';
+    if (mime.includes('pdf') || mime.includes('document') || mime.includes('text')) return 'document';
+    return 'other';
   }
 }
 
