@@ -114,17 +114,17 @@ const EXPERIENCE = {
   layouts: {
     read: {
       url: ReadLayout,
-      size: '100% auto',   // subtle zoom-out (height 105% of container, width auto)
+      size: 'cover',   // subtle zoom-out (height 105% of container, width auto)
       position: 'center',
     },
     see: {
       url: SeeLayout,
-      size: '100% auto',
+      size: 'cover',
       position: 'center',
     },
     memory: {
       url: MemoryLayout,
-      size: 'auto 105%',
+      size: 'cover',
       position: 'center',
     },
   },
