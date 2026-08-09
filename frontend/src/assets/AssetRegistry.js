@@ -114,7 +114,7 @@ const EXPERIENCE = {
   layouts: {
     read: {
       url: ReadLayout,
-      size: 'contain',   // subtle zoom-out (height 105% of container, width auto)
+      size: 'auto 105%',   // subtle zoom-out (height 105% of container, width auto)
       position: 'center',
     },
     see: {
