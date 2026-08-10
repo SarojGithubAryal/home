@@ -43,37 +43,42 @@ function ReadDetailPage({ contentId, onBack, timeVariant = 'day' }) {
           </div>
 
           <div className="read-detail-sheet">
-            <span className="read-detail-eyebrow">A LETTER FOR YOU</span>
-            {title && <h1 className="read-detail-title">{title}</h1>}
-            <div className="read-detail-meta">
-              {author && <span className="read-detail-author">{author}</span>}
-              {dateLabel && <span className="read-detail-date">📅 {dateLabel}</span>}
-              {readingTimeLabel && <span className="read-detail-reading-time">⏱ {readingTimeLabel}</span>}
-            </div>
-            <span className="read-detail-divider" aria-hidden="true">♥</span>
+            <div className="read-detail-paper">
+              <span className="read-detail-tape" aria-hidden="true" />
+              <span className="read-detail-eyebrow">A LETTER FOR YOU</span>
+              {title && <h1 className="read-detail-title">{title}</h1>}
 
-            <div className="read-detail-body">
-              {bodyParagraphs.map((paragraph, index) => (
-                <p key={index} className="read-detail-paragraph">{paragraph}</p>
-              ))}
-            </div>
+              <div className="read-detail-meta">
+                {author && <span className="read-detail-author">{author}</span>}
+                {dateLabel && <span className="read-detail-date">{dateLabel}</span>}
+                {readingTimeLabel && <span className="read-detail-reading-time">{readingTimeLabel}</span>}
+              </div>
 
-            {images.length > 0 && (
-              <div className="read-detail-images">
-                {images.map(img => (
-                  <img
-                    key={img.id}
-                    src={img.url}
-                    alt={img.alt_text || 'Attached image'}
-                    className="read-detail-image"
-                  />
+              <span className="read-detail-divider" aria-hidden="true">♥</span>
+
+              <div className="read-detail-body">
+                {bodyParagraphs.map((paragraph, index) => (
+                  <p key={index} className="read-detail-paragraph">{paragraph}</p>
                 ))}
               </div>
-            )}
 
-            {author && (
-              <p className="read-detail-signoff">{author} ♥</p>
-            )}
+              {images.length > 0 && (
+                <div className="read-detail-images">
+                  {images.map(img => (
+                    <img
+                      key={img.id}
+                      src={img.url}
+                      alt={img.alt_text || 'Attached image'}
+                      className="read-detail-image"
+                    />
+                  ))}
+                </div>
+              )}
+
+              {author && (
+                <p className="read-detail-signoff">{author} ♥</p>
+              )}
+            </div>
           </div>
         </div>
       </div>

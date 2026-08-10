@@ -42,7 +42,10 @@ class RoomSubExperienceService {
         contentTypeSlugs = [activeTab.content_type_slug];
       }
     }
-    // If no tab or tab has no content_type_slug, contentTypeSlugs stays null => no filter
+    // If no tab or tab has no content_type_slug, fall back to the default experience mapping
+    if (!contentTypeSlugs) {
+      contentTypeSlugs = this._defaultContentTypes(experienceType);
+    }
 
     // 3. Fetch contents with filtering, sorting, and pagination
     const sortOrder = config.sort_order || 'newest';

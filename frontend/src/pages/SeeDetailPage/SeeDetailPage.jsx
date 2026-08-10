@@ -1,11 +1,3 @@
-/**
- * SeeDetailPage.jsx
- *
- * Full‑screen photo view. Reached only from SeePage (list).
- * The time‑variant environmental theme provides the background.
- * The backend photo fills the Polaroid placeholder area.
- */
-
 import React, { useState } from 'react';
 import PageContainer from '../../layouts/PageContainer';
 import IconButton from '../../components/common/IconButton';
@@ -50,12 +42,19 @@ function SeeDetailPage({ contentId, onBack, timeVariant = 'day' }) {
           </div>
 
           <div className="see-detail-content">
-            <div className="see-detail-polaroid">
-              {photoUrl && <img src={photoUrl} alt="" className="see-detail-photo" />}
+            <div className="see-detail-polaroid-wrap">
+              <span className="see-detail-tape see-detail-tape--left" aria-hidden="true" />
+              <span className="see-detail-tape see-detail-tape--right" aria-hidden="true" />
+              <div className="see-detail-polaroid">
+                {photoUrl && (
+                  <img src={photoUrl} alt={imageMedia?.alt_text || ''} className="see-detail-photo" />
+                )}
+              </div>
             </div>
 
             <div className="see-detail-details">
               {title && <h1 className="see-detail-title">{title}</h1>}
+              <span className="see-detail-divider" aria-hidden="true">♥</span>
               {caption && <p className="see-detail-caption">{caption}</p>}
               {dateLabel && <p className="see-detail-date">{dateLabel}</p>}
             </div>
