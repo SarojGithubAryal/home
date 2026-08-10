@@ -1,10 +1,9 @@
 /**
- * SeeDetailPage.jsx (renamed from PhotoPage.jsx)
+ * SeeDetailPage.jsx
  *
- * Full‑screen photo view. Reached only from SeePage (list). Uses
- * GET /api/contents/:contentId. Renders see_layout.webp (via
- * AssetRegistry) as the background; the backend photo fills the
- * Polaroid placeholder area via object-fit: contain, never stretched.
+ * Full‑screen photo view. Reached only from SeePage (list).
+ * The time‑variant environmental theme provides the background.
+ * The backend photo fills the Polaroid placeholder area.
  */
 
 import React, { useState } from 'react';
@@ -15,10 +14,9 @@ import AssetRegistry from '../../assets/AssetRegistry';
 import { getPath } from '../../utils/helpers';
 import './SeeDetailPage.css';
 
-function SeeDetailPage({ contentId, onBack }) {
+function SeeDetailPage({ contentId, onBack, timeVariant = 'day' }) {
   const { data, loading, error, refetch } = useContent(contentId);
-  const layoutConfig = AssetRegistry.getExperienceLayout('see');
-  const layoutUrl = layoutConfig?.url;
+  const environmentUrl = AssetRegistry.getDetailEnvironmentTheme(timeVariant);
   const [comforted, setComforted] = useState(false);
 
   const content = getPath(data, 'content', null);
@@ -34,46 +32,44 @@ function SeeDetailPage({ contentId, onBack }) {
 
   return (
     <PageContainer loading={loading} error={error} data={data} onRetry={refetch}>
-      <div
-        className="see-detail-canvas"
-        style={
-          layoutUrl
-            ? {
-                backgroundImage: `url(${layoutUrl})`,
-                backgroundSize: layoutConfig.size,
-                backgroundPosition: layoutConfig.position,
-              }
-            : undefined
-        }
-      >
-        <div className="see-detail-top">
-          <IconButton icon="←" ariaLabel="Go back" onClick={() => onBack && onBack()} />
-          <div className="see-detail-top-actions">
-            <IconButton icon="🔖" ariaLabel="Bookmark" onClick={() => console.log('Bookmark (pending feature)')} />
-            <IconButton icon="⋯" ariaLabel="More options" onClick={() => console.log('More options (pending feature)')} />
-          </div>
-        </div>
-
-        <div className="see-detail-content">
-          <div className="see-detail-polaroid">
-            {photoUrl && <img src={photoUrl} alt="" className="see-detail-photo" />}
+      <div className="detail-environment-container">
+        {environmentUrl && (
+          <div
+            className="detail-environment-background"
+            style={{ backgroundImage: `url(${environmentUrl})` }}
+            aria-hidden="true"
+          />
+        )}
+        <div className="see-detail-canvas">
+          <div className="see-detail-top">
+            <IconButton icon="←" ariaLabel="Go back" onClick={() => onBack && onBack()} />
+            <div className="see-detail-top-actions">
+              <IconButton icon="🔖" ariaLabel="Bookmark" onClick={() => console.log('Bookmark (pending feature)')} />
+              <IconButton icon="⋯" ariaLabel="More options" onClick={() => console.log('More options (pending feature)')} />
+            </div>
           </div>
 
-          <div className="see-detail-details">
-            {title && <h1 className="see-detail-title">{title}</h1>}
-            {caption && <p className="see-detail-caption">{caption}</p>}
-            {dateLabel && <p className="see-detail-date">{dateLabel}</p>}
-          </div>
+          <div className="see-detail-content">
+            <div className="see-detail-polaroid">
+              {photoUrl && <img src={photoUrl} alt="" className="see-detail-photo" />}
+            </div>
 
-          <div className="see-detail-actions">
-            <button type="button" className="see-detail-comfort-btn" onClick={() => setComforted(!comforted)} aria-pressed={comforted}>
-              {comforted ? '❤' : '♡'} This comforts me
-            </button>
-            {whySeeingText && (
-              <button type="button" className="see-detail-why-seeing-btn">
-                Why am I seeing this?
+            <div className="see-detail-details">
+              {title && <h1 className="see-detail-title">{title}</h1>}
+              {caption && <p className="see-detail-caption">{caption}</p>}
+              {dateLabel && <p className="see-detail-date">{dateLabel}</p>}
+            </div>
+
+            <div className="see-detail-actions">
+              <button type="button" className="see-detail-comfort-btn" onClick={() => setComforted(!comforted)} aria-pressed={comforted}>
+                {comforted ? '❤' : '♡'} This comforts me
               </button>
-            )}
+              {whySeeingText && (
+                <button type="button" className="see-detail-why-seeing-btn">
+                  Why am I seeing this?
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

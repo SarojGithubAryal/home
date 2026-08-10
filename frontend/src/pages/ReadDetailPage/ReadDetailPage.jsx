@@ -6,10 +6,9 @@ import AssetRegistry from '../../assets/AssetRegistry';
 import { getPath } from '../../utils/helpers';
 import './ReadDetailPage.css';
 
-function ReadDetailPage({ contentId, onBack }) {
+function ReadDetailPage({ contentId, onBack, timeVariant = 'day' }) {
   const { data, loading, error, refetch } = useContent(contentId);
-  const layoutConfig = AssetRegistry.getExperienceLayout('read');
-  const layoutUrl = layoutConfig?.url;
+  const environmentUrl = AssetRegistry.getDetailEnvironmentTheme(timeVariant);
 
   const content = getPath(data, 'content', null);
 
@@ -26,58 +25,56 @@ function ReadDetailPage({ contentId, onBack }) {
 
   return (
     <PageContainer loading={loading} error={error} data={data} isEmpty={!content} onRetry={refetch}>
-      <div
-        className="read-detail-canvas"
-        style={
-          layoutUrl
-            ? {
-                backgroundImage: `url(${layoutUrl})`,
-                backgroundSize: layoutConfig.size,
-                backgroundPosition: layoutConfig.position,
-              }
-            : undefined
-        }
-      >
-        <div className="read-detail-top">
-          <IconButton icon="←" ariaLabel="Go back" onClick={() => onBack && onBack()} />
-          <div className="read-detail-top-actions">
-            <IconButton icon="🔖" ariaLabel="Bookmark" onClick={() => console.log('Bookmark (pending feature)')} />
-            <IconButton icon="⋯" ariaLabel="More options" onClick={() => console.log('More options (pending feature)')} />
-          </div>
-        </div>
-
-        <div className="read-detail-sheet">
-          <span className="read-detail-eyebrow">A LETTER FOR YOU</span>
-          {title && <h1 className="read-detail-title">{title}</h1>}
-          <div className="read-detail-meta">
-            {author && <span className="read-detail-author">{author}</span>}
-            {dateLabel && <span className="read-detail-date">📅 {dateLabel}</span>}
-            {readingTimeLabel && <span className="read-detail-reading-time">⏱ {readingTimeLabel}</span>}
-          </div>
-          <span className="read-detail-divider" aria-hidden="true">♥</span>
-
-          <div className="read-detail-body">
-            {bodyParagraphs.map((paragraph, index) => (
-              <p key={index} className="read-detail-paragraph">{paragraph}</p>
-            ))}
+      <div className="detail-environment-container">
+        {environmentUrl && (
+          <div
+            className="detail-environment-background"
+            style={{ backgroundImage: `url(${environmentUrl})` }}
+            aria-hidden="true"
+          />
+        )}
+        <div className="read-detail-canvas">
+          <div className="read-detail-top">
+            <IconButton icon="←" ariaLabel="Go back" onClick={() => onBack && onBack()} />
+            <div className="read-detail-top-actions">
+              <IconButton icon="🔖" ariaLabel="Bookmark" onClick={() => console.log('Bookmark (pending feature)')} />
+              <IconButton icon="⋯" ariaLabel="More options" onClick={() => console.log('More options (pending feature)')} />
+            </div>
           </div>
 
-          {images.length > 0 && (
-            <div className="read-detail-images">
-              {images.map(img => (
-                <img
-                  key={img.id}
-                  src={img.url}
-                  alt={img.alt_text || 'Attached image'}
-                  className="read-detail-image"
-                />
+          <div className="read-detail-sheet">
+            <span className="read-detail-eyebrow">A LETTER FOR YOU</span>
+            {title && <h1 className="read-detail-title">{title}</h1>}
+            <div className="read-detail-meta">
+              {author && <span className="read-detail-author">{author}</span>}
+              {dateLabel && <span className="read-detail-date">📅 {dateLabel}</span>}
+              {readingTimeLabel && <span className="read-detail-reading-time">⏱ {readingTimeLabel}</span>}
+            </div>
+            <span className="read-detail-divider" aria-hidden="true">♥</span>
+
+            <div className="read-detail-body">
+              {bodyParagraphs.map((paragraph, index) => (
+                <p key={index} className="read-detail-paragraph">{paragraph}</p>
               ))}
             </div>
-          )}
 
-          {author && (
-            <p className="read-detail-signoff">{author} ♥</p>
-          )}
+            {images.length > 0 && (
+              <div className="read-detail-images">
+                {images.map(img => (
+                  <img
+                    key={img.id}
+                    src={img.url}
+                    alt={img.alt_text || 'Attached image'}
+                    className="read-detail-image"
+                  />
+                ))}
+              </div>
+            )}
+
+            {author && (
+              <p className="read-detail-signoff">{author} ♥</p>
+            )}
+          </div>
         </div>
       </div>
     </PageContainer>

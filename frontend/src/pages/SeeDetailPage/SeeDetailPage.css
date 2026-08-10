@@ -1,9 +1,31 @@
 /* SeeDetailPage.css – Warm photo gallery */
 
+/* ---- Environment wrapper ---- */
+.detail-environment-container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.detail-environment-background {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+/* ---- Existing canvas (on top of environment) ---- */
 .see-detail-canvas {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   background-position: center;
-  background-color: var(--background);
+  background-color: transparent;
   display: flex;
   flex-direction: column;
 }
@@ -41,33 +63,33 @@
   margin-bottom: var(--space-xl);
 }
 
-.see-detail-gallery {
+.see-detail-polaroid {
   width: 100%;
-  max-width: 700px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-  margin-bottom: var(--space-xl);
-}
-
-.see-detail-photo-frame {
+  max-width: 400px;
+  aspect-ratio: 3 / 4;
   background: white;
   padding: var(--space-sm);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-lg);
 }
 
 .see-detail-photo {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 100%;
+  object-fit: contain;
   border-radius: var(--radius-sm);
 }
 
 .see-detail-actions {
   margin-top: auto;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: var(--space-sm);
+  align-items: center;
 }
 
 .see-detail-comfort-btn {
@@ -80,7 +102,17 @@
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .see-detail-comfort-btn[aria-pressed="true"] {
   background: var(--primary);
   color: #fff;
+}
+
+.see-detail-why-seeing-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  cursor: pointer;
 }

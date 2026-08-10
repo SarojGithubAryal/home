@@ -55,12 +55,12 @@ import SeeIcon from "./experience/see_icon.webp";
 import MemoryIcon from "./experience/memory_icon.webp";
 
 /* --------------------------
-   EXPERIENCE LAYOUTS
+   DETAIL ENVIRONMENT THEMES (shared across Read/See/Memory)
 --------------------------- */
-
-import ReadLayout from "./experience/read_layout.webp";
-import SeeLayout from "./experience/see_layout.webp";
-import MemoryLayout from "./experience/memory_layout.webp";
+import DetailEarlyMorning from "./detail/detailTheme-early-morning.webp";
+import DetailDay from "./detail/detailTheme-day.webp";
+import DetailEvening from "./detail/detailTheme-evening.webp";
+import DetailNight from "./detail/detailTheme-night.webp";
 
 /* --------------------------
    ROOM THEMES
@@ -95,7 +95,6 @@ import MomCard from "./rooms/mom/mom_card.webp";
 import DadCard from "./rooms/dad/dad_card.webp";
 import MeCard from "./rooms/me/me_card.webp";
 import MemoryCard from "./rooms/memory/memory_card.webp";
-import PageContainer from "../layouts/PageContainer";
 
 /**
  * Grandfather card is optional.
@@ -109,24 +108,6 @@ const EXPERIENCE = {
     read: ReadIcon,
     see: SeeIcon,
     memory: MemoryIcon,
-  },
-
-  layouts: {
-    read: {
-      url: ReadLayout,
-      size: 'auto 100%',   // subtle zoom-out (height 105% of container, width auto)
-      position: 'center',
-    },
-    see: {
-      url: SeeLayout,
-      size: 'contain',
-      position: 'center',
-    },
-    memory: {
-      url: MemoryLayout,
-      size: 'cover',
-      position: 'center',
-    },
   },
 };
 
@@ -157,7 +138,7 @@ const ROOM_CARDS = {
 
 /* --------------------------
    TIME-VARIANT THEME ASSETS
-   (home, moodLanding, mom, dad, me, memory)
+   (home, moodLanding, mom, dad, me, memory, detailEnvironment)
 --------------------------- */
 const TIME_THEME_ASSETS = {
   home: {
@@ -196,6 +177,12 @@ const TIME_THEME_ASSETS = {
     evening: MemoryThemeEvening,
     night: MemoryThemeNight,
   },
+  detailEnvironment: {
+    morning: DetailEarlyMorning,
+    day: DetailDay,
+    evening: DetailEvening,
+    night: DetailNight,
+  },
 };
 
 /**
@@ -204,7 +191,7 @@ const TIME_THEME_ASSETS = {
  * and falls back to the group's own day image if the requested variant
  * somehow isn't in the map (defensive — should not normally happen).
  *
- * @param {string} groupKey  – 'home' | 'moodLanding' | 'mom' | 'dad' | 'me' | 'memory'
+ * @param {string} groupKey  – 'home' | 'moodLanding' | 'mom' | 'dad' | 'me' | 'memory' | 'detailEnvironment'
  * @param {string} variant   – 'morning' | 'day' | 'evening' | 'night'
  * @returns {*}               the imported image module, or null if the group is unknown
  */
@@ -220,7 +207,6 @@ const AssetRegistry = {
   /**
    * Home
    */
-
   getHomeTheme(timeVariant = 'day') {
     return resolveTimeThemedAsset('home', timeVariant);
   },
@@ -228,7 +214,6 @@ const AssetRegistry = {
   /**
    * Mood Landing — its own asset group, independent of Home.
    */
-
   getMoodLandingTheme(timeVariant = 'day') {
     return resolveTimeThemedAsset('moodLanding', timeVariant);
   },
@@ -236,7 +221,6 @@ const AssetRegistry = {
   /**
    * Room cards — unrelated to timeVariant.
    */
-
   getRoomCard(room) {
     return ROOM_CARDS[room] ?? null;
   },
@@ -249,7 +233,6 @@ const AssetRegistry = {
    * is always the room's fixed, manually-tuned framing — it does not
    * vary by timeVariant.
    */
-
   getRoomTheme(room, timeVariant = 'day') {
     const image = resolveTimeThemedAsset(room, timeVariant);
     const position = ROOM_POSITIONS[room] ?? 'center center';
@@ -259,20 +242,16 @@ const AssetRegistry = {
   /**
    * Experience icons
    */
-
   getExperienceIcon(type) {
     return EXPERIENCE.icons[type] ?? null;
   },
 
   /**
-   * Experience layouts
+   * Detail Environment Theme – shared by Read, See, and Memory detail pages.
+   * Returns the full‑screen environmental image for the given time variant.
    */
-
-  getExperienceLayout(type) {
-    const config = EXPERIENCE.layouts[type];
-    if (!config) return null;
-    // Return a copy so callers can't mutate the source
-    return { ...config };
+  getDetailEnvironmentTheme(timeVariant = 'day') {
+    return resolveTimeThemedAsset('detailEnvironment', timeVariant);
   },
 
   resolveEmptyStateAsset(type = 'default') {
@@ -280,9 +259,8 @@ const AssetRegistry = {
   },
 
   resolveErrorStateAsset() {
-  // Return a tiny grey placeholder SVG – prevents crash, visually minimal.
-  return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f0f0f0"/%3E%3C/svg%3E';
-},
+    return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f0f0f0"/%3E%3C/svg%3E';
+  },
 };
 
 export default AssetRegistry;
