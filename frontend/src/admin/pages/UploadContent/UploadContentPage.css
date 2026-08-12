@@ -358,3 +358,56 @@ select:disabled {
     text-align: center;
   }
 }
+
+/* ---- Upload status messages ---- */
+.error-message {
+  padding: 0.75rem 1rem;
+  background: var(--admin-color-error-soft, #fee2e2);
+  border: 1px solid var(--admin-color-error, #dc2626);
+  border-radius: var(--admin-radius-sm, 0.5rem);
+  color: var(--admin-color-error, #dc2626);
+  margin-top: 0.5rem;
+}
+
+.success-message {
+  padding: 0.75rem 1rem;
+  background: var(--admin-color-success-soft, #dcfce7);
+  border: 1px solid var(--admin-color-success, #16a34a);
+  border-radius: var(--admin-radius-sm, 0.5rem);
+  color: var(--admin-color-success, #16a34a);
+  margin-top: 0.5rem;
+}
+
+.success-detail {
+  font-size: var(--admin-font-size-caption, 0.75rem);
+  opacity: 0.8;
+  margin: 0.25rem 0 0 0;
+}
+
+/* ---- Upload progress ---- */
+.upload-progress {
+  margin-top: 0.75rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--admin-color-border, #e5e7eb);
+  border-radius: var(--admin-radius-full, 999px);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--admin-color-accent, #7c6ff0);
+  border-radius: var(--admin-radius-full, 999px);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: var(--admin-font-size-caption, 0.75rem);
+  color: var(--admin-color-text-secondary, #6b7280);
+  display: block;
+  text-align: right;
+  margin-top: 0.2rem;
+}

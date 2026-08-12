@@ -154,24 +154,59 @@ class AdminService {
   }
 
   async updateContent(id, data) {
+    // Extract media-related fields before building the dynamic query
+    const { mediaIds, thumbnailMediaId, ...contentFields } = data;
+
+    // Update content columns (excluding mediaIds and thumbnailMediaId)
     const fields = [];
     const values = [];
     let idx = 1;
-    for (const [key, value] of Object.entries(data)) {
+    for (const [key, value] of Object.entries(contentFields)) {
       if (value !== undefined) {
         fields.push(`${key} = $${idx}`);
         values.push(value);
         idx++;
       }
     }
-    if (!fields.length) return null;
-    values.push(id);
-    const result = await pool.query(
-      `UPDATE contents SET ${fields.join(', ')} WHERE id = $${idx} RETURNING *`,
-      values
-    );
-    if (result.rows.length) auditLogger.log('UPDATE', 'content', id);
-    return result.rows[0] || null;
+    if (fields.length > 0) {
+      values.push(id);
+      const result = await pool.query(
+        `UPDATE contents SET ${fields.join(', ')} WHERE id = $${idx} RETURNING *`,
+        values
+      );
+      if (result.rows.length) auditLogger.log('UPDATE', 'content', id);
+    }
+
+    // Link provided media IDs (append, not replace)
+    if (mediaIds && mediaIds.length > 0) {
+      for (const mediaId of mediaIds) {
+        // Only update if media exists (ignore invalid IDs)
+        await pool.query(
+          `UPDATE media SET content_id = $1 WHERE id = $2 AND content_id IS NULL`,
+          [id, mediaId]
+        );
+      }
+    }
+
+    // Set thumbnail if requested
+    if (thumbnailMediaId) {
+      // Verify the media exists and is attached to this content (or unattached)
+      const mediaResult = await pool.query(
+        `SELECT * FROM media WHERE id = $1 AND (content_id = $2 OR content_id IS NULL)`,
+        [thumbnailMediaId, id]
+      );
+      if (mediaResult.rows.length > 0) {
+        const media = mediaResult.rows[0];
+        // Update content metadata with thumbnail info
+        await pool.query(
+          `UPDATE contents SET metadata = jsonb_set(jsonb_set(COALESCE(metadata, '{}'), '{thumbnail_asset_key}', $1), '{thumbnail_media_id}', $2) WHERE id = $3`,
+          [JSON.stringify(media.url), JSON.stringify(media.id), id]
+        );
+      }
+    }
+
+    // Return the updated content (refetch)
+    return this.getContent(id);
   }
 
   async deleteContent(id) {

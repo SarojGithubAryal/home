@@ -472,3 +472,32 @@
     min-width: 80px;
   }
 }
+
+/* ---- Card actions ---- */
+.card-actions {
+  display: flex;
+  gap: 0.3rem;
+  margin-top: 0.3rem;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.2rem 0.3rem;
+  border-radius: var(--admin-radius-sm, 0.5rem);
+  color: var(--admin-color-text-muted, #9ca3af);
+  transition: background 0.15s, color 0.15s;
+}
+
+.action-btn:hover {
+  background: var(--admin-color-accent-soft, #ede9fe);
+  color: var(--admin-color-accent, #7c6ff0);
+}
+
+.delete-btn:hover {
+  background: var(--admin-color-error-soft, #fee2e2);
+  color: var(--admin-color-error, #dc2626);
+}

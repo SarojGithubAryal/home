@@ -1,78 +1,57 @@
+/**
+ * uploadService.js – Media operations only
+ * Real Admin Backend integration for file uploads.
+ * Uses the frozen backend API contract.
+ */
+
 import apiClient from '../../services/apiClient';
 
-const MEDIA_ENDPOINT = '/api/admin/media';
-const CONTENT_ENDPOINT = '/api/admin/content';
+const ADMIN_API_BASE = '/api/admin';
 
 /**
- * Upload a single file and return the created media object.
- * Uses raw fetch because the body is multipart/form-data.
+ * Upload a single file to Dropbox via the Admin Backend.
  */
-export async function uploadMedia(file) {
+export const uploadMedia = async (file, signal) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  const response = await fetch(MEDIA_ENDPOINT, {
+  const response = await fetch(`${ADMIN_API_BASE}/media`, {
     method: 'POST',
     body: formData,
+    signal,
   });
 
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    const message =
-      error?.error?.message ||
-      error?.message ||
-      `Upload failed (HTTP ${response.status})`;
-    throw new Error(message);
+  const result = await response.json();
+  if (!result.success) {
+    throw new Error(result.error?.message || 'Media upload failed');
   }
-
-  const envelope = await response.json();
-  if (!envelope.success) {
-    throw new Error(envelope?.error?.message || 'Upload failed');
-  }
-  return envelope.data.media;   // { id, url, ... }
-}
+  return result;
+};
 
 /**
- * Create a new content item.
- * The payload must include room_id and content_type_id as UUIDs.
+ * Replace an existing media file (keeps the same media ID).
  */
-export async function createContent(payload) {
-  const envelope = await apiClient.post(CONTENT_ENDPOINT, payload);
-  if (!envelope.success) {
-    throw new Error(envelope?.error?.message || 'Failed to create content');
+export const replaceMedia = async (id, file, signal) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${ADMIN_API_BASE}/media/${id}`, {
+    method: 'PATCH',
+    body: formData,
+    signal,
+  });
+
+  const result = await response.json();
+  if (!result.success) {
+    throw new Error(result.error?.message || 'Media replacement failed');
   }
-  return envelope.data.content;
-}
+  return result;
+};
 
 /**
- * Update an existing content item.
+ * Delete a single media file (Dropbox + DB).
  */
-export async function updateContent(id, payload) {
-  const envelope = await apiClient.patch(`${CONTENT_ENDPOINT}/${id}`, payload);
-  if (!envelope.success) {
-    throw new Error(envelope?.error?.message || 'Failed to update content');
-  }
-  return envelope.data.content;
-}
-
-/**
- * Delete a content item and all associated media.
- */
-export async function deleteContent(id) {
-  const envelope = await apiClient.del(`${CONTENT_ENDPOINT}/${id}`);
-  if (!envelope.success) {
-    throw new Error(envelope?.error?.message || 'Failed to delete content');
-  }
-  return true;
-}
-
-/**
- * Delete a single media item (also removes the Dropbox file).
- */
-export async function deleteMedia(mediaId) {
-  const envelope = await apiClient.del(`${MEDIA_ENDPOINT}/${mediaId}`);
-  if (!envelope.success) {
-    throw new Error(envelope?.error?.message || 'Failed to delete media');
-  }
-  return true;
-}
+export const deleteMedia = async (id, signal) => {
+  const response = await apiClient.del(`${ADMIN_API_BASE}/media/${id}`, { signal });
+  return response;
+};

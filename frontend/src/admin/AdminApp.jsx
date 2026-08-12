@@ -25,6 +25,7 @@ import ADMIN_PAGES from './navigation/adminPages';
 import DashboardPage from './pages/Dashboard/DashboardPage';
 import ContentLibraryPage from './pages/ContentLibrary/ContentLibraryPage';
 import UploadContentPage from './pages/UploadContent/UploadContentPage';
+import EditContentPage from './pages/EditContent/EditContentPage';
 import ExperienceSettingsPage from './pages/ExperienceSettings/ExperienceSettingsPage';
 import SettingsPage from './pages/Settings/SettingsPage';
 
@@ -36,8 +37,15 @@ import './styles/admin.css';
 function AdminApp() {
   const [currentPage, setCurrentPage] = useState(ADMIN_PAGES.DASHBOARD);
 
-  const navigate = useCallback((page) => {
+  const [editContentId, setEditContentId] = useState(null);
+
+  const navigate = useCallback((page, data) => {
     setCurrentPage(page);
+    if (page === ADMIN_PAGES.EDIT_CONTENT) {
+      setEditContentId(data?.contentId || null);
+    } else {
+      setEditContentId(null);
+    }
   }, []);
 
   function renderPage() {
@@ -46,10 +54,13 @@ function AdminApp() {
         return <DashboardPage />;
 
       case ADMIN_PAGES.CONTENT_LIBRARY:
-        return <ContentLibraryPage />;
+        return <ContentLibraryPage onNavigate={navigate} />;
 
       case ADMIN_PAGES.UPLOAD_CONTENT:
         return <UploadContentPage />;
+
+        case ADMIN_PAGES.EDIT_CONTENT:
+        return <EditContentPage contentId={editContentId} onNavigate={navigate} />;
 
       case ADMIN_PAGES.EXPERIENCE_SETTINGS:
         return <ExperienceSettingsPage />;

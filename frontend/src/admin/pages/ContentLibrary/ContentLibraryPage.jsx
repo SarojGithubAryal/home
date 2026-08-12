@@ -1,6 +1,8 @@
 import React from 'react';
 import { useContentLibrary } from '../../hooks/useContentLibrary';
+import { deleteContent } from '../../services/contentService';
 import './ContentLibraryPage.css';
+import ADMIN_PAGES from '../../navigation/adminPages';
 
 // Static sort options
 const SORT_OPTIONS = [
@@ -21,7 +23,7 @@ const TYPE_CHIPS = [
   { label: 'Stories', value: 'story' },
 ];
 
-function ContentCard({ item }) {
+function ContentCard({ item, onDelete, onEdit, onDuplicate }) {
   const badge = item.metadata?.badge;
   const durationLabel = item.metadata?.duration_label;
   const author = item.author;
@@ -31,7 +33,6 @@ function ContentCard({ item }) {
     year: 'numeric',
   });
 
-  // Map badge to icon (UI only, uses existing badge value)
   const getBadgeIcon = (b) => {
     const map = {
       letter: '📝',
@@ -68,12 +69,17 @@ function ContentCard({ item }) {
           {item.is_published ? 'Published' : 'Draft'}
         </span>
         <time className="card-date">{formattedDate}</time>
+        <div className="card-actions">
+          <button className="action-btn" onClick={() => onEdit(item.id)} aria-label="Edit">✏️</button>
+          <button className="action-btn" onClick={() => onDuplicate(item.id)} aria-label="Duplicate">📋</button>
+          <button className="action-btn delete-btn" onClick={() => onDelete(item.id, item.title)} aria-label="Delete">🗑️</button>
+        </div>
       </div>
     </div>
   );
 }
 
-export default function ContentLibraryPage() {
+export default function ContentLibraryPage({ onNavigate }) {
   const {
     items,
     pagination,
@@ -90,7 +96,32 @@ export default function ContentLibraryPage() {
     isFiltered,
   } = useContentLibrary();
 
-  // Show full‑page loading only on very first load
+  const handleDelete = async (id, title) => {
+    if (!window.confirm(`Are you sure you want to delete "${title}"? This will also remove all media.`)) return;
+    try {
+      const result = await deleteContent(id);
+      if (result.success) {
+        refetch(); // refresh the list
+      } else {
+        alert(`Failed to delete: ${result.error?.message || 'Unknown error'}`);
+      }
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  };
+
+  const handleEdit = (id) => {
+    if (onNavigate) {
+      onNavigate(ADMIN_PAGES.EDIT_CONTENT, { contentId: id });
+    } else {
+      alert('Navigation not available');
+    }
+  };
+
+  const handleDuplicate = (id) => {
+    alert(`Duplicate content ${id} – will be implemented later.`);
+  };
+
   if (loading && !fetching) {
     return <div className="admin-placeholder">Loading content…</div>;
   }
@@ -104,7 +135,6 @@ export default function ContentLibraryPage() {
         </button>
       </div>
 
-      {/* Search */}
       <div className="search-bar">
         <input
           type="text"
@@ -114,7 +144,6 @@ export default function ContentLibraryPage() {
         />
       </div>
 
-      {/* Filter row: chips + dropdowns */}
       <div className="filter-row">
         <div className="filter-chips">
           {TYPE_CHIPS.map((chip) => (
@@ -129,7 +158,6 @@ export default function ContentLibraryPage() {
           ))}
         </div>
         <div className="filter-controls">
-          {/* Room */}
           <select
             className="filter-select"
             value={filters.room || ''}
@@ -144,7 +172,6 @@ export default function ContentLibraryPage() {
             ))}
           </select>
 
-          {/* Mood */}
           <select
             className="filter-select"
             value={filters.mood || ''}
@@ -159,7 +186,6 @@ export default function ContentLibraryPage() {
             ))}
           </select>
 
-          {/* Status */}
           <select
             className="filter-select"
             value={filters.status || ''}
@@ -174,7 +200,6 @@ export default function ContentLibraryPage() {
             ))}
           </select>
 
-          {/* Sort */}
           <select
             className="filter-select"
             value={filters.sort}
@@ -190,10 +215,8 @@ export default function ContentLibraryPage() {
         </div>
       </div>
 
-      {/* Fetching overlay */}
       {fetching && <div className="loading-overlay">Refreshing…</div>}
 
-      {/* Error state */}
       {error && (
         <div className="error">
           <p>Error: {error}</p>
@@ -201,7 +224,6 @@ export default function ContentLibraryPage() {
         </div>
       )}
 
-      {/* Empty state with clear filters */}
       {!error && items.length === 0 && !fetching && (
         <div className="empty">
           <p>{isFiltered ? 'No content matches your filters.' : 'No content found.'}</p>
@@ -213,16 +235,20 @@ export default function ContentLibraryPage() {
         </div>
       )}
 
-      {/* Content list */}
       {!error && items.length > 0 && (
         <>
           <div className="content-list">
             {items.map((item) => (
-              <ContentCard key={item.id} item={item} />
+              <ContentCard
+                key={item.id}
+                item={item}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+                onDuplicate={handleDuplicate}
+              />
             ))}
           </div>
 
-          {/* Pagination */}
           <div className="pagination">
             <button
               disabled={filters.page <= 1}

@@ -1,0 +1,117 @@
+.edit-content-page {
+  padding: var(--admin-space-lg, 2rem);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--admin-space-lg, 2rem);
+}
+
+.edit-header h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+}
+
+.edit-form {
+  background: var(--admin-color-surface, #ffffff);
+  border-radius: var(--admin-radius-lg, 1rem);
+  padding: var(--admin-space-lg, 2rem);
+  border: 1px solid var(--admin-color-border, #e5e7eb);
+  box-shadow: var(--admin-shadow-low, 0 0.0625rem 0.1875rem rgb(0 0 0 / 0.06));
+}
+
+.edit-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: var(--admin-space-md, 1.5rem);
+}
+
+.edit-form .form-row {
+  display: flex;
+  gap: var(--admin-space-md, 1.5rem);
+  flex-wrap: wrap;
+}
+
+.edit-form .form-row .form-group {
+  flex: 1;
+  min-width: 150px;
+}
+
+.edit-form label {
+  font-weight: 500;
+  font-size: var(--admin-font-size-body-sm, 0.875rem);
+  color: var(--admin-color-text-secondary, #6b7280);
+}
+
+.edit-form input,
+.edit-form select,
+.edit-form textarea {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--admin-color-border, #e5e7eb);
+  border-radius: var(--admin-radius-sm, 0.5rem);
+  font-size: var(--admin-font-size-body, 0.95rem);
+  background: var(--admin-color-surface, #ffffff);
+}
+
+.edit-form input:focus,
+.edit-form select:focus,
+.edit-form textarea:focus {
+  outline: none;
+  border-color: var(--admin-color-accent, #7c6ff0);
+  box-shadow: 0 0 0 3px rgba(124, 111, 240, 0.12);
+}
+
+.edit-form .checkbox-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-form .checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.edit-form .form-actions {
+  display: flex;
+  gap: var(--admin-space-sm, 1rem);
+  justify-content: flex-end;
+  margin-top: var(--admin-space-lg, 2rem);
+}
+
+.edit-form small {
+  color: var(--admin-color-text-muted, #9ca3af);
+  font-size: var(--admin-font-size-caption, 0.75rem);
+}
+
+.error-message {
+  padding: 0.75rem 1rem;
+  background: var(--admin-color-error-soft, #fee2e2);
+  border: 1px solid var(--admin-color-error, #dc2626);
+  border-radius: var(--admin-radius-sm, 0.5rem);
+  color: var(--admin-color-error, #dc2626);
+  margin-top: var(--admin-space-sm, 1rem);
+}
+
+.success-message {
+  padding: 0.75rem 1rem;
+  background: var(--admin-color-success-soft, #dcfce7);
+  border: 1px solid var(--admin-color-success, #16a34a);
+  border-radius: var(--admin-radius-sm, 0.5rem);
+  color: var(--admin-color-success, #16a34a);
+  margin-top: var(--admin-space-sm, 1rem);
+}
+
+@media (max-width: 768px) {
+  .edit-form .form-row {
+    flex-direction: column;
+  }
+}

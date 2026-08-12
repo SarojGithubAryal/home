@@ -18,9 +18,10 @@
 export const ADMIN_PAGES = Object.freeze({
   DASHBOARD: 'DASHBOARD',
   CONTENT_LIBRARY: 'CONTENT_LIBRARY',
-  UPLOAD_CONTENT: 'UPLOAD_CONTENT',     // Upload Content page – implemented
-  EXPERIENCE_SETTINGS: 'EXPERIENCE_SETTINGS', // Experience page – placeholder
-  SETTINGS: 'SETTINGS',                 // Settings page – placeholder
+  UPLOAD_CONTENT: 'UPLOAD_CONTENT',
+  EDIT_CONTENT: 'EDIT_CONTENT',
+  EXPERIENCE_SETTINGS: 'EXPERIENCE_SETTINGS',
+  SETTINGS: 'SETTINGS',
 });
 
 export default ADMIN_PAGES;
