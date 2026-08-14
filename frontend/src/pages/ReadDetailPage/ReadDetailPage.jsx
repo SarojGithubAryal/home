@@ -14,7 +14,7 @@ function ReadDetailPage({ contentId, onBack, timeVariant = 'day' }) {
 
   const title = getPath(content, 'title', null);
   const author = getPath(content, 'author', null);
-  const bodyRaw = getPath(content, 'body', null);
+  const bodyRaw = getPath(content, 'detail.body', null);
   const bodyParagraphs = Array.isArray(bodyRaw) ? bodyRaw : bodyRaw ? [bodyRaw] : [];
   const readingTimeLabel = getPath(content, 'detail.readingTimeLabel', null);
   const dateLabel = getPath(content, 'dates.formatted', null) || getPath(content, 'dates.createdAt', null);
